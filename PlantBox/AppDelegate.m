@@ -7,7 +7,9 @@
 //
 
 #import "AppDelegate.h"
-
+#import "RootTabbarController.h"
+#import "LoginViewController.h"
+#import "MMZCViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -17,6 +19,22 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    // Override point for customization after application launch.
+//    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//    self.window.backgroundColor = [UIColor whiteColor];
+//    //    RootTabbarController *tabbatCtl = [[RootTabbarController alloc] init];
+//    LoginViewController *tabbatCtl = [[LoginViewController alloc] init];
+//    //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:tabbatCtl];
+//    self.window.rootViewController = tabbatCtl;
+//    [self.window makeKeyAndVisible];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
+    MMZCViewController *login=[[MMZCViewController alloc]init];
+    UINavigationController *nav=[[UINavigationController alloc]initWithRootViewController:login];
+    self.window.rootViewController=nav;
+    NSDictionary *attributes=[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil];
+    [nav.navigationBar setTitleTextAttributes:attributes];
+
+    
     return YES;
 }
 
