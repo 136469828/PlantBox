@@ -23,6 +23,7 @@
 
 
 // Color kColor
+#define navigationBarColor RGB(67, 199, 176)
 #define kColor(R,G,B,A) [UIColor colorWithRed:R/255.f green:G/255.f blue:B/255.f alpha:A]
 #define RGBColor(r,g,b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGB(r,g,b)                  [UIColor colorWithRed:r / 255.f green:g / 255.f blue:b / 255.f alpha:1.f]
@@ -59,6 +60,6 @@
 
 // 网络请求
 //#define ServerAddressURL  @"http://192.168.0.101:88/"
-#define ServerAddressURL  @"http://182.92.150.211:97/"
+#define ServerAddressURL  @"http://plantboxapi.meidp.com/"
 //#define ServerAddressURL  @"http://182.92.150.211:97/help/"
 #endif /* tool_h */

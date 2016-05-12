@@ -11,8 +11,8 @@
 #import "AppDelegate.h"
 #import "MMZCHMViewController.h"
 #import "RootTabbarController.h"
-
-
+#import "LCProgressHUD.h"
+#import "NextManger.h"
 @interface MMZCViewController ()
 {
     UIImageView *View;
@@ -50,12 +50,12 @@
     [self.view addSubview:View];
     
 ////    self.title=@"登陆";
-////    UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(clickaddBtn:)];
-////    [addBtn setImage:[UIImage imageNamed:@"goback_back_orange_on"]];
-////    [addBtn setImageInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+//    UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(clickaddBtn:)];
+//    [addBtn setImage:[UIImage imageNamed:@"leftBtn"]];
+//    [addBtn setImageInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
 ////    addBtn.tintColor=[UIColor colorWithRed:248/255.0f green:144/255.0f blue:34/255.0f alpha:1];
-////    [self.navigationItem setLeftBarButtonItem:addBtn];
-//    
+//    [self.navigationItem setLeftBarButtonItem:addBtn];
+//
 //    UIBarButtonItem *right=[[UIBarButtonItem alloc]initWithTitle:@"注册" style:UIBarButtonItemStylePlain target:self action:@selector(zhuce)];
 //    right.tintColor=[UIColor colorWithRed:248/255.0f green:144/255.0f blue:34/255.0f alpha:1];
 //    self.navigationItem.rightBarButtonItem=right;
@@ -90,6 +90,15 @@
     [self createTextFields];
     
     [self createLabel];
+    
+    // 导航栏返回btn
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    self.navigationItem.backBarButtonItem = backItem;
+    //    self.navigationItem.backBarButtonItem.image = [UIImage imageNamed:@"leftBtn"];
+    backItem.title = @" ";
+    self.navigationController.navigationBar.barStyle = UIStatusBarStyleDefault;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loging:) name:NetManagerRefreshNotify object:nil];
 }
 
 -(void)clickaddBtn:(UIButton *)button
@@ -121,7 +130,7 @@
     
     user=[self createTextFielfFrame:CGRectMake(60, 10, 271, 30) font:[UIFont systemFontOfSize:14] placeholder:@"手机/邮箱"];
     //user.text=@"13419693608";
-    user.keyboardType=UIKeyboardTypeNumberPad;
+    user.keyboardType=UIKeyboardTypeDefault;
     user.clearButtonMode = UITextFieldViewModeWhileEditing;
    
     pwd=[self createTextFielfFrame:CGRectMake(60, 60, 271, 30) font:[UIFont systemFontOfSize:14]  placeholder:@"密码" ];
@@ -196,7 +205,7 @@
 //    UIButton *remberBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-70, 305, 140, 30) backImageName:nil title:@"记住登录密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:15] target:self action:@selector(rebberBtn:)];
     UIButton *remberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 //    remberBtn.backgroundColor=[UIColor lightGrayColor];
-    remberBtn.frame = CGRectMake(self.view.frame.size.width*0.5-100, 305, 170, 35);
+    remberBtn.frame = CGRectMake(self.view.frame.size.width*0.5-100, 300, 170, 50);
     [remberBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [remberBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     remberBtn.titleLabel.font = [UIFont systemFontOfSize:13];
@@ -321,31 +330,71 @@
 //登录
 -(void)landClick
 {
-//    if ([user.text isEqualToString:@""])
-//    {
-//        //[SVProgressHUD showInfoWithStatus:@"亲,请输入用户名"];
-//        return;
-//    }
+    if ([user.text isEqualToString:@""])
+    {
+        [LCProgressHUD showMessage:@"亲,请输入用户名"];
+        return;
+    }
 //    else if (user.text.length <11)
 //    {
-//        //[SVProgressHUD showInfoWithStatus:@"您输入的手机号码格式不正确"];
+//        [LCProgressHUD showMessage:@"您输入的手机号码格式不正确"];
 //        return;
 //    }
-//    else if ([pwd.text isEqualToString:@""])
-//    {
-//        //[SVProgressHUD showInfoWithStatus:@"亲,请输入密码"];
-//        return;
-//    }
-//    else if (pwd.text.length <6)
-//    {
-//        //[SVProgressHUD showInfoWithStatus:@"亲,密码长度至少六位"];
-//        return;
-//    }
-    
-    RootTabbarController *rootTabbarCtr = [[RootTabbarController alloc] init];
-    [self presentViewController:rootTabbarCtr animated:YES completion:nil];
-}
+    else if ([pwd.text isEqualToString:@""])
+    {
+        [LCProgressHUD showMessage:@"亲,请输入密码"];
+        return;
+    }
+    else if (pwd.text.length <6)
+    {
+        [LCProgressHUD showMessage:@"亲,密码长度至少六位"];
+        return;
+    }
+    else
+    {
+        //
+        NSLog(@"user:%@ pwd:%@ ",user.text,pwd.text);
+        NextManger *manger = [NextManger shareInstance];
+        manger.name = user.text; manger.password = pwd.text;
+        [manger loadData:RequestOfLogin];
+        [LCProgressHUD showLoading:@"正在登录"];
+        
+        
+    }
+//    RootTabbarController *rootTabbarCtr = [[RootTabbarController alloc] init];
+//    [self presentViewController:rootTabbarCtr animated:YES completion:nil];
 
+}
+#pragma mark - 判断账号密码
+- (void)loging:(NSNotification*)theObj
+{
+        NSLog(@"%@ %@",theObj.object[@"code"],theObj.object[@"msg"]);
+    NSLog(@"%@",theObj.userInfo[@"errorCode"]);
+    if ([theObj.userInfo[@"errorCode"] isEqualToString:@"-1009"])
+    {
+        [LCProgressHUD showSuccess:@"未连接到网络"];
+    }
+    else if ([theObj.userInfo[@"errorCode"] isEqualToString:@"-1001"]) {
+        [LCProgressHUD showSuccess:@"连接超时"];
+    }
+    else
+    {
+        if ([theObj.object[@"msg"] isEqualToString:@"success"])
+        {
+            RootTabbarController *rootTabbarCtr = [[RootTabbarController alloc] init];
+            [self presentViewController:rootTabbarCtr animated:YES completion:nil];
+            [LCProgressHUD hide];
+        }
+        else
+        {
+            //        UIAlertView *al = [[UIAlertView alloc] initWithTitle:@"提示" message:theObj.object[@"msg"] delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
+            //        [al show];
+            [LCProgressHUD showSuccess:theObj.object[@"msg"]];
+        }
+    }
+    
+    
+}
 //注册
 -(void)zhuce
 {

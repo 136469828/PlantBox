@@ -12,6 +12,9 @@
 
 
 @property (weak, nonatomic) IBOutlet UIView *cellContentView;
+@property (weak, nonatomic) IBOutlet UILabel *nameLab;
+@property (weak, nonatomic) IBOutlet UIButton *downBtn;
 
-@property (weak, nonatomic) IBOutlet UILabel *contentLab;
+@property (nonatomic ,strong)   NSArray *imgs;
+
 @end

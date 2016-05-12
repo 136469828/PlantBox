@@ -26,11 +26,11 @@
     
     self.title=@"找回密码2/2";
     self.view.backgroundColor=[UIColor colorWithRed:240/255.0f green:240/255.0f blue:240/255.0f alpha:1];
-    UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(clickaddBtn)];
-    [addBtn setImage:[UIImage imageNamed:@"goback_back_orange_on"]];
-    [addBtn setImageInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
-    addBtn.tintColor=[UIColor whiteColor];
-    [self.navigationItem setLeftBarButtonItem:addBtn];
+//    UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(clickaddBtn)];
+//    [addBtn setImage:[UIImage imageNamed:@"goback_back_orange_on"]];
+//    [addBtn setImageInsets:UIEdgeInsetsMake(0, -15, 0, 15)];
+//    addBtn.tintColor=[UIColor whiteColor];
+//    [self.navigationItem setLeftBarButtonItem:addBtn];
     
     [self createTextFields];
 }

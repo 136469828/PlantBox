@@ -20,9 +20,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self.navigationController.navigationBar setBarTintColor:RGB(7, 124, 245)];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
     [self setTabBarController];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(NSIntegerMin, NSIntegerMin) forBarMetrics:UIBarMetricsDefault];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -62,7 +63,7 @@
 
     navC.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:homepage selectedImage:[selectedImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
     [[UINavigationBar appearance] setTintColor:RGB(7, 124, 245)];
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg"] forBarMetrics:UIBarMetricsDefault];    //设置tabbar的背景图片
+//    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg"] forBarMetrics:UIBarMetricsDefault];    //设置tabbar的背景图片
         [navC.navigationBar setTranslucent:NO];  // 不透明
     [self addChildViewController:navC];
 }
