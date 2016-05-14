@@ -8,15 +8,19 @@
 
 #import "HomeViewController.h"
 #import "SDCycleScrollView.h"
+#import "UIImageView+WebCache.h"
 
-#import "GrowingTreeViewController.h"
+#import "GrowingThreeController.h"
 #import "AreaViewController.h"
 #import "TheActivityViewController.h"
-
-#import "HJTestViewController.h"
-#import "HJLeftViewController.h"
-#import "HJMiddleViewController.h"
-#import "HJRightViewController.h"
+#import "ErweimaViewController.h"
+//#import "HJTestViewController.h"
+//#import "HJLeftViewController.h"
+//#import "HJMiddleViewController.h"
+//#import "HJRightViewController.h"
+#import "WebModel.h"
+#import "WebViewController.h"
+#import "PlantCenterController.h"
 #import "MenuContentViewController.h"
 #import "SHMenu.h"
 
@@ -64,11 +68,14 @@
     
     manger= [NextManger shareInstance];
     manger.isKeyword = NO;
+    [manger loadData:RequestOfGetlist];
     [manger loadData:RequestOfGetprojectlist];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cityAction) name:@"city" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(drawHeardView) name:@"advertise" object:nil];
+    
 
 
 }
@@ -77,6 +84,11 @@
     [super viewDidAppear:animated];
     [self cityAction];
 }
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"touchView" object:nil];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -84,6 +96,7 @@
 - (void)reloadDataAction
 {
     [self.tableView reloadData];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 #pragma - mark navigationBar
 - (void)_initnavigationBar{
@@ -109,7 +122,7 @@
 #pragma mark - 设置navigationItem右侧按钮
     UIButton *meassageBut = ({
         UIButton *meassageBut = [UIButton buttonWithType:UIButtonTypeCustom];
-        meassageBut.frame = CGRectMake(-20, 0, 40, 40);
+        meassageBut.frame = CGRectMake(-20, 0, 30, 30);
         [meassageBut addTarget:self action:@selector(pushMSG) forControlEvents:UIControlEventTouchDown];
         [meassageBut setImage:[UIImage imageNamed:@"icon_homepage_scan"]forState:UIControlStateNormal];
         meassageBut;
@@ -145,7 +158,7 @@
 }
 
 #pragma mark - 头视图
-- (UIView *)drawHeardView
+- (void)drawHeardView
 {
     UIView *heardV = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight*0.5)];
     heardV.backgroundColor = [UIColor whiteColor];
@@ -155,12 +168,22 @@
                             @"zq3.jpg",
                             @"zq4.jpg",
                             ];
-    
+   /*
     SDCycleScrollView *cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenWidth, heardV.bounds.size.height*0.5) shouldInfiniteLoop:YES imageNamesGroup:imageNames];
     cycleScrollView.delegate = self;
     cycleScrollView.pageControlStyle = SDCycleScrollViewPageContolStyleAnimated;
     [heardV addSubview:cycleScrollView];
     cycleScrollView.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    */
+    // 网络加载 --- 创建自定义图片的pageControlDot的图片轮播器
+    SDCycleScrollView *cycleScrollView3 = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenWidth, heardV.bounds.size.height*0.5) delegate:self placeholderImage:[UIImage imageNamed:@"placeholder"]];
+    cycleScrollView3.currentPageDotImage = [UIImage imageNamed:@"pageControlCurrentDot"];
+    cycleScrollView3.pageDotImage = [UIImage imageNamed:@"pageControlDot"];
+//    ProjectModel *model = [[ProjectModel alloc] init];
+    NSArray *arr = manger.m_imgArr;
+//    NSLog(@"%ld",arr.count);
+    cycleScrollView3.imageURLStringsGroup = arr;
+    [heardV addSubview:cycleScrollView3];
     
     NSArray *titles = @[@"植物商城",@"种植中心",@"成长树",@"活动专区"];
     NSArray *btnImgs = @[@"001",@"002",@"003",@"004"];
@@ -220,7 +243,9 @@
     self.m_slideView.frame = CGRectMake(ScreenWidth*0.1, 40-2, ScreenWidth/7, 2);
     self.m_slideView.backgroundColor = RGB(27, 116, 203);
     [backgroundView addSubview:self.m_slideView];
-    return heardV;
+    
+    _tableView.tableHeaderView = heardV;
+//    return heardV;
 }
 //单击label的时候scrollView滑动范围
 - (void)tapHandler:(UITapGestureRecognizer *)tap
@@ -240,6 +265,7 @@
         NSInteger i = self.m_scrollView.contentOffset.x / ScreenWidth;
         
         self.m_slideView.frame = CGRectMake((ScreenWidth/3)*i+ScreenWidth*0.1, 40-2,ScreenWidth/7,2);
+
     }];
 }
 
@@ -251,6 +277,12 @@
         
         NSInteger i = self.m_scrollView.contentOffset.x / ScreenWidth;
         self.m_slideView.frame = CGRectMake((ScreenWidth/3)*i+ScreenWidth*0.1, 40-2,ScreenWidth/7,2);
+        NSLog(@"%ld 点击手势视图完成后调用方法",i);
+        manger= [NextManger shareInstance];
+        manger.isKeyword = YES;
+        manger.keyword = [NSString stringWithFormat:@"%ld",i+1];
+        [manger loadData:RequestOfGetprojectlist];
+        
     }];
 }
 #pragma mark - 
@@ -259,7 +291,6 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
-    _tableView.tableHeaderView = [self drawHeardView];
 
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecognizer.cancelsTouchesInView = NO;
@@ -333,12 +364,19 @@
     if (indexPath.section == 0)
     {
         HomeCell *homeCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
-        homeCell.tag = 1008;
+//        homeCell.tag = 1008;
         ProjectModel *model = manger.m_ProductLists[indexPath.row];
-//        NSLog(@"%ld",model.productListImgs.count);
         homeCell.nameLab.text = model.productName;
+        homeCell.contentLab.text = @"CocoaPods是iOS项目的依赖管理工具，该项目源码在Github上管理。开发iOS项目不可避免地要使用第三方开源库，CocoaPods的出现使得我们可以节省设置和第三方开源库的时间。";
+        homeCell.tag = [model.productListID integerValue];
+        for (int i = 0; i < model.productListImgs.count; i++)
+        {
+            UIImageView *image = (UIImageView *)[homeCell viewWithTag:500 + i];
+            image.tag = 500 + i;
+            [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
+                //        titleLabel.text = model.title;
+        }
         homeCell.selectionStyle = UITableViewCellSelectionStyleNone;
-//        [homeCell.downBtn addTarget:self action:@selector(downMune:) forControlEvents:UIControlEventTouchDown];
         return homeCell;
 
     }
@@ -358,6 +396,20 @@
     
     return cell;
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0)
+    {
+        HomeCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        NSLog(@"%ld",cell.tag);
+        WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail?UserId=%@&id=%ld",manger.userId,cell.tag]];
+        WebViewController *SVC = [[WebViewController alloc] init];
+        SVC.title = @"植物详情";
+        SVC.hidesBottomBarWhenPushed = YES;
+        [SVC setModel:model];
+        [self.navigationController pushViewController:SVC animated:YES];
+    }
+}
 #pragma mark - 4个按钮
 - (void)pushAction:(UIButton *)btn
 {
@@ -365,20 +417,25 @@
     switch (btn.tag) {
         case 1000:
         {
-        
+            WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Product?UserId=%@",manger.userId]];
+            WebViewController *SVC = [[WebViewController alloc] init];
+            SVC.title = @"植物商城";
+            SVC.hidesBottomBarWhenPushed = YES;
+            [SVC setModel:model];
+            [self.navigationController pushViewController:SVC animated:YES];
         }
             break;
         case 1001:
         {
-            HJTestViewController *subVC = [[HJTestViewController alloc] init];
-//            self.title = @"种植中心";
+            PlantCenterController *subVC = [[PlantCenterController alloc] init];
+            self.title = @"种植中心";
             subVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:subVC animated:YES];
         }
             break;
         case 1002:
         {
-            GrowingTreeViewController *subVC = [[GrowingTreeViewController alloc] init];
+            GrowingThreeController *subVC = [[GrowingThreeController alloc] init];
             subVC.title = @"成长树";
             subVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:subVC animated:YES];
@@ -406,28 +463,30 @@
 }
 - (void)pushMSG
 {
-    NSLog(@"点击了");
+    ErweimaViewController *eVC = [[ErweimaViewController alloc] init];
+    eVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:eVC animated:eVC];
 }
-- (void)downMune:(UIButton*)sender
-{
-    UITableViewCell *cell = (UITableViewCell *)[self.view viewWithTag:1008];
-    UIButton *button = (UIButton *)sender;
-    UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    CGRect rect1 = [button convertRect:button.frame fromView:cell.contentView];     //获取button在contentView的位置
-    CGRect rect2 = [button convertRect:rect1 toView:window];         //获取button在window的位置
-    CGRect rect3 = CGRectInset(rect2, -0.5 * 8, -0.5 * 8);          //扩大热区
-    //rect3就是最终结果。
-        NSLog(@"%f %f",rect3.origin.x,rect3.origin.y);
-    
-    if (_menu.state == MenuShow) return;
-    MenuContentViewController *menuVC = [[MenuContentViewController alloc] init];
-    SHMenu *menu = [[SHMenu alloc] initWithFrame:CGRectMake(0, 0, 160, 100)];
-    _menu = menu;
-    menu.contentVC = menuVC;
-    menu.anchorPoint = CGPointMake(1, 0);
-    menu.contentOrigin = CGPointMake(0, 8);
-    [menu showFromPoint:CGPointMake(rect3.origin.x-120, rect3.origin.y)];
-}
+//- (void)downMune:(UIButton*)sender
+//{
+//    UITableViewCell *cell = (UITableViewCell *)[self.view viewWithTag:1008];
+//    UIButton *button = (UIButton *)sender;
+//    UIWindow* window = [UIApplication sharedApplication].keyWindow;
+//    CGRect rect1 = [button convertRect:button.frame fromView:cell.contentView];     //获取button在contentView的位置
+//    CGRect rect2 = [button convertRect:rect1 toView:window];         //获取button在window的位置
+//    CGRect rect3 = CGRectInset(rect2, -0.5 * 8, -0.5 * 8);          //扩大热区
+//    //rect3就是最终结果。
+//        NSLog(@"%f %f",rect3.origin.x,rect3.origin.y);
+//    
+//    if (_menu.state == MenuShow) return;
+//    MenuContentViewController *menuVC = [[MenuContentViewController alloc] init];
+//    SHMenu *menu = [[SHMenu alloc] initWithFrame:CGRectMake(0, 0, 160, 100)];
+//    _menu = menu;
+//    menu.contentVC = menuVC;
+//    menu.anchorPoint = CGPointMake(1, 0);
+//    menu.contentOrigin = CGPointMake(0, 8);
+//    [menu showFromPoint:CGPointMake(rect3.origin.x-120, rect3.origin.y)];
+//}
 #pragma mark - 点击/滚动tableView
 - (void)hideKeyboard
 {
@@ -461,5 +520,22 @@
 -(NSInteger)defaultShowSection:(NSInteger)section
 {
     return 0;
+}
+#pragma mark - SDCycleScrollViewDelegate
+
+- (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index
+{
+    /*
+     
+     http://www.kokoi.com.cn/lookbike/small/610.html
+     */
+//    NSLog(@"---点击了第%ld张图片 %@", (long)index,manger.m_imgLink);
+    WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"%@",manger.m_imgLink[index]]];
+    WebViewController *SVC = [[WebViewController alloc] init];
+    SVC.title = @"植物百科";
+    SVC.hidesBottomBarWhenPushed = YES;
+    [SVC setModel:model];
+    [self.navigationController pushViewController:SVC animated:YES];
+
 }
 @end

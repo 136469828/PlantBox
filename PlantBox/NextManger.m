@@ -275,11 +275,15 @@ static NextManger *manger = nil;
              if (self.m_imgArr.count == 0) {
                  self.m_imgArr = [[NSMutableArray alloc] initWithCapacity:0];
              }
-             ProjectModel *model = [[ProjectModel alloc] init];
-             model.homeImg = dic[@"Photo"];
-             [self.m_imgArr addObject:model];
+             if (self.m_imgLink.count == 0) {
+                 self.m_imgLink = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+//             ProjectModel *model = [[ProjectModel alloc] init];
+//             model.homeImg = dic[@"Photo"];
+             [self.m_imgArr addObject:dic[@"Photo"]];
+             [self.m_imgLink addObject:dic[@"Link"]];
          }
-         [LCProgressHUD showSuccess:@"加载成功"];
+//         [LCProgressHUD showSuccess:@"加载成功"];
          [[NSNotificationCenter defaultCenter] postNotificationName:@"advertise" object:responseObject];
      } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
          NSLog(@"error : %@",error);
@@ -401,7 +405,7 @@ static NextManger *manger = nil;
                        @"_appid":@"101",
                        @"_code":self.userID_Code,
                        @"content":@"application/json",
-                       @"Keyword": keyword,
+                       @"sType": self.keyword,
                        
                        };
     }
@@ -411,31 +415,37 @@ static NextManger *manger = nil;
                        @"_appid":@"101",
                        @"_code":self.userID_Code,
                        @"content":@"application/json",
-                       @"Status": @"0",
+                       
+                       @"sType": @"1",
                        };
     }
-    NSString *url = [NSString stringWithFormat:@"%@product/home/getproductlist",ServerAddressURL];
+    NSString *url = [NSString stringWithFormat:@"%@order/getlist",ServerAddressURL];
     [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
      {
          NSLog(@"产品列表：%@",responseObject);
          NSArray *dataLists = responseObject[@"data"][@"DataList"];
 //         NSLog(@"%ld",dataLists.count);
+         [self.m_ProductLists removeAllObjects];
          for (NSDictionary *dic in dataLists)
          {
              ProjectModel *model = [[ProjectModel alloc] init];
-//             NSLog(@"%@ %@",dic[@"Pictures"],dic[@"ProductName"]);
+//             NSLog(@"%@",dic[@"Pictures"][@"Pictures"]);
              model.productName = dic[@"ProductName"];
-             model.isDeleted = dic[@""];
-             model.totalCollect = dic[@"TotalCollect"];
-             model.totalRead = dic[@"TotalRead"];
-             NSArray *m_ar = dic[@"Pictures"];
-             model.productListImgs = m_ar;
-             if (self.m_ProductLists.count == 0) {
-                 self.m_ProductLists = [[NSMutableArray alloc] initWithCapacity:0];
-             }
-             [self.m_ProductLists addObject:model];
+//             [model.productListImgs removeAllObjects];
+//             if (model.productListImgs.count == 0)
+//             {
+//                 model.productListImgs = [[NSMutableArray alloc] initWithCapacity:0];
+//             }
+             model.productListImgs = dic[@"Product"][@"Pictures"];
+             model.productListID = dic[@"Product"][@"Id"];
+              if (self.m_ProductLists.count == 0) {
+                  self.m_ProductLists = [[NSMutableArray alloc] initWithCapacity:0];
+              }
+              [self.m_ProductLists addObject:model];
          }
-         [LCProgressHUD showSuccess:@"加载成功"];
+         
+
+//         [LCProgressHUD showSuccess:@"加载成功"];
          [[NSNotificationCenter defaultCenter] postNotificationName:@"GetprojectlistWithKeyword" object:nil];
          
          

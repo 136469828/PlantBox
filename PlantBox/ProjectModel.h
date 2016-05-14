@@ -56,4 +56,6 @@
 @property (nonatomic, copy) NSString *totalRead;
 @property (nonatomic, copy) NSString *totalCollect;
 @property (nonatomic, copy) NSString *productName;
+@property (nonatomic, copy) NSString *teset;
+@property (nonatomic, copy) NSString *productListID;
 @end

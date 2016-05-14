@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   PushConfig.plist
+   PlantBox
+
+   Created by admin on 16/5/14.
+   Copyright (c) 2016年 JCK. All rights reserved.
+-->
+<plist version="1.0">
+    <dict>
+        <key>CHANNEL</key>
+        <string>Publish channel</string>
+        <key>APP_KEY</key>
+        <string>c883fbdd3efcfa347fe3b7e1</string>
+        <key>APS_FOR_PRODUCTION</key>
+        <string>1</string>
+    </dict>
+</plist>
+
+
+

@@ -125,7 +125,8 @@ typedef enum
 @property (nonatomic, strong) NSMutableArray *m_listArr;
 @property (nonatomic, strong) NSMutableArray *m_getcontacts;
 @property (nonatomic, strong) NSMutableArray *m_processArr;
-@property (nonatomic, strong) NSMutableArray *m_imgArr;
+@property (nonatomic, strong) NSMutableArray *m_imgArr;// 广告图片
+@property (nonatomic, strong) NSMutableArray *m_imgLink; // 图片链接
 @property (nonatomic, strong) NSMutableArray *m_messages;
 
 #pragma mark - 产品数组

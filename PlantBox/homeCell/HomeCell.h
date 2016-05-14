@@ -16,5 +16,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *downBtn;
 
 @property (nonatomic ,strong)   NSArray *imgs;
-
+@property (weak, nonatomic) IBOutlet UILabel *contentLab;
+- (void)configCellWithButtonModels:(NSArray *)buttonModels;
 @end

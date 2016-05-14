@@ -23,7 +23,6 @@
     [self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
     [self setTabBarController];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(NSIntegerMin, NSIntegerMin) forBarMetrics:UIBarMetricsDefault];
-    
 }
 
 - (void)didReceiveMemoryWarning {

@@ -7,13 +7,19 @@
 //
 
 #import "MyBaseViewController.h"
+#import "BasePlantViewController.h"
+#import "BaseStarManViewController.h"
 #import "MineCell.h"
 #import "HomeCell.h"
+#import "ProjectModel.h"
+#import "NextManger.h"
+#import "UIImageView+WebCache.h"
 #define screenWidth [[UIScreen mainScreen]bounds].size.width  //屏幕的长
 #define screenHiegth [[UIScreen mainScreen]bounds].size.height //屏幕的高
 @interface MyBaseViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 {
     NSArray *cellArr;
+    NextManger *manger;
 }
 @property (nonatomic,strong) UIImageView *userImage;
 @property (nonatomic, strong) UITableView *tableView;
@@ -23,12 +29,17 @@
 @end
 
 @implementation MyBaseViewController
-
-
-
+// 销毁通知中心
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
+    self.tableViewTag = 0;
+    if (self.tableViewTag == 0)
+    {
+        [self loadData];
+    }
     [self setTableView];
 
 }
@@ -168,10 +179,25 @@
         self.m_slideView.frame = CGRectMake((screenWidth/3)*i, 35-2,screenWidth/3,2);
             NSLog(@"点击手势视图完成后调用方法 %ld",i);
         _tableViewTag = i;
+        if (self.tableViewTag == 0)
+        {
+            [self loadData];
+        }
         [self.tableView reloadData];
     }];
 }
-
+- (void)loadData
+{
+    manger= [NextManger shareInstance];
+    manger.isKeyword = NO;
+    [manger loadData:RequestOfGetprojectlist];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
+}
+- (void)reloadDataAction
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 
 #pragma maek - tableviewDelegate
@@ -186,13 +212,13 @@
             }
             else
             {
-                return 3;
+                return manger.m_ProductLists.count;
             }
         }
             break;
         case 1:
         {
-            return 3;
+            return 2;
         }
             break;
         case 2:
@@ -272,12 +298,28 @@
                 mineCell.nameLab.text = @"梁健聪";
                 mineCell.sexLab.text = @"男";
                 mineCell.retimeLab.text = @"2016-04-12";
+                mineCell.selectionStyle = UITableViewCellSelectionStyleNone;
                 return mineCell;
             }
             else
             {
-                MineCell *mineCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
-                return mineCell;
+                HomeCell *homeCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
+                ProjectModel *model = manger.m_ProductLists[indexPath.row];
+                //        NSLog(@"%ld",model.productListImgs.count);
+                homeCell.nameLab.text = model.productName;
+                homeCell.contentLab.text = @"CocoaPods是iOS项目的依赖管理工具，该项目源码在Github上管理。开发iOS项目不可避免地要使用第三方开源库，CocoaPods的出现使得我们可以节省设置和第三方开源库的时间。";
+                //        [homeCell configCellWithButtonModels:manger.m_ProductLists];
+                //        [homeCell.downBtn addTarget:self action:@selector(downMune:) forControlEvents:UIControlEventTouchDown];
+                for (int i = 0; i < model.productListImgs.count; i++)
+                {
+                    NSLog(@"%d",i);
+                    UIImageView *image = (UIImageView *)[homeCell viewWithTag:500 + i];
+                    image.tag = 500 + i;
+                    [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
+                    //        titleLabel.text = model.title;
+                }
+                homeCell.selectionStyle = UITableViewCellSelectionStyleNone;
+                return homeCell;
             }
 
         }
@@ -290,7 +332,9 @@
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
             }
-             cell.textLabel.text = [NSString stringWithFormat:@"2 :%ld",indexPath.row];
+            NSArray *titles = @[@"基地植物",@"基地人物星人图"];
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",titles[indexPath.row ]];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
             return cell;
         }
             break;
@@ -312,7 +356,45 @@
     }
     return nil;
 }
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    switch (self.tableViewTag) {
+        case 0: // 主页
+        {
+            NSLog(@"主页");
+        }
+            break;
+        case 1: // 基地
+        {
+            NSLog(@"基地");
+            if (indexPath.row == 0) {
+                BasePlantViewController *subVC = [[BasePlantViewController alloc] init];
+                subVC.hidesBottomBarWhenPushed = YES;
+                subVC.title = @"基地植物";
+                [self.navigationController pushViewController:subVC animated:YES];
+            }
+            else
+            {
+                BaseStarManViewController *subVC = [[BaseStarManViewController alloc] init];
+                subVC.hidesBottomBarWhenPushed = YES;
+                subVC.title = @"基地人物星人图";
+                [self.navigationController pushViewController:subVC animated:YES];
 
+            }
+            
+        }
+            break;
+        case 2: // 成果
+        {
+            NSLog(@"成果");
+        }
+            break;
+            
+        default:
+            break;
+    }
+
+}
 
 
 @end

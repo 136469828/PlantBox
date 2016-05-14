@@ -129,13 +129,13 @@
     [self.view addSubview:bgView];
     
     user=[self createTextFielfFrame:CGRectMake(60, 10, 271, 30) font:[UIFont systemFontOfSize:14] placeholder:@"手机/邮箱"];
-    //user.text=@"13419693608";
+    user.text=@"ljc";
     user.keyboardType=UIKeyboardTypeDefault;
     user.clearButtonMode = UITextFieldViewModeWhileEditing;
    
     pwd=[self createTextFielfFrame:CGRectMake(60, 60, 271, 30) font:[UIFont systemFontOfSize:14]  placeholder:@"密码" ];
     pwd.clearButtonMode = UITextFieldViewModeWhileEditing;
-    //pwd.text=@"123456";
+    pwd.text=@"123456";
     //密文样式
     pwd.secureTextEntry=YES;
     //pwd.keyboardType=UIKeyboardTypeNumberPad;

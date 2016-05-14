@@ -9,9 +9,11 @@
 #import "MineViewController.h"
 #import "MyBaseViewController.h"
 #import "TheActivityViewController.h"
+#import "SettingViewController.h"
 @interface MineViewController ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate>
 {
     UIButton *imgBtn;
+    BOOL isImgOrPhone;
 }
 @property (nonatomic,strong) UIImageView *userImage;
 @end
@@ -21,6 +23,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    // 设置导航默认标题的颜色及字体大小
+    self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
+    
     self.view.backgroundColor = [UIColor lightGrayColor];
     [self drawTopview];
     NSArray *titles = @[@"我的基地", @"我的活动", @"我的收藏", @"我的订单", @"活动专区", @"我的分享", @"联系客服", @"我的钱包",@"设置"];
@@ -148,24 +153,34 @@
 // 更改头像
 - (void)changeHeadViews{
 //    [self closeKeyBorads];
+    isImgOrPhone = YES;
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"拍照" otherButtonTitles:@"从本地中选取", nil];
     [actionSheet showInView:self.view];
 }
 // 实现代理方法
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    switch (buttonIndex) {
-        case 0:
-            // 拍照
-            [self visitCamers];
-            break;
-        case 1:
-            // 打开相册
-            [self visitPhotos];
-            break;
-            
-        default:
-            break;
+    if (isImgOrPhone)
+    {
+        switch (buttonIndex) {
+            case 0:
+                // 拍照
+                [self visitCamers];
+                break;
+            case 1:
+                // 打开相册
+                [self visitPhotos];
+                break;
+                
+            default:
+                break;
+        }
+
     }
+    else if (!isImgOrPhone)
+    {
+        NSLog(@"打电话");
+    }
+    
 }
 // 访问摄像头
 - (void)visitCamers{
@@ -226,9 +241,36 @@
             [self.navigationController pushViewController:myBase animated:YES];
         }
             break;
+        case 1206:
+        {
+            isImgOrPhone = NO;
+            [self showActionsheet];
+        }
+            break;
+        case 1208:
+        {
+            SettingViewController *myBase = [[SettingViewController alloc] init];
+            myBase.hidesBottomBarWhenPushed = YES;
+            myBase.title = @"设置";
+            [self.navigationController pushViewController:myBase animated:YES];
+        }
+            break;
             
         default:
             break;
     }
 }
+#pragma mark-
+- (void)showActionsheet
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:@"拨打电话"
+                                  delegate:self
+                                  cancelButtonTitle:@"取消"
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:@"4000-863-863",nil];
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    [actionSheet showInView:self.view];
+}
+
 @end
