@@ -90,9 +90,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.delegate respondsToSelector:@selector(menuController:clickAtRow:)]) {
+    if ([self.delegate respondsToSelector:@selector(menuController:clickAtRow:)])
+    {
         [self.delegate menuController:self clickAtRow:indexPath.row];
     }
+    NSLog(@"点击了下拉菜单 %ld",indexPath.row);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"touchDownMenu" object:[NSString stringWithFormat:@"%ld",indexPath.row]];
     
 }
 

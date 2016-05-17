@@ -52,6 +52,12 @@
                     <constraint firstItem="DHq-LY-sv7" firstAttribute="leading" secondItem="AC5-bb-2kj" secondAttribute="leading" id="nOn-6p-pFT"/>
                 </constraints>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="disLab" destination="AC5-bb-2kj" id="4lB-i5-puv"/>
+                <outlet property="friendLab" destination="Q4Q-SO-Eu3" id="FRB-50-qkb"/>
+                <outlet property="img" destination="pv2-jK-FUG" id="vg7-je-6Hp"/>
+                <outlet property="nameLab" destination="DHq-LY-sv7" id="dPx-4V-ao5"/>
+            </connections>
             <point key="canvasLocation" x="376" y="262"/>
         </tableViewCell>
     </objects>

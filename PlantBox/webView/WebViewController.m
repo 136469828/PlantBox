@@ -43,17 +43,17 @@
     [_webView loadRequest:request];
     [self.view addSubview:_webView];
 //    
-//    //异步并发队列
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        // 1.子线程
-//        
-//        
-//        // 2.回到主线程刷新
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            
-//            
-//        });
-//    });
+    //异步并发队列
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // 1.子线程
+        
+        
+        // 2.回到主线程刷新
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            
+        });
+    });
     /*
      dispatch_async(dispatch_get_global_queue(0, 0), ^
      {
@@ -88,15 +88,19 @@
 
     [HUD show:YES];
 }
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
 
+}
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
 //    NSString *title = [_webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 //    self.title = title;
-    NSLog(@"完成了web加载");
+//    NSLog(@"完成了web加载");
     [HUD removeFromSuperview];
+    HUD = nil;
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(nullable NSError *)error{
-    UIAlertController *errorAlertV = [UIAlertController alertControllerWithTitle:@"抱歉" message:@"演示版本暂不支持该操作" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *errorAlertV = [UIAlertController alertControllerWithTitle:@"抱歉" message:@"此版本暂不支持该操作" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }];

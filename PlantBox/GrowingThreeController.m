@@ -23,7 +23,8 @@
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     self.view.backgroundColor = [UIColor whiteColor];
-    imgs = @[@"cz_czs",@"fenxiang_czs",@"kouling_czs"];
+//    imgs = @[@"cz_czs",@"fenxiang_czs",@"kouling_czs"];
+        imgs = @[@"kouling_czs"];
     [self setTableView];
 }
 
@@ -43,7 +44,7 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+    return 1;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -54,7 +55,8 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    NSArray *titles = @[@"分享赢植币",@"口令赢植币",@"我的成长"];
+//    NSArray *titles = @[@"分享赢植币",@"口令赢植币",@"我的成长"];
+        NSArray *titles = @[@"我的成长"];
 //    NSArray *subTitles = @[@[@"我的二维码"],@[@"输入口令"],@[@"查看分销网络",@"下线列表",@"收入统计"]];
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(40, 0,100, 44)];
     lab.text = [NSString stringWithFormat:@"%@",titles[indexPath.row]];
@@ -69,7 +71,7 @@
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 2)
+    if (indexPath.row == 0)
     {
         SubGrowingTreeViewController *subVC = [[SubGrowingTreeViewController alloc] init];
         subVC.title = @"我的成长";

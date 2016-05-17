@@ -11,7 +11,6 @@
 #import "SHMenu.h"
 #import "ProjectModel.h"
 #import "UIImageView+WebCache.h"
-
 @interface HomeCell()
 
 @property(nonatomic,weak) UIView *allView;
@@ -70,10 +69,14 @@
 
 - (void)awakeFromNib
 {
-//    self.downBtn.selected = YES;
+    self.downBtn.selected = YES;
     [self.downBtn addTarget:self action:@selector(downMune:) forControlEvents:UIControlEventTouchDown];
-    
+//
+//    [self.pinlunBtn addTarget:self action:@selector(pinlunAction) forControlEvents:UIControlEventTouchDown];
    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMeu) name:@"touchView" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideMeu) name:@"touchDownMenu" object:nil];
+    
 }
 
 - (void)downMune:(UIButton*)sender
@@ -96,7 +99,7 @@
         menu.contentVC = menuVC;
         menu.anchorPoint = CGPointMake(1, 0);
         menu.contentOrigin = CGPointMake(0, 8);
-        [menu showFromPoint:CGPointMake(rect3.origin.x-120, rect3.origin.y+30)];
+        [menu showFromPoint:CGPointMake(rect3.origin.x-120+8, rect3.origin.y+40)];
         sender.selected = !sender.selected;
         
     }
@@ -120,6 +123,7 @@
     [super setSelected:selected animated:animated];
 
 }
+
 //获取当前屏幕显示的viewcontroller
 - (UIViewController *)getCurrentVC
 {

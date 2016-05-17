@@ -12,6 +12,12 @@
 
 - (void)awakeFromNib {
     // Initialization code
+
+    self.textView.layer.borderWidth = 2;
+    self.textView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+//    self.contentTextview.textColor = [UIColor lightGrayColor];
+    self.textView.layer.cornerRadius = 10;
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -14,6 +14,11 @@
 #import "AreaViewController.h"
 #import "TheActivityViewController.h"
 #import "ErweimaViewController.h"
+#import "ShopController.h"
+#import "ShopInfoController.h"
+
+#import "CommentsController.h"
+#import "SeachController.h"
 //#import "HJTestViewController.h"
 //#import "HJLeftViewController.h"
 //#import "HJMiddleViewController.h"
@@ -75,6 +80,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(drawHeardView) name:@"advertise" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushComVC) name:@"pinlunAction" object:nil];
     
 
 
@@ -311,6 +317,9 @@
 - (void)pushSeachVC
 {
     NSLog(@"点击搜索");
+//    SeachController *sub = [[SeachController alloc] init];
+//    sub.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:sub animated:YES];
 }
 #pragma mark - tabledelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -367,7 +376,8 @@
 //        homeCell.tag = 1008;
         ProjectModel *model = manger.m_ProductLists[indexPath.row];
         homeCell.nameLab.text = model.productName;
-        homeCell.contentLab.text = @"CocoaPods是iOS项目的依赖管理工具，该项目源码在Github上管理。开发iOS项目不可避免地要使用第三方开源库，CocoaPods的出现使得我们可以节省设置和第三方开源库的时间。";
+        homeCell.contentLab.text = model.prodeuctNotice;
+        homeCell.infoLab.text = [NSString stringWithFormat:@"2分钟 来自 iPhone6 %@ 距离 5km",model.prodeuctAddress];
         homeCell.tag = [model.productListID integerValue];
         for (int i = 0; i < model.productListImgs.count; i++)
         {
@@ -376,6 +386,8 @@
             [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
                 //        titleLabel.text = model.title;
         }
+        homeCell.pinlunBtn.tag = [model.productListID integerValue];
+        [homeCell.pinlunBtn addTarget:self action:@selector(pinlunAction:) forControlEvents:UIControlEventTouchDown];
         homeCell.selectionStyle = UITableViewCellSelectionStyleNone;
         return homeCell;
 
@@ -401,13 +413,19 @@
     if (indexPath.section == 0)
     {
         HomeCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        NSLog(@"%ld",cell.tag);
-        WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail?UserId=%@&id=%ld",manger.userId,cell.tag]];
-        WebViewController *SVC = [[WebViewController alloc] init];
-        SVC.title = @"植物详情";
-        SVC.hidesBottomBarWhenPushed = YES;
-        [SVC setModel:model];
-        [self.navigationController pushViewController:SVC animated:YES];
+//        NSLog(@"%ld",cell.tag);
+//        WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail?UserId=%@&id=%ld",manger.userId,cell.tag]];
+//        WebViewController *SVC = [[WebViewController alloc] init];
+//        SVC.title = @"植物详情";
+//        SVC.hidesBottomBarWhenPushed = YES;
+//        [SVC setModel:model];
+//        [self.navigationController pushViewController:SVC animated:YES];
+        ShopInfoController *subVC = [[ShopInfoController alloc] init];
+        subVC.shopID = [NSString stringWithFormat:@"%ld",cell.tag];
+        subVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:subVC animated:YES];
+
+        
     }
 }
 #pragma mark - 4个按钮
@@ -417,12 +435,17 @@
     switch (btn.tag) {
         case 1000:
         {
-            WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Product?UserId=%@",manger.userId]];
-            WebViewController *SVC = [[WebViewController alloc] init];
-            SVC.title = @"植物商城";
-            SVC.hidesBottomBarWhenPushed = YES;
-            [SVC setModel:model];
-            [self.navigationController pushViewController:SVC animated:YES];
+//            WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Product?UserId=%@",manger.userId]];
+//            WebViewController *SVC = [[WebViewController alloc] init];
+//            SVC.title = @"植物商城";
+//            SVC.hidesBottomBarWhenPushed = YES;
+//            [SVC setModel:model];
+//            [self.navigationController pushViewController:SVC animated:YES];
+            
+            ShopController *subVC = [[ShopController alloc] init];
+            subVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:subVC animated:YES];
+
         }
             break;
         case 1001:
@@ -500,7 +523,7 @@
 - (void)cityAction
 {
     NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-    NSLog(@"%@",[user objectForKey:@"city"]);
+//    NSLog(@"%@",[user objectForKey:@"city"]);
     [barLeftButton setTitle:[user objectForKey:@"city"] forState:UIControlStateNormal];
 }
 #pragma mark - dropdownList DataSource
@@ -537,5 +560,13 @@
     [SVC setModel:model];
     [self.navigationController pushViewController:SVC animated:YES];
 
+}
+#pragma mark - 跳转评论
+- (void)pinlunAction:(UIButton *)btn
+{
+    NSLog(@"%@",btn);
+    CommentsController *subVC = [[CommentsController alloc] init];
+    subVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:subVC animated:YES];
 }
 @end

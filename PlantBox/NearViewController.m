@@ -40,7 +40,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.title = @"消息";
+    self.title = @"附近";
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     
@@ -184,7 +184,7 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return 4;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -193,7 +193,15 @@
 //    if (!cell) {
 //        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
 //    }
+    NSArray *nanes = @[@"梁健聪",@"汪工",@"王显宁",@"熊总"];
+    NSArray *imgs = @[@"5.jpg",@"6.jpg",@"7.jpg",@"06"];
+    NSArray *dis = @[@"17km",@"19km",@"16km",@"17km"];
+    NSArray *friends = @[@"100",@"65",@"34",@"300"];
     NearCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NearCell"];
+    cell.img.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",imgs[indexPath.row]]];
+    cell.nameLab.text = nanes[indexPath.row];
+    cell.disLab.text = dis[indexPath.row];
+    cell.friendLab.text = [NSString stringWithFormat:@"粉丝数:%@",friends[indexPath.row]];
     return cell;
 }
 #pragma mark-

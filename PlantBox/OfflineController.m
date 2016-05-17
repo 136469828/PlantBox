@@ -47,8 +47,8 @@
 {
     //创建一个数组
     _DataArray=[[NSMutableArray alloc] init];
-    NSArray *titles = @[@"我的下线",@"最近添加"];
-    NSArray *subTitles = @[@[@"习近平",@"马云",@"马化腾",@"乔布斯"],@[@"马云",@"李彦宏",@"乔布斯",@"库克",@"路飞",@"鸣人"]];
+    NSArray *titles = @[@"我的下线"];
+    NSArray *subTitles = @[@[@"习近平",@"马云",@"马化腾",@"乔布斯",@"库克",@"路飞",@"鸣人"],@[@"马云",@"李彦宏",@"乔布斯",@"库克",@"路飞",@"鸣人"]];
     for (int i=0;i<titles.count ; i++) {
         NSMutableArray *array=[[NSMutableArray alloc] init];
         for (int j=0; j< [[subTitles objectAtIndex:i] count];j++) {

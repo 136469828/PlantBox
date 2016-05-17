@@ -17,5 +17,7 @@
 
 @property (nonatomic ,strong)   NSArray *imgs;
 @property (weak, nonatomic) IBOutlet UILabel *contentLab;
-- (void)configCellWithButtonModels:(NSArray *)buttonModels;
+@property (weak, nonatomic) IBOutlet UILabel *infoLab;
+@property (weak, nonatomic) IBOutlet UIButton *pinlunBtn;
+//- (void)configCellWithButtonModels:(NSArray *)buttonModels;
 @end

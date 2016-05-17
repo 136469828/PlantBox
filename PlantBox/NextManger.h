@@ -95,9 +95,15 @@ typedef enum
     
     RequestOfMeagessList,           // 群发列表
     
-    RequestOfSendMeagess           // 群发
+    RequestOfSendMeagess,           // 群发
     
+    RequestOfGetproductlist,     // 获取商品列表
     
+    RequestOfGetproduct,         // 获取商品列表
+
+    RequestOfGetusergoodpagelist,        // 获取商品列表
+    
+    RequestOforderSaveorder         // 获取商品列表
     
 }RequestState;
 @interface NextManger : NSObject
@@ -105,19 +111,22 @@ typedef enum
 @property (nonatomic, copy) NSString *code;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *password;
-@property (nonatomic, copy) NSString *userID_Code;
+#pragma mark - 登录用户信息
+@property (nonatomic, copy) NSString *userID_Code; // 用户ID
+@property (nonatomic, copy) NSString *userC_Name; //用户名字
 @property (nonatomic, copy) NSString *versionName;
-@property (nonatomic, copy) NSString *oldPword;
-@property (nonatomic, copy) NSString *passwordOfnew;
-@property (nonatomic, copy) NSString *projectID;
+@property (nonatomic, copy) NSString *oldPword; // 旧密码
+@property (nonatomic, copy) NSString *passwordOfnew; // 新密码
+@property (nonatomic, copy) NSString *createTime; // 用户创建时间
+@property (nonatomic, copy) NSString *userAddress; // 用户地址
+@property (nonatomic, copy) NSString *projectID; //商品ID
 @property (nonatomic, copy) NSString *channelID;
 @property (nonatomic, strong) NSArray *formArray;
-@property (nonatomic, copy) NSString *keyword;
+@property (nonatomic, copy) NSString *keyword; // 搜索关键字
 @property (nonatomic, copy) NSString *cheakComment;
-
+@property (nonatomic, copy) NSString *userMobile; // 用户手机
 @property (nonatomic, copy) NSString *checkStatus;
 @property (nonatomic, copy) NSString *currNumber;
-@property (nonatomic, copy) NSString *userC_Name;
 @property (nonatomic, copy) NSString *structureId;
 @property (nonatomic, copy) NSString *userId;
 @property (nonatomic, strong) NSMutableArray *m_details;
@@ -128,9 +137,27 @@ typedef enum
 @property (nonatomic, strong) NSMutableArray *m_imgArr;// 广告图片
 @property (nonatomic, strong) NSMutableArray *m_imgLink; // 图片链接
 @property (nonatomic, strong) NSMutableArray *m_messages;
+#pragma mark - 订单参数
+@property (nonatomic, copy) NSString *orderAddress;
+@property (nonatomic, copy) NSString *orderPEId;
+@property (nonatomic, copy) NSString *orderProID;
+@property (nonatomic, copy) NSString *orderMobile;
+@property (nonatomic, copy) NSString *orderQty;
+@property (nonatomic, copy) NSString *orderPrice;
+@property (nonatomic, copy) NSString *orderName;
 
 #pragma mark - 产品数组
 @property (nonatomic, strong) NSMutableArray *m_ProductLists;
+
+#pragma mark - 产品列表数组
+@property (nonatomic, strong) NSMutableArray *m_ProductShopLists;
+
+#pragma mark - 商品信息数组
+@property (nonatomic, strong) NSMutableArray *m_ProductShopInfoLists;
+
+#pragma mark - 基地信息数组
+@property (nonatomic, strong) NSMutableArray *m_myBases;
+
 
 @property (nonatomic, strong) NSArray *nams;
 @property (nonatomic, copy) NSString *messageContent;

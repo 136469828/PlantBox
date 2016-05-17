@@ -10,6 +10,7 @@
 #import "AFNetworking.h"
 #import "ProjectModel.h"
 #import "LCProgressHUD.h"
+#define PI 3.1415926
 NSString *NetManagerRefreshNotify = @"NetManagerRefreshNotify";
 static NextManger *manger = nil;
 @implementation NextManger
@@ -126,6 +127,27 @@ static NextManger *manger = nil;
             [self sendmessage:self.nams Content:self.messageContent];
         }
             break;
+        case RequestOfGetproductlist:
+        {
+            [self productHomeGetproductlist];
+        }
+            break;
+        case RequestOfGetproduct:
+        {
+            [self productHomeGetproductWhitID:self.projectID];
+        }
+            break;
+        case RequestOfGetusergoodpagelist:
+        {
+            [self Getusergoodpagelist:self.keyword];
+        }
+            break;
+        case RequestOforderSaveorder:
+        {
+            [self orderSaveorderProducID:self.orderProID PEID:self.orderPEId QTY:self.orderQty Price:self.orderPrice Mobile:self.orderMobile Address:self.orderAddress CusName:self.orderName];
+        }
+            break;
+            
             
             
         default:
@@ -315,16 +337,19 @@ static NextManger *manger = nil;
              self.userId = responseObject[@"data"][@"UserId"];
              self.structureId = responseObject[@"data"][@"C_StructureId"];
              self.userC_Name = responseObject[@"data"][@"CnName"];
-             NSDictionary *dic = [NSDictionary dictionaryWithDictionary:responseObject[@"data"]];
-             NSMutableArray *m_datas = [[NSMutableArray alloc] initWithCapacity:0];
-             for (NSString *str in dic)
-             {
-                 [m_datas addObject:str];
-             }
-             for (int i = 0; i<m_datas.count; i++)
-             {
-                // NSLog(@"%@",[dic objectForKey:m_datas[i]]);
-             }
+             self.userAddress = responseObject[@"data"][@"Address"];
+             self.createTime = responseObject[@"data"][@"CreateTime"];
+             self.userMobile = responseObject[@"data"][@"Mobile"];
+//             NSDictionary *dic = [NSDictionary dictionaryWithDictionary:responseObject[@"data"]];
+//             NSMutableArray *m_datas = [[NSMutableArray alloc] initWithCapacity:0];
+//             for (NSString *str in dic)
+//             {
+//                 [m_datas addObject:str];
+//             }
+//             for (int i = 0; i<m_datas.count; i++)
+//             {
+//                // NSLog(@"%@",[dic objectForKey:m_datas[i]]);
+//             }
              
          }
          
@@ -332,13 +357,12 @@ static NextManger *manger = nil;
          
          
      } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
-         NSLog(@"error : %ld",(long)error.code); // -1001 超时 -1009没网络
+         NSLog(@"error : %ld %@",(long)error.code,error); // -1001 超时 -1009没网络
          NSString *errorStr = [NSString stringWithFormat:@"%ld",error.code];
          [[NSNotificationCenter defaultCenter] postNotificationName:NetManagerRefreshNotify object:nil userInfo:@{@"errorCode":errorStr}];
      }];
     
 }
-
 #pragma mark - 修改个人信息
 - (void)userUpdate
 {
@@ -422,7 +446,7 @@ static NextManger *manger = nil;
     NSString *url = [NSString stringWithFormat:@"%@order/getlist",ServerAddressURL];
     [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
      {
-         NSLog(@"产品列表：%@",responseObject);
+//         NSLog(@"产品列表：%@",responseObject);
          NSArray *dataLists = responseObject[@"data"][@"DataList"];
 //         NSLog(@"%ld",dataLists.count);
          [self.m_ProductLists removeAllObjects];
@@ -430,14 +454,19 @@ static NextManger *manger = nil;
          {
              ProjectModel *model = [[ProjectModel alloc] init];
 //             NSLog(@"%@",dic[@"Pictures"][@"Pictures"]);
-             model.productName = dic[@"ProductName"];
+             model.productName = dic[@"CustomName"];
 //             [model.productListImgs removeAllObjects];
 //             if (model.productListImgs.count == 0)
 //             {
 //                 model.productListImgs = [[NSMutableArray alloc] initWithCapacity:0];
 //             }
+             if (model.productListImgs.count == 0) {
+                 model.productListImgs = [[NSMutableArray alloc] initWithCapacity:0];
+             }
              model.productListImgs = dic[@"Product"][@"Pictures"];
              model.productListID = dic[@"Product"][@"Id"];
+             model.prodeuctAddress = dic[@"Address"];
+             model.prodeuctNotice = dic[@"Product"][@"Notice"];
               if (self.m_ProductLists.count == 0) {
                   self.m_ProductLists = [[NSMutableArray alloc] initWithCapacity:0];
               }
@@ -487,12 +516,12 @@ static NextManger *manger = nil;
           */
          NSDictionary *dic = [NSDictionary dictionaryWithDictionary:responseObject[@"data"]];
          
-         
-         //          NSMutableArray *m_datas = [[NSMutableArray alloc] initWithCapacity:0];
-         //          for (NSString *str in dic)
-         //          {
-         //              [m_datas addObject:str];
-         //          }
+     
+     //          NSMutableArray *m_datas = [[NSMutableArray alloc] initWithCapacity:0];
+     //          for (NSString *str in dic)
+     //          {
+     //              [m_datas addObject:str];
+     //          }
          [self.m_details removeAllObjects];
          for (int i = 0; i<13; i++)
          {
@@ -950,7 +979,212 @@ static NextManger *manger = nil;
          
      }];
 }
+#pragma mark - 植物商城列表
+- (void)productHomeGetproductlist
+{
 
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+//                                 @"Id":keyWord
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@product/home/getproductlist",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+         NSLog(@"%@",responseObject);
+         [self.m_ProductShopLists removeAllObjects];
+         NSArray *datas = responseObject[@"data"][@"DataList"];
+         for (NSDictionary *dic in datas) {
+             NSLog(@"商品名%@ 商品介绍%@ 购买人数%@ 商品ID%@ %@",dic[@"ProductName"],dic[@"Notice"],dic[@"TotalRead"],dic[@"Id"],dic[@"ThumbImg"]);
+             ProjectModel *model = [[ProjectModel alloc] init];
+             if ( self.m_ProductShopLists.count == 0)
+             {
+                 self.m_ProductShopLists = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+             model.shopListName = dic[@"ProductName"];
+             model.shopListNotice = dic[@"Notice"];
+             model.shopListTotalBuy = dic[@"TotalRead"];
+             model.shopListID = dic[@"Id"];
+             model.shopListImg = dic[@"ThumbImg"];
+             [self.m_ProductShopLists addObject:model];
+         }
+         
+         [LCProgressHUD showSuccess:@"加载成功"];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"getproductlist" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+#pragma mark - 商城商品详细
+- (void)productHomeGetproductWhitID:(NSString *)shopID
+{
+    
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"Id": shopID
+                                 //                                 @"Id":keyWord
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@product/home/getproduct",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+         NSLog(@"%@",responseObject);
+//         NSArray *datas = responseObject[@"data"];
+//            NSLog(@"商品名%@ 商品介绍%@ 购买人数%@",responseObject[@"data"][@"ProductName"],responseObject[@"data"][@"Notice"],responseObject[@"data"][@"TotalRead"]);
+             ProjectModel *model = [[ProjectModel alloc] init];
+        [self.m_ProductShopInfoLists removeAllObjects];
+        if ( self.m_ProductShopInfoLists.count == 0)
+        {
+                 self.m_ProductShopInfoLists = [[NSMutableArray alloc] initWithCapacity:0];
+        }
+         model.shopInfoListName = responseObject[@"data"][@"ProductName"];
+         model.shopInfoListNotice = responseObject[@"data"][@"Notice"];
+         model.shopInfoListTotalBuy =  [NSString stringWithFormat:@"共有 %@ 人购买",responseObject[@"data"][@"TotalRead"]];
+         model.shopinfoListPrice = [NSString stringWithFormat:@"%@",responseObject[@"data"][@"TotalCollect"]];
+            NSArray*shopinfoListImgs = responseObject[@"data"][@"Pictures"];
+//         NSLog(@"%ld",model.shopinfoListImgs.count);
+             [self.m_ProductShopInfoLists addObject:model];
+         
+         [LCProgressHUD showSuccess:@"加载成功"];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"getproduct" object:shopinfoListImgs];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+#pragma mark - 获取用户基地或用户植物列表
+// （Keyword:关键字,Lat:纬度，Lon:经度,sType:类别(1:基地；2:植物),CityName:城市名）
+- (void)Getusergoodpagelist:(NSString *)sType
+{
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"sType": sType
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@common/user/getusergoodpagelist",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+//         NSLog(@"%@",responseObject);
+         NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+        [self.m_myBases removeAllObjects];
+         NSArray *arr = responseObject[@"data"][@"DataList"];
+         for (NSDictionary *dic in arr)
+         {
+//             NSLog(@"%@ ",dic[@"ProductName"]);
+//             NSLog(@"%f",[self LantitudeLongitudeDist:[dic[@"Lon"] doubleValue] other_Lat:[dic[@"Lat"] doubleValue] self_Lon:[dic[@"Lon"] doubleValue] self_Lat:[dic[@"Lat"] doubleValue]]);
+             
+             double sLon = [dic[@"Lon"] doubleValue];
+             double sLan = [dic[@"Lat"] doubleValue];
+             double oLon = [[user objectForKey:@"userLon"] doubleValue];
+             double oLan = [[user objectForKey:@"userLat"] doubleValue];
+             
+             ProjectModel *model = [[ProjectModel alloc] init];
+             model.myBaseDistance = [NSString stringWithFormat:@"%.2f km",[self LantitudeLongitudeDist:oLon other_Lat:oLan self_Lon:sLon self_Lat:sLan]];
+             model.myBasePlantName = dic[@"ProductName"];
+             model.myBaseUserName = dic[@"CnName"];
+             if (self.m_myBases.count == 0)
+             {
+                 self.m_myBases = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+             [self.m_myBases addObject:model];
+
+         }
+         
+         [LCProgressHUD showSuccess:@"加载成功"];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"getusergoodpagelist" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+#pragma mark - 获取用户基地或用户植物列表
+// （Keyword:关键字,Lat:纬度，Lon:经度,sType:类别(1:基地；2:植物),CityName:城市名）
+- (void)orderSaveorderProducID:(NSString *)proID PEID:(NSString *)PeID QTY:(NSString *)qty Price:(NSString *)price Mobile:(NSString *)mobile Address:(NSString *)address CusName:(NSString *)cusName
+{
+    NSArray *values =@[@{
+                          @"ProductId": proID,
+                          @"ProductEntityId":PeID,
+                          @"Qty": qty,
+                          @"Price": price,
+                          @"Mobile":mobile
+                          }
+                      ];
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"detaillist": values,
+                                 @"Address": address,
+                                 @"CustomName": cusName
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@order/saveorder",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+          NSLog(@"%@",responseObject);
+
+         [LCProgressHUD showSuccess:@"下订成功"];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"orderSaveorder" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+// 计算距离
+- (double) LantitudeLongitudeDist:(double)lon1 other_Lat:(double)lat1 self_Lon:(double)lon2 self_Lat:(double)lat2{
+    double er = 6378137; // 6378700.0f;
+    //ave. radius = 6371.315 (someone said more accurate is 6366.707)
+    //equatorial radius = 6378.388
+    //nautical mile = 1.15078
+    double radlat1 = PI*lat1/180.0f;
+    double radlat2 = PI*lat2/180.0f;
+    //now long.
+    double radlong1 = PI*lon1/180.0f;
+    double radlong2 = PI*lon2/180.0f;
+    if( radlat1 < 0 ) radlat1 = PI/2 + fabs(radlat1);// south
+    if( radlat1 > 0 ) radlat1 = PI/2 - fabs(radlat1);// north
+    if( radlong1 < 0 ) radlong1 = PI*2 - fabs(radlong1);//west
+    if( radlat2 < 0 ) radlat2 = PI/2 + fabs(radlat2);// south
+    if( radlat2 > 0 ) radlat2 = PI/2 - fabs(radlat2);// north
+    if( radlong2 < 0 ) radlong2 = PI*2 - fabs(radlong2);// west
+    //spherical coordinates x=r*cos(ag)sin(at), y=r*sin(ag)*sin(at), z=r*cos(at)
+    //zero ag is up so reverse lat
+    double x1 = er * cos(radlong1) * sin(radlat1);
+    double y1 = er * sin(radlong1) * sin(radlat1);
+    double z1 = er * cos(radlat1);
+    double x2 = er * cos(radlong2) * sin(radlat2);
+    double y2 = er * sin(radlong2) * sin(radlat2);
+    double z2 = er * cos(radlat2);
+    double d = sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2));
+    //side, side, side, law of cosines and arccos
+    double theta = acos((er*er+er*er-d*d)/(2*er*er));
+    double dist  = theta*er/1000;
+    return dist;
+}
+// 获取当前日期
 - (NSString *)getDate
 {
     NSDate *currentDate = [NSDate date];//获取当前时间，日期

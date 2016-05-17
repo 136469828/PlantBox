@@ -7,8 +7,12 @@
 //
 
 #import "BasePlantViewController.h"
-
+#import "NextManger.h"
+#import "ProjectModel.h"
 @interface BasePlantViewController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>
+{
+    NextManger *manger;
+}
 @property (nonatomic ,strong) UITableView *tableView;
 @end
 
@@ -18,21 +22,30 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setTableView];
-    UIButton *meassageBut = ({
-        UIButton *meassageBut = [UIButton buttonWithType:UIButtonTypeCustom];
-        meassageBut.frame = CGRectMake(0, 0, 25, 10);
-        [meassageBut addTarget:self action:@selector(showActionsheet) forControlEvents:UIControlEventTouchDown];
-        [meassageBut setImage:[UIImage imageNamed:@"near_barIcon"]forState:UIControlStateNormal];
-        meassageBut;
-    });
     
-    UIBarButtonItem *rBtn = [[UIBarButtonItem alloc] initWithCustomView:meassageBut];
-    self.navigationItem.rightBarButtonItem = rBtn;
+    manger = [NextManger shareInstance];
+    manger.keyword = @"1";
+    [manger loadData:RequestOfGetusergoodpagelist];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"getusergoodpagelist" object:nil];
+//    UIButton *meassageBut = ({
+//        UIButton *meassageBut = [UIButton buttonWithType:UIButtonTypeCustom];
+//        meassageBut.frame = CGRectMake(0, 0, 25, 10);
+//        [meassageBut addTarget:self action:@selector(showActionsheet) forControlEvents:UIControlEventTouchDown];
+//        [meassageBut setImage:[UIImage imageNamed:@"near_barIcon"]forState:UIControlStateNormal];
+//        meassageBut;
+//    });
+//    
+//    UIBarButtonItem *rBtn = [[UIBarButtonItem alloc] initWithCustomView:meassageBut];
+//    self.navigationItem.rightBarButtonItem = rBtn;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (void)reloadDataAction
+{
+    [self.tableView reloadData];
 }
 #pragma mark -
 - (void)setTableView{
@@ -52,7 +65,7 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+    return manger.m_myBases.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -61,7 +74,8 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld",indexPath.row];
+    ProjectModel *model = manger.m_myBases[indexPath.row];
+    cell.textLabel.text = model.myBasePlantName;
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth/2, 2, ScreenWidth/2-16, 44)];
     lab.text = @"30株";
 //    lab.backgroundColor = [UIColor redColor];

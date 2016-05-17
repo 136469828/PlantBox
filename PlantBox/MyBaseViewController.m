@@ -56,10 +56,10 @@
     [self.view addSubview:_tableView];
     _tableView.tableHeaderView = [self drawTopview];
     
-//    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
-//    gestureRecognizer.cancelsTouchesInView = NO;
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
+    gestureRecognizer.cancelsTouchesInView = NO;
     
-//    [_tableView addGestureRecognizer:gestureRecognizer];
+    [_tableView addGestureRecognizer:gestureRecognizer];
     //
     //    self.tableView.estimatedRowHeight = 100;
     [self registerNib];
@@ -89,7 +89,7 @@
     nameLab.textAlignment = NSTextAlignmentCenter;
     nameLab.textColor = [UIColor whiteColor];
     nameLab.font = [UIFont systemFontOfSize:15];
-    nameLab.text = @"用户名字";
+    nameLab.text = manger.userC_Name;
     [topView addSubview:nameLab];
     
     self.m_scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, screenWidth, screenHiegth)];
@@ -223,7 +223,7 @@
             break;
         case 2:
         {
-            return 3;
+            return 0;
         }
             break;
             
@@ -294,10 +294,10 @@
             if (indexPath.section == 0) {
                 MineCell *mineCell = [tableView dequeueReusableCellWithIdentifier:@"MineCell"];
                 //            cell.textLabel.text = [NSString stringWithFormat:@"1 :%ld",indexPath.row];
-                mineCell.localLab.text = @"肇庆";
-                mineCell.nameLab.text = @"梁健聪";
+                mineCell.localLab.text = manger.userAddress;
+                mineCell.nameLab.text = manger.userC_Name;
                 mineCell.sexLab.text = @"男";
-                mineCell.retimeLab.text = @"2016-04-12";
+                mineCell.retimeLab.text = manger.createTime;
                 mineCell.selectionStyle = UITableViewCellSelectionStyleNone;
                 return mineCell;
             }
@@ -395,6 +395,13 @@
     }
 
 }
-
+- (void)hideKeyboard
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"touchView" object:nil];
+}
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"touchView" object:nil];
+}
 
 @end

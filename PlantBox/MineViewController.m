@@ -10,6 +10,7 @@
 #import "MyBaseViewController.h"
 #import "TheActivityViewController.h"
 #import "SettingViewController.h"
+#import "NextManger.h"
 @interface MineViewController ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate>
 {
     UIButton *imgBtn;
@@ -26,12 +27,13 @@
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     
-    self.view.backgroundColor = [UIColor lightGrayColor];
+//    self.view.backgroundColor = [UIColor lightGrayColor];
     [self drawTopview];
-    NSArray *titles = @[@"我的基地", @"我的活动", @"我的收藏", @"我的订单", @"活动专区", @"我的分享", @"联系客服", @"我的钱包",@"设置"];
-    NSArray *imageNames = @[@"mine01",@"mine02",@"mine03",@"mine04",@"mine05",@"mine06",@"mine07",@"mine08",@"mine09"];
+//    NSArray *titles = @[@"我的基地", @"我的活动", @"我的收藏", @"我的订单", @"活动专区", @"我的分享", @"联系客服", @"我的钱包",@"设置"];
+    NSArray *titles = @[@"我的基地", @"我的收藏", @"我的订单", @"我的分享", @"联系客服", @"活动专区",@"设置"];
+    NSArray *imageNames = @[@"mine01",@"mine03",@"mine04",@"mine06",@"mine07",@"mine08",@"mine09"];
     
-    [self drawHoneViewWithAppviewW:ScreenWidth/3 AppviewH:(ScreenHeight-ScreenHeight*0.34-19-29)/3 Totalloc:3 Count:9 ImageArray:imageNames TitleArray:titles];
+    [self drawHoneViewWithAppviewW:ScreenWidth/3 AppviewH:(ScreenHeight-ScreenHeight*0.34-19-29)/3 Totalloc:3 Count:7 ImageArray:imageNames TitleArray:titles];
     
 }
 - (void)drawTopview
@@ -77,7 +79,8 @@
     nameLab.textAlignment = NSTextAlignmentCenter;
     nameLab.textColor = [UIColor whiteColor];
     nameLab.font = [UIFont systemFontOfSize:15];
-    nameLab.text = @"用户名字";
+    
+    nameLab.text = [NextManger shareInstance].userC_Name;
     [topView addSubview:nameLab];
     
     [self.view addSubview:topView];
@@ -233,7 +236,7 @@
             [self.navigationController pushViewController:myBase animated:YES];
         }
             break;
-        case 1204:
+        case 1205:
         {
             TheActivityViewController *myBase = [[TheActivityViewController alloc] init];
             myBase.hidesBottomBarWhenPushed = YES;
@@ -241,13 +244,13 @@
             [self.navigationController pushViewController:myBase animated:YES];
         }
             break;
-        case 1206:
+        case 1204:
         {
             isImgOrPhone = NO;
             [self showActionsheet];
         }
             break;
-        case 1208:
+        case 1206:
         {
             SettingViewController *myBase = [[SettingViewController alloc] init];
             myBase.hidesBottomBarWhenPushed = YES;

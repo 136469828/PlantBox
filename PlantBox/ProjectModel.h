@@ -36,7 +36,7 @@
 
 #pragma mark - 项目进度详情
 @property (nonatomic, copy) NSString *process;
-@property (nonatomic, copy) NSString *processID;
+@property (nonatomic, copy) NSString *processID; // 产品ID
 @property (nonatomic, copy) NSString *processStructureName;
 @property (nonatomic, copy) NSString *processCheckTime;
 @property (nonatomic, copy) NSString *processCheckUserName;
@@ -51,11 +51,30 @@
 @property (nonatomic, copy) NSString *messageTo;
 
 #pragma mark - 产品列表
-@property (nonatomic, strong) NSArray *productListImgs;
+@property (nonatomic, strong) NSMutableArray *productListImgs;
 @property (nonatomic, copy) NSString *isDeleted;
 @property (nonatomic, copy) NSString *totalRead;
 @property (nonatomic, copy) NSString *totalCollect;
 @property (nonatomic, copy) NSString *productName;
-@property (nonatomic, copy) NSString *teset;
+//@property (nonatomic, copy) NSString *teset;
 @property (nonatomic, copy) NSString *productListID;
+@property (nonatomic, copy) NSString *prodeuctAddress;
+@property (nonatomic, copy) NSString *prodeuctNotice;
+#pragma mark - 商品列表
+@property (nonatomic, copy) NSString *shopListID;
+@property (nonatomic, copy) NSString *shopListNotice;
+@property (nonatomic, copy) NSString *shopListName;
+@property (nonatomic, copy) NSString *shopListTotalBuy;
+@property (nonatomic, copy) NSString *shopListImg;
+
+#pragma mark - 商品详细列表
+@property (nonatomic, copy) NSString *shopInfoListNotice;
+@property (nonatomic, copy) NSString *shopInfoListName;
+@property (nonatomic, copy) NSString *shopInfoListTotalBuy;
+@property (nonatomic, copy) NSString *shopinfoListPrice;
+@property (nonatomic, strong) NSArray *shopinfoListImgs;
+#pragma mark - 基地信息
+@property (nonatomic, copy) NSString *myBaseDistance;
+@property (nonatomic, copy) NSString *myBasePlantName;
+@property (nonatomic, copy) NSString *myBaseUserName;
 @end

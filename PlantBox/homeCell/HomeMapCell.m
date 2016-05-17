@@ -109,6 +109,12 @@
     // 添加一个PointAnnotation
     BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
     CLLocationCoordinate2D coor;
+    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+    double lat = userLocation.location.coordinate.latitude;
+    double lon = userLocation.location.coordinate.longitude;
+    [user setObject:[NSString stringWithFormat:@"%f",lat] forKey:@"userLat"];
+    [user setObject:[NSString stringWithFormat:@"%f",lon]  forKey:@"userLon"];
+    
     coor.latitude = userLocation.location.coordinate.latitude;
     coor.longitude = userLocation.location.coordinate.longitude;
     annotation.coordinate = coor;
@@ -141,11 +147,13 @@
     }
     else
     {
-        NSLog(@"%@",result.addressDetail.city);
+        NSLog(@"%@ 详细地址：%@%@",result.addressDetail.city,result.addressDetail.district,result.addressDetail.streetName);
 //        NSString *cccc = [result.addressDetail.city substringToIndex:[result.addressDetail.city length] - 1];
         NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
         [user setObject:result.addressDetail.city forKey:@"city"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"city" object:nil];
+
+        [user setObject:[NSString stringWithFormat:@"%@%@%@",result.addressDetail.city,result.addressDetail.district,result.addressDetail.streetName] forKey:@"ShippingAddress"];
     }
     
 }

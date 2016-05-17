@@ -28,7 +28,7 @@
         self.backgroundColor = [UIColor clearColor];
         self.containerView = [[UIImageView alloc] init];
         self.containerView.userInteractionEnabled = YES;
-        self.containerView.image = [UIImage imageNamed:@"home_menubackground"];
+        self.containerView.image = [UIImage imageNamed:@"219.pic_hd.jpg"]; // home_menubackground
         self.transform = CGAffineTransformMakeScale(0.0001, 0.0001);
         self.containerView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
         [self addSubview:self.containerView];
