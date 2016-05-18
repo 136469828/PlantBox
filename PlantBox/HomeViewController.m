@@ -110,10 +110,10 @@
     UIButton *seachButton = ({
         UIButton *seachButton = [UIButton buttonWithType:UIButtonTypeCustom];
         seachButton.alpha = 0.25;
-        seachButton.frame = CGRectMake(0, 0, 260, 30);
+        seachButton.frame = CGRectMake(0, 0, 260, 22);
         seachButton.backgroundColor = [UIColor whiteColor];
         seachButton.titleLabel.font = [UIFont systemFontOfSize:14];
-        seachButton.layer.cornerRadius = 15;
+        seachButton.layer.cornerRadius = 11;
         seachButton.layer.borderColor = [UIColor whiteColor].CGColor;
         seachButton.layer.borderWidth = 1;
         seachButton.backgroundColor = RGB(7, 115, 226);
@@ -317,9 +317,9 @@
 - (void)pushSeachVC
 {
     NSLog(@"点击搜索");
-//    SeachController *sub = [[SeachController alloc] init];
-//    sub.hidesBottomBarWhenPushed = YES;
-//    [self.navigationController pushViewController:sub animated:YES];
+    SeachController *sub = [[SeachController alloc] init];
+    sub.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:sub animated:NO];
 }
 #pragma mark - tabledelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

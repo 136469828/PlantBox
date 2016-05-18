@@ -103,7 +103,9 @@ typedef enum
 
     RequestOfGetusergoodpagelist,        // 获取商品列表
     
-    RequestOforderSaveorder         // 获取商品列表
+    RequestOforderSaveorder,        // 获取订单列表
+    
+    RequestOfgetusergoodnear         // 获取附近列表
     
 }RequestState;
 @interface NextManger : NSObject
@@ -158,6 +160,10 @@ typedef enum
 #pragma mark - 基地信息数组
 @property (nonatomic, strong) NSMutableArray *m_myBases;
 
+#pragma mark - 附近信息数组
+@property (nonatomic, strong) NSMutableArray *m_nears;
+@property (nonatomic, copy) NSString *nearLon;
+@property (nonatomic, copy) NSString *nearLat;
 
 @property (nonatomic, strong) NSArray *nams;
 @property (nonatomic, copy) NSString *messageContent;

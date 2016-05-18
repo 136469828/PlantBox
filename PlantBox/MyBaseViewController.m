@@ -9,6 +9,7 @@
 #import "MyBaseViewController.h"
 #import "BasePlantViewController.h"
 #import "BaseStarManViewController.h"
+#import "ShopController.h"
 #import "MineCell.h"
 #import "HomeCell.h"
 #import "ProjectModel.h"
@@ -20,6 +21,10 @@
 {
     NSArray *cellArr;
     NextManger *manger;
+    NSArray *titles;
+    NSInteger cellCount;
+    BOOL isSelet;
+    NSArray *datas;
 }
 @property (nonatomic,strong) UIImageView *userImage;
 @property (nonatomic, strong) UITableView *tableView;
@@ -35,6 +40,17 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    cellCount = 2;
+    isSelet = NO;
+    /*
+     MineCell *mineCell = [tableView dequeueReusableCellWithIdentifier:@"MineCell"];
+     //            cell.textLabel.text = [NSString stringWithFormat:@"1 :%ld",indexPath.row];
+     mineCell.localLab.text = manger.userAddress;
+     mineCell.nameLab.text = manger.userC_Name;
+     mineCell.sexLab.text = @"男";
+     mineCell.retimeLab.text = manger.createTime;
+     */
+    titles = @[@"我的点赞",@"我的评论",@"我的转发",@"立即种植"];
     self.tableViewTag = 0;
     if (self.tableViewTag == 0)
     {
@@ -191,7 +207,6 @@
     manger= [NextManger shareInstance];
     manger.isKeyword = NO;
     [manger loadData:RequestOfGetprojectlist];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
 }
 - (void)reloadDataAction
@@ -208,7 +223,7 @@
         {
             if (section == 0)
             {
-                return 1;
+                return cellCount;
             }
             else
             {
@@ -223,7 +238,7 @@
             break;
         case 2:
         {
-            return 0;
+            return titles.count;
         }
             break;
             
@@ -262,7 +277,7 @@
         case 0:
         {
             if (indexPath.section == 0) {
-                return 145;
+                return 45;
             }
             else
             {
@@ -286,20 +301,50 @@
     }
     return 0;
 }
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section // 返回组名
+{
+    if (self.tableViewTag == 0) {
+        if (section == 1) {
+            return @"我的成果";
+        }
+    }
+    return nil;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (self.tableViewTag) {
         case 0:
         {
-            if (indexPath.section == 0) {
-                MineCell *mineCell = [tableView dequeueReusableCellWithIdentifier:@"MineCell"];
-                //            cell.textLabel.text = [NSString stringWithFormat:@"1 :%ld",indexPath.row];
-                mineCell.localLab.text = manger.userAddress;
-                mineCell.nameLab.text = manger.userC_Name;
-                mineCell.sexLab.text = @"男";
-                mineCell.retimeLab.text = manger.createTime;
-                mineCell.selectionStyle = UITableViewCellSelectionStyleNone;
-                return mineCell;
+            if (indexPath.section == 0)
+            {
+                static NSString *infierCell = @"cell";
+                UITableViewCell *cell = nil;
+                if (!cell) {
+                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
+                    cell.selectionStyle = UITableViewCellAccessoryNone;
+                }
+                if (indexPath.row == cellCount-1) {
+                    UIButton *addBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+                    addBtn.frame = CGRectMake(10, 5, ScreenWidth-20, 30);
+                    addBtn.backgroundColor = [UIColor whiteColor];
+                    addBtn.selected = isSelet;
+                    [addBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                    [addBtn setTitle:@"展开" forState:UIControlStateNormal];
+                    [addBtn setTitle:@"收起" forState:UIControlStateSelected];
+                    [addBtn addTarget:self action:@selector(addInfoAction:) forControlEvents:UIControlEventTouchDown];
+                    [cell.contentView addSubview:addBtn];
+
+                }
+                if (cellCount == 5) {
+                    datas = @[manger.userAddress,manger.userC_Name,@"男",manger.createTime,@" "];
+                     cell.textLabel.text = datas[indexPath.row];
+                }
+                else
+                {
+                    NSArray *datas2 = @[manger.userAddress,@" "];
+                    cell.textLabel.text = datas2[indexPath.row];
+                }
+                return cell;
             }
             else
             {
@@ -312,7 +357,7 @@
                 //        [homeCell.downBtn addTarget:self action:@selector(downMune:) forControlEvents:UIControlEventTouchDown];
                 for (int i = 0; i < model.productListImgs.count; i++)
                 {
-                    NSLog(@"%d",i);
+//                    NSLog(@"%d",i);
                     UIImageView *image = (UIImageView *)[homeCell viewWithTag:500 + i];
                     image.tag = 500 + i;
                     [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
@@ -346,7 +391,8 @@
             {
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
             }
-             cell.textLabel.text = [NSString stringWithFormat:@"3 :%ld",indexPath.row];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.textLabel.text = [NSString stringWithFormat:@"%@",titles[indexPath.row ]];
             return cell;
         }
             break;
@@ -387,6 +433,19 @@
         case 2: // 成果
         {
             NSLog(@"成果");
+            if (indexPath.row == 0) {
+//                BasePlantViewController *subVC = [[BasePlantViewController alloc] init];
+//                subVC.hidesBottomBarWhenPushed = YES;
+//                subVC.title = @"基地植物";
+//                [self.navigationController pushViewController:subVC animated:YES];
+            }
+            else if (indexPath.row == 3)
+            {
+                ShopController *subVC = [[ShopController alloc] init];
+                subVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:subVC animated:YES];
+                
+            }
         }
             break;
             
@@ -403,5 +462,27 @@
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"touchView" object:nil];
 }
+#pragma mark - btnAction
+- (void)addInfoAction:(UIButton *)btn
+{
+    isSelet = !isSelet;
+    if (isSelet) {
+        cellCount = 5;
+//        [self.tableView reloadData];
+        //一个section刷新
+        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:0];
+        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+        NSLog(@"展开");
+    }
+    else
+    {
+        cellCount = 2;
+        [self.tableView reloadData];
+        //一个section刷新
+        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:0];
+        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+        NSLog(@"收起");
+    }
 
+}
 @end

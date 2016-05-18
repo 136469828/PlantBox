@@ -22,14 +22,15 @@
 #import <BaiduMapAPI_Radar/BMKRadarComponent.h>//引入周边雷达功能所有的头文件
 
 #import <BaiduMapAPI_Map/BMKMapView.h>//只引入所需的单个头文件
-
+#import "NextManger.h"
+#import "ProjectModel.h"
 //#import "HomeCollectionViewCell.h"
 #import "NearCell.h"
 @interface NearViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>
 {
     BMKMapView* _mapView;
     BMKLocationService *_locService;
-
+    NextManger *manger;
     CLLocationCoordinate2D _touchMapCoordinate;  //  点击后那一点的经纬度
 }
 @property (nonatomic, strong) UITableView *tableView;
@@ -132,6 +133,17 @@
     [_mapView setRegion:theRegin animated:YES];
     [_mapView regionThatFits:theRegin];
     [_locService stopUserLocationService];
+    
+    manger = [NextManger shareInstance];
+    manger.nearLat = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.latitude];
+    manger.nearLon = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.longitude];
+    [manger loadData:RequestOfgetusergoodnear];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshData) name:@"getusergoodnear" object:nil];
+    
+}
+- (void)refreshData
+{
+    [self.tableView reloadData];
 }
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -156,7 +168,7 @@
 }
 #pragma mark - 创建 UICollectionView
 - (void)setTableView{
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, ScreenWidth, ScreenHeight -177) style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, ScreenWidth, ScreenHeight -187) style:UITableViewStyleGrouped];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
@@ -184,7 +196,10 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    if (manger.m_nears.count == 0) {
+        return 0;
+    }
+    return manger.m_nears.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -193,15 +208,17 @@
 //    if (!cell) {
 //        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
 //    }
-    NSArray *nanes = @[@"梁健聪",@"汪工",@"王显宁",@"熊总"];
-    NSArray *imgs = @[@"5.jpg",@"6.jpg",@"7.jpg",@"06"];
-    NSArray *dis = @[@"17km",@"19km",@"16km",@"17km"];
-    NSArray *friends = @[@"100",@"65",@"34",@"300"];
+//    NSArray *nanes = @[@"梁健聪",@"汪工",@"王显宁",@"熊总"];
+//    NSArray *imgs = @[@"5.jpg",@"6.jpg",@"7.jpg",@"06"];
+//    NSArray *dis = @[@"17km",@"19km",@"16km",@"17km"];
+//    NSArray *friends = @[@"100",@"65",@"34",@"300"];
+    ProjectModel *model = manger.m_nears[indexPath.row];
     NearCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NearCell"];
-    cell.img.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@",imgs[indexPath.row]]];
-    cell.nameLab.text = nanes[indexPath.row];
-    cell.disLab.text = dis[indexPath.row];
-    cell.friendLab.text = [NSString stringWithFormat:@"粉丝数:%@",friends[indexPath.row]];
+    cell.img.image = [UIImage imageNamed:@"5.jpg"];
+    cell.nameLab.text = model.nearName;
+    cell.disLab.text = model.nearDistance;
+    cell.friendLab.text = [NSString stringWithFormat:@"粉丝数: %@",model.nearPraiseCount];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 #pragma mark-

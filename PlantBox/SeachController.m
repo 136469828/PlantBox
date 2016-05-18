@@ -18,6 +18,7 @@
 {
     NextManger *manger;
     UIView *hearView;
+    UITextField *seachTextField;
 }
 @property (nonatomic, strong) UITableView *tableView;
 @end
@@ -49,6 +50,7 @@
     _tableView.dataSource = self;
     [self hearView];
     _tableView.tableHeaderView = hearView;
+    [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:_tableView];
     
 //    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
@@ -64,7 +66,7 @@
     hearView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];
     //    hearView.backgroundColor = [UIColor redColor];
     [self.view addSubview:hearView];
-    UITextField *seachTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 5, SCREEN_WIDTH - 80, 30)];
+    seachTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 5, SCREEN_WIDTH - 80, 30)];
     seachTextField.delegate = self;
     seachTextField.layer.borderColor = [UIColor lightGrayColor].CGColor; // set color as you want.
     seachTextField.layer.borderWidth = 1.0; // set borderWidth as you want.
@@ -76,12 +78,21 @@
     UIButton *seachBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [seachBtn setImage:[UIImage imageNamed:@"seachBtn"] forState:UIControlStateNormal];
     seachBtn.frame = CGRectMake(SCREEN_WIDTH - 55, 0, 30, 30);
-    [seachBtn addTarget:seachTextField action:@selector(seachOnSeachs) forControlEvents:UIControlEventTouchDown];
+    [seachBtn addTarget:self action:@selector(seachAction) forControlEvents:UIControlEventTouchDown];
     [hearView addSubview:seachBtn];
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(8, hearView.bounds.size.height - 1, ScreenWidth - 16, 0.5)];
     line.backgroundColor = [UIColor lightGrayColor];
     [hearView addSubview:line];
     
+}
+#pragma mark - 搜索
+- (void)seachAction
+{
+    manger= [NextManger shareInstance];
+    manger.isKeyword = YES;
+    manger.keyword = seachTextField.text;
+    [manger loadData:RequestOfGetprojectlist];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
 }
 #pragma mark - 注册Cell
 - (void)registerNib{
@@ -111,13 +122,12 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    return 240;
+    return 230;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
     HomeCell *homeCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
     //        homeCell.tag = 1008;
     ProjectModel *model = manger.m_ProductLists[indexPath.row];
@@ -170,13 +180,5 @@
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"touchView" object:nil];
 }
-#pragma mark - 搜索
-- (void)seachOnSeachs
-{
-    manger= [NextManger shareInstance];
-    manger.isKeyword = YES;
-    manger.keyword = @"dsfw";
-    [manger loadData:RequestOfGetprojectlist];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
-}
+
 @end

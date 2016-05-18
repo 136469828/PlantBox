@@ -13,6 +13,8 @@
 #import "ShopImgCell.h"
 #import "NextManger.h"
 #import "ProjectModel.h"
+#import "webView/WebModel.h"
+#import "WebViewController.h"
 #import "UIImageView+WebCache.h"
 //#import "ShopCarAdvModel.h"
 
@@ -22,7 +24,7 @@
     NextManger *manger;
     int count;
     NSArray *imgs;
-    
+    BOOL isCollect;
     NSString *shopName;
     NSString *shopImg;
     NSString *shopPrice;
@@ -162,6 +164,9 @@
         cell.selectionStyle = UITableViewCellStyleDefault;
         [cell.deleteBtn addTarget:self action:@selector(deleteBtnAction) forControlEvents:UIControlEventTouchDown];
         [cell.addBtn addTarget:self action:@selector(addBtnAction) forControlEvents:UIControlEventTouchDown];
+        [cell.collectionBtn addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchDown];
+        [cell.pushBK addTarget:self action:@selector(pushAction) forControlEvents:UIControlEventTouchDown];
+        
         return cell;
     }
     ShopImgCell*cell = [tableView dequeueReusableCellWithIdentifier:@"ShopImgCell"];
@@ -169,6 +174,28 @@
     cell.selectionStyle = UITableViewCellStyleDefault;
     return cell; 
     
+}
+
+- (void)pushAction
+{
+            WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail?UserId=%@&id=%@",manger.userId,self.shopID]];
+            WebViewController *SVC = [[WebViewController alloc] init];
+            SVC.title = @"植物百科";
+            SVC.hidesBottomBarWhenPushed = YES;
+            [SVC setModel:model];
+            [self.navigationController pushViewController:SVC animated:YES];
+}
+- (void)collectionAction:(UIButton *)btn
+{
+    if (btn.selected) {
+        [btn setImage:[UIImage imageNamed:@"collect_03"]forState:UIControlStateSelected];
+        btn.selected = !btn.selected;
+    }
+    else
+    {
+        [btn setImage:[UIImage imageNamed:@"unCollect.jpg"]forState:UIControlStateNormal];
+        btn.selected = !btn.selected;
+    }
 }
 - (void)deleteBtnAction
 {

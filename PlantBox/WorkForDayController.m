@@ -1,24 +1,25 @@
 //
-//  PublishedController.m
+//  ConditionsController.m
 //  PlantBox
 //
-//  Created by admin on 16/5/13.
+//  Created by admin on 16/5/18.
 //  Copyright © 2016年 JCK. All rights reserved.
 //
 
-#import "PublishedController.h"
-#import "PublishedCell.h"
+#import "WorkForDayController.h"
+#import "workCell.h"
 #import "KeyboardToolBar.h"
-@interface PublishedController ()<UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
+@interface WorkForDayController ()<UITableViewDelegate,UITableViewDataSource,UITextViewDelegate>
 {
     NSInteger count;
 }
 @property (nonatomic ,strong) UITableView *tableView;
 @property (nonatomic, strong) UIView *closeV;
 
+
 @end
 
-@implementation PublishedController
+@implementation WorkForDayController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -42,7 +43,7 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
-//    self.tableView.estimatedRowHeight = 75;
+    //    self.tableView.estimatedRowHeight = 75;
     self.tableView.tableFooterView = [self setFootView];
     [self.view addSubview:_tableView];
     [self registerNib];
@@ -53,7 +54,7 @@
     UIButton *addBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     addBtn.frame = CGRectMake(10, 5, ScreenWidth-20, 30);
     addBtn.backgroundColor = [UIColor orangeColor];
-    [addBtn setTitle:@"添加1天" forState:UIControlStateNormal];
+    [addBtn setTitle:@"添加" forState:UIControlStateNormal];
     [addBtn addTarget:self action:@selector(addDay) forControlEvents:UIControlEventTouchDown];
     [fV addSubview:addBtn];
     return fV;
@@ -62,11 +63,11 @@
 {
     count++;
     [self.tableView reloadData];
-
+    
 }
 #pragma mark - 注册Cell
 - (void)registerNib{
-    NSArray *registerNibs = @[@"PublishedCell"];
+    NSArray *registerNibs = @[@"workCell"];
     for (int i = 0 ; i < registerNibs.count; i++) {
         [_tableView registerNib:[UINib nibWithNibName:registerNibs[i] bundle:nil] forCellReuseIdentifier:registerNibs[i]];
     }
@@ -74,7 +75,7 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 50;
+    return 45;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -82,13 +83,13 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PublishedCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PublishedCell"];
-//    cell.textView.delegate = self;
-//    cell.textView.tag = 2000;
-//    cell.textView.text = @"请输入发布内容";
-//    cell.textView.textColor = RGB(142, 142, 142);
-    cell.dayLab.text = [NSString stringWithFormat:@"第%ld天",indexPath.row+1];
-    [KeyboardToolBar registerKeyboardToolBar:cell.titleTextFild];
+    workCell *cell = [tableView dequeueReusableCellWithIdentifier:@"workCell"];
+    //    cell.textView.delegate = self;
+    //    cell.textView.tag = 2000;
+    //    cell.textView.text = @"请输入发布内容";
+    //    cell.textView.textColor = RGB(142, 142, 142);
+    [KeyboardToolBar registerKeyboardToolBar:cell.titleTF];
+    [KeyboardToolBar registerKeyboardToolBar:cell.workloadTF];
     return cell;
 }
 -(BOOL)textViewShouldBeginEditing:(UITextView *)textView

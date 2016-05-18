@@ -153,14 +153,15 @@
         NSURL *url = [NSURL URLWithString:stringValue];
         [[UIApplication sharedApplication] openURL:url];
 //        [self pushWebVcWithURL:stringValue];
+        [self.navigationController popViewControllerAnimated:YES];
         
     }
     [_session stopRunning];
-    
-    [self dismissViewControllerAnimated:YES completion:^
-     {
-         [timer invalidate];
-     }];
+//    
+//    [self dismissViewControllerAnimated:YES completion:^
+//     {
+//         [timer invalidate];
+//     }];
 }
 
 

@@ -12,13 +12,11 @@
 
 @implementation ShopInfoCell
 {
-    BOOL isCollect;
     int count;
 }
 - (void)awakeFromNib {
 //    _advScorll = [[ShopScorllView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 1)];
 //    [self.topView addSubview:_advScorll];
-    isCollect = NO;
     self.deleteBtn.layer.borderWidth = 1;
     self.addBtn.layer.borderWidth = 1;
     self.countLab.layer.borderWidth = 1;

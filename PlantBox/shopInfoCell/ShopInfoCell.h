@@ -19,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *addBtn;
 @property (weak, nonatomic) IBOutlet UILabel *countLab;
 @property (weak, nonatomic) IBOutlet UIImageView *cellImg;
+@property (weak, nonatomic) IBOutlet UIButton *collectionBtn;
+@property (weak, nonatomic) IBOutlet UIButton *pushBK;
 
 //@property (nonatomic, strong) ShopScorllView *advScorll;
 @end

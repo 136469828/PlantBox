@@ -77,4 +77,9 @@
 @property (nonatomic, copy) NSString *myBaseDistance;
 @property (nonatomic, copy) NSString *myBasePlantName;
 @property (nonatomic, copy) NSString *myBaseUserName;
+#pragma mark - 附近信息
+@property (nonatomic, copy) NSString *nearDistance;
+@property (nonatomic, copy) NSString *nearName;
+@property (nonatomic, copy) NSString *nearPraiseCount;
+@property (nonatomic, copy) NSString *nearImg;
 @end

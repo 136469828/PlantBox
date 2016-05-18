@@ -18,6 +18,8 @@
 #import "GrowingEnvironmentController.h"
 #import "ErweimaViewController.h"
 #import "OperationController.h"
+#import "WorkForDayController.h"
+#import "ConditionsController.h"
 @interface PlantCenterController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>
 {
     NSArray *imgs;
@@ -35,8 +37,8 @@
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     self.view.backgroundColor = [UIColor whiteColor];
-//    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"zhuangtai_jk",@"huanjing_jk",@"yindao_jk",@"024"],@[@"saomiao_yj",@"caozuo_yj"]];
-    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"huanjing_jk"],@[@"saomiao_yj",@"caozuo_yj"]];
+    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"zhuangtai_jk",@"huanjing_jk",@"yindao_jk",@"024"],@[@"saomiao_yj",@"caozuo_yj"]];
+//    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"huanjing_jk"],@[@"saomiao_yj",@"caozuo_yj"]];
     [self setTableView];
 }
 
@@ -64,9 +66,9 @@
     if (section == 2) {
         return 2;
     }
-    if (section == 1) {
-        return 1;
-    }
+//    if (section == 1) {
+//        return 1;
+//    }
     return 4;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section // 返回组的头宽
@@ -148,12 +150,12 @@
     {
         // @"生长状态",@"生长环境",@"生长条件",@"当日工作"
         switch (indexPath.row) {
-//            case 0:
-//            {
-//                
-//            }
-//                break;
             case 0:
+            {
+                
+            }
+                break;
+            case 1:
             {
                 GrowingEnvironmentController *subVC = [[GrowingEnvironmentController alloc] init];
                 subVC.title = @"生长环境";
@@ -161,16 +163,21 @@
 
             }
                 break;
-//            case 2:
-//            {
-//                
-//            }
-//                break;
-//            case 3:
-//            {
-//                
-//            }
-//                break;
+            case 2:
+            {
+                ConditionsController  *subVC = [[ConditionsController alloc] init];
+                subVC.title = @"生长条件";
+                [self.navigationController pushViewController:subVC animated:YES];
+            }
+                break;
+            case 3:
+            {
+                WorkForDayController *subVC = [[WorkForDayController alloc] init];
+                subVC.title = @"当日工作";
+                [self.navigationController pushViewController:subVC animated:YES];
+
+            }
+                break;
                 
             default:
                 break;

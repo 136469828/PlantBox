@@ -10,6 +10,7 @@
 #import "MyBaseViewController.h"
 #import "TheActivityViewController.h"
 #import "SettingViewController.h"
+#import "CollectController.h"
 #import "NextManger.h"
 @interface MineViewController ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate>
 {
@@ -233,6 +234,14 @@
             MyBaseViewController *myBase = [[MyBaseViewController alloc] init];
             myBase.hidesBottomBarWhenPushed = YES;
             myBase.title = @"我的基地";
+            [self.navigationController pushViewController:myBase animated:YES];
+        }
+            break;
+        case 1201:
+        {
+            CollectController *myBase = [[CollectController alloc] init];
+            myBase.hidesBottomBarWhenPushed = YES;
+            myBase.title = @"我的收藏";
             [self.navigationController pushViewController:myBase animated:YES];
         }
             break;

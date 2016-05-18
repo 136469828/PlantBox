@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PublishInfoController : UIViewController
+@interface ConditionsController : UIViewController
 
 @end

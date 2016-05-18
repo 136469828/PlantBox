@@ -147,6 +147,11 @@ static NextManger *manger = nil;
             [self orderSaveorderProducID:self.orderProID PEID:self.orderPEId QTY:self.orderQty Price:self.orderPrice Mobile:self.orderMobile Address:self.orderAddress CusName:self.orderName];
         }
             break;
+        case RequestOfgetusergoodnear:
+        {
+            [self Getusergoodnear:self.nearLat Lon:self.nearLon];
+        }
+            break;
             
             
             
@@ -429,7 +434,7 @@ static NextManger *manger = nil;
                        @"_appid":@"101",
                        @"_code":self.userID_Code,
                        @"content":@"application/json",
-                       @"sType": self.keyword,
+                       @"Keyword": self.keyword,
                        
                        };
     }
@@ -1014,7 +1019,7 @@ static NextManger *manger = nil;
              [self.m_ProductShopLists addObject:model];
          }
          
-         [LCProgressHUD showSuccess:@"加载成功"];
+//         [LCProgressHUD showSuccess:@"加载成功"];
          [[NSNotificationCenter defaultCenter] postNotificationName:@"getproductlist" object:nil];
      } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
          NSLog(@"error : %@",error);
@@ -1051,13 +1056,13 @@ static NextManger *manger = nil;
         }
          model.shopInfoListName = responseObject[@"data"][@"ProductName"];
          model.shopInfoListNotice = responseObject[@"data"][@"Notice"];
-         model.shopInfoListTotalBuy =  [NSString stringWithFormat:@"共有 %@ 人购买",responseObject[@"data"][@"TotalRead"]];
+         model.shopInfoListTotalBuy =  [NSString stringWithFormat:@"购买人数:%@",responseObject[@"data"][@"TotalRead"]];
          model.shopinfoListPrice = [NSString stringWithFormat:@"%@",responseObject[@"data"][@"TotalCollect"]];
             NSArray*shopinfoListImgs = responseObject[@"data"][@"Pictures"];
 //         NSLog(@"%ld",model.shopinfoListImgs.count);
              [self.m_ProductShopInfoLists addObject:model];
          
-         [LCProgressHUD showSuccess:@"加载成功"];
+//         [LCProgressHUD showSuccess:@"加载成功"];
          [[NSNotificationCenter defaultCenter] postNotificationName:@"getproduct" object:shopinfoListImgs];
      } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
          NSLog(@"error : %@",error);
@@ -1116,7 +1121,7 @@ static NextManger *manger = nil;
          
      }];
 }
-#pragma mark - 获取用户基地或用户植物列表
+#pragma mark - 下订单
 // （Keyword:关键字,Lat:纬度，Lon:经度,sType:类别(1:基地；2:植物),CityName:城市名）
 - (void)orderSaveorderProducID:(NSString *)proID PEID:(NSString *)PeID QTY:(NSString *)qty Price:(NSString *)price Mobile:(NSString *)mobile Address:(NSString *)address CusName:(NSString *)cusName
 {
@@ -1147,6 +1152,55 @@ static NextManger *manger = nil;
 
          [LCProgressHUD showSuccess:@"下订成功"];
          [[NSNotificationCenter defaultCenter] postNotificationName:@"orderSaveorder" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+#pragma mark - 获取附近列表
+// （Keyword:关键字,Lat:纬度，Lon:经度,sType:类别(1:基地；2:植物),CityName:城市名）
+- (void)Getusergoodnear:(NSString *)lat Lon:(NSString *)lon
+{
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+//                                 "Keyword": "sample string 1",
+                                 @"Lat": lat,
+                                 @"Lon": lon,
+                                 @"sType": @"1",
+//                                 "PageIndex": 6,
+//                                 "PageSize": 7
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@common/user/getusergoodnear",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+//         NSLog(@"%@",responseObject);
+         NSArray *arr = responseObject[@"data"][@"DataList"];
+         [self.m_nears removeAllObjects];
+         for (NSDictionary *dic in arr)
+         {
+             NSLog(@"%@ %@ %@",dic[@"CnName"],dic[@"Distincts"],dic[@"PraiseCount"]);
+             ProjectModel *model = [[ProjectModel alloc] init];
+             model.nearDistance =   [NSString stringWithFormat:@"%.2f km",[ dic[@"Distincts"] doubleValue ]];
+             model.nearPraiseCount = dic[@"PraiseCount"];
+             model.nearName = dic[@"CnName"];
+             model.nearImg = dic[@"ThumbImg"];
+             if (self.m_nears.count == 0) {
+                 self.m_nears = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+             [self.m_nears addObject:model];
+         }
+         
+
+         
+//         [LCProgressHUD showSuccess:@"获取数据成功"];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"getusergoodnear" object:nil];
      } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
          NSLog(@"error : %@",error);
          [LCProgressHUD showFailure:@"获取数据失败"];
