@@ -7,8 +7,13 @@
 //
 
 #import "CollectController.h"
-
+#import "NextManger.h"
+#import "ProjectModel.h"
+#import "ShopInfoController.h"
 @interface CollectController ()<UITableViewDataSource,UITableViewDelegate>
+{
+    NextManger *manger;
+}
 @property (nonatomic, strong) UITableView *tableView;
 @end
 
@@ -19,11 +24,17 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
     [self drawtableView];
+    manger = [NextManger shareInstance];
+    [manger loadData:RequestOfuserCollectList];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshData) name:@"getcollectlist" object:nil];
 }
-
+- (void)refreshData
+{
+    [self.tableView reloadData];
+}
 - (void)drawtableView
 {
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-69) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 5, ScreenWidth, ScreenHeight-69-5) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
@@ -35,7 +46,13 @@
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    if (manger.m_collectLists.count == 0) {
+        return 0;
+    }
+    else
+    {
+      return manger.m_collectLists.count;
+    }
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -45,11 +62,19 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:infierCell];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    cell.textLabel.text = @"多肉";
-    cell.detailTextLabel.text = @"2016-05-11";
+    ProjectModel *model = manger.m_collectLists[indexPath.row];
+    cell.textLabel.text = model.colletName;
+    cell.detailTextLabel.text = model.collectTime;
     cell.imageView.image = [UIImage imageNamed:@"5.jpg"];
+    cell.tag = [model.collectID integerValue];
     return cell;
 }
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    ShopInfoController *subVC = [[ShopInfoController alloc] init];
+    subVC.shopID = [NSString stringWithFormat:@"%ld",cell.tag];
+    [self.navigationController pushViewController:subVC animated:YES];
+}
 
 @end

@@ -25,9 +25,33 @@
                         <constraints>
                             <constraint firstItem="Va9-XZ-NZI" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="3LW-gx-tfY"/>
                             <constraint firstAttribute="trailing" secondItem="Va9-XZ-NZI" secondAttribute="trailing" id="6aA-On-7ca"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Va9-XZ-NZI" secondAttribute="bottom" id="Ouf-L8-bur"/>
+                            <constraint firstItem="Va9-XZ-NZI" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="-20" id="kaW-5D-HEw"/>
+                            <constraint firstItem="Va9-XZ-NZI" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="ltr-Ag-woO"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Va9-XZ-NZI" secondAttribute="bottom" id="opW-aJ-PL6"/>
                             <constraint firstItem="Va9-XZ-NZI" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="sRh-jd-iRH"/>
+                            <constraint firstAttribute="trailing" secondItem="Va9-XZ-NZI" secondAttribute="trailing" id="y1s-yc-9He"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="kaW-5D-HEw"/>
+                                <exclude reference="ltr-Ag-woO"/>
+                                <exclude reference="y1s-yc-9He"/>
+                                <exclude reference="Ouf-L8-bur"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="constraints">
+                                <exclude reference="3LW-gx-tfY"/>
+                                <exclude reference="6aA-On-7ca"/>
+                                <include reference="kaW-5D-HEw"/>
+                                <include reference="ltr-Ag-woO"/>
+                                <exclude reference="sRh-jd-iRH"/>
+                                <include reference="y1s-yc-9He"/>
+                                <include reference="Ouf-L8-bur"/>
+                                <exclude reference="opW-aJ-PL6"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>

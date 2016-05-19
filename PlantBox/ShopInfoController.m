@@ -80,17 +80,38 @@
     
     UIView *shopV = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight - 115, ScreenWidth, 60)];
     shopV.backgroundColor = [UIColor whiteColor];
-    UIImageView *imgV = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
-    imgV.image = [UIImage imageNamed:@"kadzixun.jpg"];
-    [shopV addSubview:imgV];
-    
-    UIImageView *imgV2 = [[UIImageView alloc] initWithFrame:CGRectMake( 50,0, 50, 50)];
-    imgV2.image = [UIImage imageNamed:@"shopInfoFenxiang.jpg"];
-    [shopV addSubview:imgV2];
-    
-//    UIImageView *imgV3 = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth - 200,0, 190, 50)];
-//    imgV3.image = [UIImage imageNamed:@"addshop"];
+//    UIImageView *imgV = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 30, 30)];
+//    imgV.image = [UIImage imageNamed:@"kefu"];
+//    [shopV addSubview:imgV];
+//    
+//    UIImageView *imgV2 = [[UIImageView alloc] initWithFrame:CGRectMake(45,0, 30, 30)];
+//    imgV2.image = [UIImage imageNamed:@"shopfenxiang"];
+//    [shopV addSubview:imgV2];
+//    
+//    UIImageView *imgV3 = [[UIImageView alloc] initWithFrame:CGRectMake(75,0, 30, 30)];
+//    imgV3.image = [UIImage imageNamed:@"收藏"];
 //    [shopV addSubview:imgV3];
+    
+    UIButton *kefuBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    kefuBtn.frame = CGRectMake(10, 0, 50, 50);
+    [kefuBtn setImage:[UIImage imageNamed:@"客服"] forState:UIControlStateNormal];
+    //    [shoucangBtn addTarget:self action:@selector(alerCtl) forControlEvents:UIControlEventTouchDown];
+    [shopV addSubview:kefuBtn];
+    
+    UIButton *fenxiangBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    fenxiangBtn.frame = CGRectMake(70,0, 50, 50);
+    [fenxiangBtn setImage:[UIImage imageNamed:@"分享"] forState:UIControlStateNormal];
+    //    [shoucangBtn addTarget:self action:@selector(alerCtl) forControlEvents:UIControlEventTouchDown];
+    [shopV addSubview:fenxiangBtn];
+    
+    UIButton *shoucangBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    shoucangBtn.frame = CGRectMake(130,0, 50, 50);
+    [shoucangBtn setImage:[UIImage imageNamed:@"收藏1"] forState:UIControlStateNormal];
+    [shoucangBtn setImage:[UIImage imageNamed:@"收藏0"] forState:UIControlStateNormal];
+    [shoucangBtn addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchDown];
+    [shopV addSubview:shoucangBtn];
+    
+    
     UIButton *buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     buyBtn.frame = CGRectMake(ScreenWidth - 180,0, 170, 40);
     buyBtn.layer.cornerRadius = 2;
@@ -138,11 +159,11 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0) {
-        return 420;
+        return 440;
     }
     else
     {
-        return 150;
+        return ScreenWidth;
 
     }
 }
@@ -160,11 +181,12 @@
         shopPrice = model.shopinfoListPrice;
         cell.countLab.text = [NSString stringWithFormat:@"%d",count];
         shopImg = imgs[0];
+        
         [cell.cellImg sd_setImageWithURL:[NSURL URLWithString:imgs[0]]];
         cell.selectionStyle = UITableViewCellStyleDefault;
         [cell.deleteBtn addTarget:self action:@selector(deleteBtnAction) forControlEvents:UIControlEventTouchDown];
         [cell.addBtn addTarget:self action:@selector(addBtnAction) forControlEvents:UIControlEventTouchDown];
-        [cell.collectionBtn addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchDown];
+//        [cell.collectionBtn addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchDown];
         [cell.pushBK addTarget:self action:@selector(pushAction) forControlEvents:UIControlEventTouchDown];
         
         return cell;
@@ -188,14 +210,20 @@
 - (void)collectionAction:(UIButton *)btn
 {
     if (btn.selected) {
-        [btn setImage:[UIImage imageNamed:@"collect_03"]forState:UIControlStateSelected];
+        [btn setImage:[UIImage imageNamed:@"收藏0"]forState:UIControlStateSelected];
+        
         btn.selected = !btn.selected;
+        manger.IsCollect =  @"1";
+    
     }
     else
     {
-        [btn setImage:[UIImage imageNamed:@"unCollect.jpg"]forState:UIControlStateNormal];
+        [btn setImage:[UIImage imageNamed:@"收藏1"]forState:UIControlStateNormal];
         btn.selected = !btn.selected;
+        manger.IsCollect =  @"0";
     }
+    manger.userCollectFKId = self.shopID;
+    [manger loadData:RequestOfuserCollect];
 }
 - (void)deleteBtnAction
 {
@@ -210,5 +238,14 @@
 {
     count++;
     [self.tableView reloadData];
+}
+// 等比缩放图片
+- (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
+{
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0,0,size.width,size.height)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 @end

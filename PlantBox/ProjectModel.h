@@ -82,4 +82,8 @@
 @property (nonatomic, copy) NSString *nearName;
 @property (nonatomic, copy) NSString *nearPraiseCount;
 @property (nonatomic, copy) NSString *nearImg;
+#pragma mark - 收藏列表
+@property (nonatomic, copy) NSString *colletName;
+@property (nonatomic, copy) NSString *collectTime;
+@property (nonatomic, copy) NSString *collectID;
 @end

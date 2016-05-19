@@ -7,6 +7,7 @@
 //
 
 #import "AboutMeViewController.h"
+#import "JieshaoController.h"
 #import "NextManger.h"
 @interface AboutMeViewController ()
 
@@ -38,6 +39,13 @@
     // Pass the selected object to the new view controller.
 }
 */
+- (IBAction)introduceBtn:(id)sender {
+
+}
+- (IBAction)wellcomeBtn:(id)sender {
+    JieshaoController *sub = [[JieshaoController alloc] init];
+    [self.navigationController pushViewController:sub animated:YES];
+}
 - (void)versionName:(NSNotification*)theObj
 {
     self.titleLab.text = [NSString stringWithFormat:@"植物盒子 %@ 版",theObj.object];

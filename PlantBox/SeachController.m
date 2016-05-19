@@ -76,8 +76,8 @@
     [hearView addSubview:seachTextField];
     
     UIButton *seachBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [seachBtn setImage:[UIImage imageNamed:@"seachBtn"] forState:UIControlStateNormal];
-    seachBtn.frame = CGRectMake(SCREEN_WIDTH - 55, 0, 30, 30);
+    [seachBtn setImage:[UIImage imageNamed:@"搜索"] forState:UIControlStateNormal];
+    seachBtn.frame = CGRectMake(SCREEN_WIDTH - 55, 5, 30, 30);
     [seachBtn addTarget:self action:@selector(seachAction) forControlEvents:UIControlEventTouchDown];
     [hearView addSubview:seachBtn];
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(8, hearView.bounds.size.height - 1, ScreenWidth - 16, 0.5)];

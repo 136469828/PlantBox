@@ -93,6 +93,20 @@ static NextManger *manger = nil;
             //            [self projectfollow];
             //            [self sendmessage];
             [self systemsetGetlatestversoin];
+//            [self userSubscribeFKId:@"1" IsContent:@"1"];
+            
+//            [self getcommentlist];
+        }
+            break;
+        case RequestOfuserCollectList:
+        {
+
+            [self getcollectlist];
+        }
+            break;
+        case RequestOfuserCollect:
+        {
+            [self userCollectFKId:self.userCollectFKId IsCollect:self.IsCollect];
         }
             break;
         case RequestOfAddfeedback:
@@ -425,6 +439,7 @@ static NextManger *manger = nil;
 #pragma mark - 产品列表
 - (void)homeGetprojectlistWithKeyword:(BOOL) iskeyword AndKeyword:(NSString *)keyword
 {
+    [self.m_ProductLists removeAllObjects];
     AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
     manger.requestSerializer.timeoutInterval = 5;
     NSDictionary *parameters = [[NSDictionary alloc] init];
@@ -435,7 +450,8 @@ static NextManger *manger = nil;
                        @"_code":self.userID_Code,
                        @"content":@"application/json",
                        @"Keyword": self.keyword,
-                       
+                       @"PageIndex": @"1",
+                       @"PageSize": @"99"
                        };
     }
     else
@@ -446,15 +462,17 @@ static NextManger *manger = nil;
                        @"content":@"application/json",
                        
                        @"sType": @"1",
+                       @"PageIndex": @"1",
+                       @"PageSize": @"99"
+
                        };
     }
     NSString *url = [NSString stringWithFormat:@"%@order/getlist",ServerAddressURL];
     [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
      {
-//         NSLog(@"产品列表：%@",responseObject);
+         NSLog(@"产品列表：%@",responseObject);
          NSArray *dataLists = responseObject[@"data"][@"DataList"];
 //         NSLog(@"%ld",dataLists.count);
-         [self.m_ProductLists removeAllObjects];
          for (NSDictionary *dic in dataLists)
          {
              ProjectModel *model = [[ProjectModel alloc] init];
@@ -1185,12 +1203,17 @@ static NextManger *manger = nil;
          [self.m_nears removeAllObjects];
          for (NSDictionary *dic in arr)
          {
-             NSLog(@"%@ %@ %@",dic[@"CnName"],dic[@"Distincts"],dic[@"PraiseCount"]);
+//             NSLog(@"%@ %@ %@",dic[@"CnName"],dic[@"Distincts"],dic[@"PraiseCount"]);
              ProjectModel *model = [[ProjectModel alloc] init];
              model.nearDistance =   [NSString stringWithFormat:@"%.2f km",[ dic[@"Distincts"] doubleValue ]];
              model.nearPraiseCount = dic[@"PraiseCount"];
              model.nearName = dic[@"CnName"];
              model.nearImg = dic[@"ThumbImg"];
+             NSArray *address = @[dic[@"Lat"],dic[@"Lon"]];
+             if (self.nearDatas.count == 0) {
+                 self.nearDatas = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+             [self.nearDatas addObject:address];
              if (self.m_nears.count == 0) {
                  self.m_nears = [[NSMutableArray alloc] initWithCapacity:0];
              }
@@ -1207,6 +1230,158 @@ static NextManger *manger = nil;
          
      }];
 }
+#pragma mark - 收藏
+// FKId:(产品或文章对应的Id)；sType：（1：产品；2：文章）IsCollect（1：收藏；0：取消收藏）
+- (void)userCollectFKId:(NSString *)fkId IsCollect:(NSString *)isCollect
+{
+    NSLog(@"%@ %@",fkId,isCollect);
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"FKId":fkId,
+                                 @"FKType": @"1",
+                                 @"IsCollect": isCollect
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@common/user/collect",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+          NSLog(@"%@",responseObject[@"msg"]);
+         [LCProgressHUD showSuccess:responseObject[@"msg"]];
+//         [[NSNotificationCenter defaultCenter] postNotificationName:@"getusergoodnear" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+#pragma mark - 收藏列表
+// sType：（1：产品；2：文章）
+- (void)getcollectlist
+{
+//    NSLog(@"%@",self.userID_Code);
+    [self.totalCollects removeAllObjects];
+    [self.m_collectLists removeAllObjects];
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"sType":@"1",
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@common/user/getcollectlist",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+         NSLog(@"%@",responseObject);
+         NSArray *datas = responseObject[@"data"][@"DataList"];
+         for (NSDictionary *dic  in datas) {
+             ProjectModel *model = [[ProjectModel alloc] init];
+             model.colletName = dic[@"Title"];
+             model.collectTime = dic[@"CreateTime"];
+             model.collectID = dic[@"FKId"];
+             if (self.totalCollects.count == 0) {
+                 self.totalCollects = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+             if (self.m_collectLists.count == 0)
+             {
+                 self.m_collectLists = [[NSMutableArray alloc] initWithCapacity:0];
+             }
+             [self.m_collectLists addObject:model];
+             [self.totalCollects addObject:dic[@"TotalCollect"]];
+         }
+         
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"getcollectlist" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+
+#pragma mark - 点赞
+// FKId:(产品或文章对应的Id)；sType：（1：产品；2：文章）Content（1：点赞；0：取消点赞）
+- (void)userSubscribeFKId:(NSString *)fkId IsContent:(NSString *)isContent
+{
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"FKId":fkId,
+                                 @"FKType": @"1",
+                                 @"Content": @"1"
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@common/user/subscribe",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+         NSLog(@"%@",responseObject[@"msg"]);
+         [LCProgressHUD showSuccess:responseObject[@"msg"]];
+         //         [[NSNotificationCenter defaultCenter] postNotificationName:@"getusergoodnear" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+
+#pragma mark - 点赞列表
+// sType：（1：产品；2：文章）
+- (void)getcommentlist
+{
+    //    NSLog(@"%@",self.userID_Code);
+    [self.totalCollects removeAllObjects];
+    [self.m_collectLists removeAllObjects];
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer.timeoutInterval = 2;
+    NSDictionary *parameters = @{
+                                 @"_appid":@"101",
+                                 @"_code":self.userID_Code,
+                                 @"content":@"application/json",
+                                 
+                                 @"sType":@"1",
+                                 };
+    NSString *url = [NSString stringWithFormat:@"%@common/user/getcommentlist",ServerAddressURL];
+    [manger POST:url parameters:parameters success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject)
+     {
+         
+         NSLog(@"%@",responseObject);
+//         NSArray *datas = responseObject[@"data"][@"DataList"];
+//         for (NSDictionary *dic  in datas) {
+//             ProjectModel *model = [[ProjectModel alloc] init];
+//             model.colletName = dic[@"Title"];
+//             model.collectTime = dic[@"CreateTime"];
+//             model.collectID = dic[@"FKId"];
+//             if (self.totalCollects.count == 0) {
+//                 self.totalCollects = [[NSMutableArray alloc] initWithCapacity:0];
+//             }
+//             if (self.m_collectLists.count == 0)
+//             {
+//                 self.m_collectLists = [[NSMutableArray alloc] initWithCapacity:0];
+//             }
+//             [self.m_collectLists addObject:model];
+//             [self.totalCollects addObject:dic[@"TotalCollect"]];
+//         }
+//         
+//         [[NSNotificationCenter defaultCenter] postNotificationName:@"getcollectlist" object:nil];
+     } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+         NSLog(@"error : %@",error);
+         [LCProgressHUD showFailure:@"获取数据失败"];
+         
+     }];
+}
+
+
+
 // 计算距离
 - (double) LantitudeLongitudeDist:(double)lon1 other_Lat:(double)lat1 self_Lon:(double)lon2 self_Lat:(double)lat2{
     double er = 6378137; // 6378700.0f;

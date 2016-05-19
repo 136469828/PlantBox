@@ -7,6 +7,7 @@
 //
 
 #import "NearViewController.h"
+#import "NearMapController.h"
 #import <BaiduMapAPI_Base/BMKBaseComponent.h>//引入base相关所有的头文件
 
 #import <BaiduMapAPI_Map/BMKMapComponent.h>//引入地图功能所有的头文件
@@ -32,12 +33,17 @@
     BMKLocationService *_locService;
     NextManger *manger;
     CLLocationCoordinate2D _touchMapCoordinate;  //  点击后那一点的经纬度
+    NSArray *datas;
 }
+@property (nonatomic, strong) NSMutableArray *m_titleDatas;
 @property (nonatomic, strong) UITableView *tableView;
 @end
 
 @implementation NearViewController
-
+// 销毁通知中心
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -45,7 +51,7 @@
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     
-    UIView *mapBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 100)];
+    UIView *mapBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 200)];
     [self.view addSubview:mapBgView];
     _mapView = [[BMKMapView alloc]initWithFrame:mapBgView.bounds];
 //    self.view = _mapView;
@@ -59,9 +65,9 @@
     
     UIButton *meassageBut = ({
         UIButton *meassageBut = [UIButton buttonWithType:UIButtonTypeCustom];
-        meassageBut.frame = CGRectMake(0, 0, 25, 10);
+        meassageBut.frame = CGRectMake(0, 0, 23, 8);
         [meassageBut addTarget:self action:@selector(showActionsheet) forControlEvents:UIControlEventTouchDown];
-        [meassageBut setImage:[UIImage imageNamed:@"near_barIcon"]forState:UIControlStateNormal];
+        [meassageBut setImage:[UIImage imageNamed:@"附近"]forState:UIControlStateNormal];
         meassageBut;
     });
     
@@ -143,6 +149,29 @@
 }
 - (void)refreshData
 {
+//    NSLog(@"%ld",manger.nearDatas.count);
+    datas = manger.nearDatas;
+    [self.m_titleDatas removeAllObjects];
+    if (manger.nearDatas.count != 0) {
+        for (int i = 0;i < manger.nearDatas.count; i++)
+        {
+//            NSLog(@"%f",[manger.nearDatas[10][0] doubleValue]);
+            BMKPointAnnotation* annotation = [[BMKPointAnnotation alloc]init];
+            CLLocationCoordinate2D coor;
+            coor.latitude = [manger.nearDatas[i][0] doubleValue];
+            coor.longitude = [manger.nearDatas[i][1] doubleValue];
+            annotation.coordinate = coor;
+            ProjectModel *model = manger.m_nears[i];
+            annotation.title =[NSString stringWithFormat:@"%@ %@",model.nearName,model.nearDistance];
+            [_mapView addAnnotation:annotation];
+            
+            if (self.m_titleDatas.count == 0) {
+                self.m_titleDatas = [[NSMutableArray alloc] initWithCapacity:0];
+            }
+            [self.m_titleDatas addObject:annotation.title];
+        }
+    }
+    
     [self.tableView reloadData];
 }
 - (void)viewWillAppear:(BOOL)animated
@@ -168,7 +197,7 @@
 }
 #pragma mark - 创建 UICollectionView
 - (void)setTableView{
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, ScreenWidth, ScreenHeight -187) style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 208, ScreenWidth, ScreenHeight -287) style:UITableViewStylePlain];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
@@ -229,7 +258,7 @@
                                   delegate:self
                                   cancelButtonTitle:@"取消"
                                   destructiveButtonTitle:nil
-                                  otherButtonTitles:@"只看男生", @"只看女生",@"消除位置并退出",nil];
+                                  otherButtonTitles:@"身边", @"广场",nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showInView:self.view];
 }
@@ -237,11 +266,25 @@
 {
     NSLog(@"%ld",buttonIndex);
 //
-//    if (buttonIndex == 0) {
-//        [self showAlert:@"确定"];
-//    }else if (buttonIndex == 1) {
-//        [self showAlert:@"第一项"];
-//    }else if(buttonIndex == 2) {
+    if (buttonIndex == 0)
+    {
+        NearMapController *subVC = [[NearMapController alloc] init];
+        subVC.hidesBottomBarWhenPushed = YES;
+        subVC.title = @"身边";
+        subVC.titles = self.m_titleDatas;
+        subVC.datas = datas;
+        [self.navigationController pushViewController:subVC animated:YES];
+    }
+    else if(buttonIndex == 1)
+    {
+        NearMapController *subVC = [[NearMapController alloc] init];
+        subVC.hidesBottomBarWhenPushed = YES;
+        subVC.title = @"广场";
+        subVC.titles = self.m_titleDatas;
+        subVC.datas = datas;
+        [self.navigationController pushViewController:subVC animated:YES];
+    }
+//    else if(buttonIndex == 2) {
 //        [self showAlert:@"第二项"];
 //    }else if(buttonIndex == 3) {
 //        [self showAlert:@"取消"];

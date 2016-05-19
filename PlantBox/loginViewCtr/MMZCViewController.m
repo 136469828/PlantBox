@@ -79,7 +79,7 @@
 //    lanel.textColor=[UIColor colorWithRed:248/255.0f green:144/255.0f blue:34/255.0f alpha:1];
 //    [self.view addSubview:lanel];
     UIButton *userImgBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    userImgBtn.frame = CGRectMake((self.view.frame.size.width-200)/2, 10, 200, 260);
+    userImgBtn.frame = CGRectMake((self.view.frame.size.width-200)/2, 0, 200, 285);
 //    userImgBtn.backgroundColor = [UIColor whiteColor];
 //    userImgBtn.layer.cornerRadius=100.0;
     [userImgBtn setImage:[UIImage imageNamed:@"touxiang_login"] forState:UIControlStateNormal];
@@ -111,7 +111,7 @@
 
 -(void)createLabel
 {
-    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width-140)/2, 420, 140, 21)];
+    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width-140)/2, 430, 140, 21)];
     label.text=@"第三方账号快速登录";
     label.textColor=[UIColor whiteColor];
     label.textAlignment=UITextAlignmentCenter;
@@ -175,9 +175,9 @@
     //
     //    //UIImageView *line2=[self createImageViewFrame:CGRectMake(88, 210, 280, 1) imageName:nil color:[UIColor grayColor]];
     
-    UIImageView *line3=[self createImageViewFrame:CGRectMake(2, 430, 100, 1) imageName:nil color:[UIColor lightGrayColor]];
-    UIImageView *line4=[self createImageViewFrame:CGRectMake(self.view.frame.size.width-100-4, 430, 100, 1) imageName:nil color:[UIColor lightGrayColor]];
-    UIImageView *line5=[self createImageViewFrame:CGRectMake(self.view.frame.size.width/2, 380, 1,20) imageName:nil color:[UIColor whiteColor]];
+    UIImageView *line3=[self createImageViewFrame:CGRectMake(2, 440, 100, 1) imageName:nil color:[UIColor lightGrayColor]];
+    UIImageView *line4=[self createImageViewFrame:CGRectMake(self.view.frame.size.width-100-4, 440, 100, 1) imageName:nil color:[UIColor lightGrayColor]];
+    UIImageView *line5=[self createImageViewFrame:CGRectMake(self.view.frame.size.width/2, 395, 1,20) imageName:nil color:[UIColor whiteColor]];
     
     //    [bgView addSubview:userImageView];
     //    [bgView addSubview:pwdImageView];
@@ -192,14 +192,14 @@
 
 -(void)createButtons
 {
-    UIButton *landBtn=[self createButtonFrame:CGRectMake(60, 340, self.view.frame.size.width-120, 36) backImageName:nil title:@"登录" titleColor:[UIColor whiteColor]  font:[UIFont systemFontOfSize:19] target:self action:@selector(landClick)];
+    UIButton *landBtn=[self createButtonFrame:CGRectMake(60, 345, self.view.frame.size.width-120, 36) backImageName:nil title:@"登录" titleColor:[UIColor whiteColor]  font:[UIFont systemFontOfSize:19] target:self action:@selector(landClick)];
     landBtn.backgroundColor= RGB(0, 143, 207);
     landBtn.layer.cornerRadius=12.0f;
     
-    UIButton *newUserBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-85, 375, 80, 30) backImageName:nil title:@"我要注册" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(registration:)];
+    UIButton *newUserBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-85, 390, 80, 30) backImageName:nil title:@"我要注册" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(registration:)];
     //newUserBtn.backgroundColor=[UIColor lightGrayColor];
     
-    UIButton *forgotPwdBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5+10, 375, 80, 30) backImageName:nil title:@"找回密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(fogetPwd:)];
+    UIButton *forgotPwdBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5+10, 390, 80, 30) backImageName:nil title:@"找回密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(fogetPwd:)];
     //fogotPwdBtn.backgroundColor=[UIColor lightGrayColor];
     
 //    UIButton *remberBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-70, 305, 140, 30) backImageName:nil title:@"记住登录密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:15] target:self action:@selector(rebberBtn:)];

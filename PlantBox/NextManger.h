@@ -105,7 +105,11 @@ typedef enum
     
     RequestOforderSaveorder,        // 获取订单列表
     
-    RequestOfgetusergoodnear         // 获取附近列表
+    RequestOfgetusergoodnear,         // 获取附近列表
+    
+    RequestOfuserCollect,         // 收藏
+    
+    RequestOfuserCollectList         // 收藏列表
     
 }RequestState;
 @interface NextManger : NSObject
@@ -131,6 +135,7 @@ typedef enum
 @property (nonatomic, copy) NSString *currNumber;
 @property (nonatomic, copy) NSString *structureId;
 @property (nonatomic, copy) NSString *userId;
+@property (nonatomic, strong) NSMutableArray *totalCollects; // 收藏数;
 @property (nonatomic, strong) NSMutableArray *m_details;
 @property (nonatomic, strong) NSMutableArray *m_projectInfoArr;
 @property (nonatomic, strong) NSMutableArray *m_listArr;
@@ -164,7 +169,12 @@ typedef enum
 @property (nonatomic, strong) NSMutableArray *m_nears;
 @property (nonatomic, copy) NSString *nearLon;
 @property (nonatomic, copy) NSString *nearLat;
-
+@property (nonatomic, strong) NSMutableArray *nearDatas;
+#pragma mark - 收藏
+@property (nonatomic, copy) NSString *userCollectFKId;
+@property (nonatomic, copy) NSString *IsCollect;
+#pragma mark - 收藏列表
+@property (nonatomic, strong) NSMutableArray *m_collectLists;
 @property (nonatomic, strong) NSArray *nams;
 @property (nonatomic, copy) NSString *messageContent;
 @property (nonatomic, assign) BOOL isKeyword;

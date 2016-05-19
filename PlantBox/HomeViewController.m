@@ -16,6 +16,7 @@
 #import "ErweimaViewController.h"
 #import "ShopController.h"
 #import "ShopInfoController.h"
+#import "HomeBaseController.h"
 
 #import "CommentsController.h"
 #import "SeachController.h"
@@ -41,6 +42,8 @@
     NSMutableArray *listNameArr;
     UIButton *barLeftButton;
     NextManger *manger;
+    
+    NSArray *homeBaseCellImgs;
 }
 @property (nonatomic, strong) SHMenu *menu;
 @property (nonatomic, strong) UITableView *tableView;
@@ -102,7 +105,12 @@
 - (void)reloadDataAction
 {
     [self.tableView reloadData];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+- (void)reloadDataActionBtn
+{
+    [_tableView setContentOffset:CGPointMake(0,0) animated:YES];
+    [self.tableView reloadData];
 }
 #pragma - mark navigationBar
 - (void)_initnavigationBar{
@@ -166,7 +174,7 @@
 #pragma mark - 头视图
 - (void)drawHeardView
 {
-    UIView *heardV = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight*0.5)];
+    UIView *heardV = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight*0.4)];
     heardV.backgroundColor = [UIColor whiteColor];
     // 情景一：采用本地图片实现
     NSArray *imageNames = @[@"zq1.jpg",
@@ -222,7 +230,7 @@
     [heardV addSubview:self.m_scrollView];
     
     UIView *backgroundView = [[UIView alloc] init];
-    backgroundView.frame = CGRectMake(0, heardV.bounds.size.height*0.5+105, ScreenWidth, 40);
+    backgroundView.frame = CGRectMake(0, heardV.bounds.size.height-45, ScreenWidth, 40);
     backgroundView.backgroundColor = [UIColor whiteColor];
     [heardV addSubview:backgroundView];
     
@@ -286,8 +294,10 @@
         NSLog(@"%ld 点击手势视图完成后调用方法",i);
         manger= [NextManger shareInstance];
         manger.isKeyword = YES;
+//        NSLog(@"%ld",i+1);
         manger.keyword = [NSString stringWithFormat:@"%ld",i+1];
         [manger loadData:RequestOfGetprojectlist];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
         
     }];
 }
@@ -372,31 +382,40 @@
     }
     if (indexPath.section == 0)
     {
-        HomeCell *homeCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
-//        homeCell.tag = 1008;
-        ProjectModel *model = manger.m_ProductLists[indexPath.row];
-        homeCell.nameLab.text = model.productName;
-        homeCell.contentLab.text = model.prodeuctNotice;
-        homeCell.infoLab.text = [NSString stringWithFormat:@"2分钟 来自 iPhone6 %@ 距离 5km",model.prodeuctAddress];
-        homeCell.tag = [model.productListID integerValue];
-        for (int i = 0; i < model.productListImgs.count; i++)
-        {
-            UIImageView *image = (UIImageView *)[homeCell viewWithTag:500 + i];
-            image.tag = 500 + i;
-            [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
-                //        titleLabel.text = model.title;
+        if ( manger.m_ProductLists.count == 0) {
+            return cell;
         }
-        homeCell.pinlunBtn.tag = [model.productListID integerValue];
-        [homeCell.pinlunBtn addTarget:self action:@selector(pinlunAction:) forControlEvents:UIControlEventTouchDown];
-        homeCell.selectionStyle = UITableViewCellSelectionStyleNone;
-        return homeCell;
-
+        else
+        {
+            HomeCell *homeCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
+    //        homeCell.tag = 1008;
+            NSLog(@"%ld", manger.m_ProductLists.count);
+            ProjectModel *model = manger.m_ProductLists[indexPath.row];
+            homeCell.nameLab.text = model.productName;
+            homeCell.contentLab.text = model.prodeuctNotice;
+            homeCell.infoLab.text = [NSString stringWithFormat:@"2分钟  %@ 距离 5km",model.prodeuctAddress];
+            homeCell.tag = [model.productListID integerValue];
+            for (int i = 0; i < model.productListImgs.count; i++)
+            {
+                UIImageView *image = (UIImageView *)[homeCell viewWithTag:500 + i];
+                image.tag = 500 + i;
+                [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
+                    //        titleLabel.text = model.title;
+            }
+            homeCell.pinlunBtn.tag = [model.productListID integerValue];
+            [homeCell.pinlunBtn addTarget:self action:@selector(pinlunAction:) forControlEvents:UIControlEventTouchDown];
+            homeCell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            homeBaseCellImgs =  model.productListImgs;
+            return homeCell;
+        }
     }
     UIButton *loadMoreBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     loadMoreBtn.frame = CGRectMake(ScreenWidth/2-50, 3, 100, 25);
     loadMoreBtn.titleLabel.font = [UIFont systemFontOfSize:11];
     [loadMoreBtn setTitle:@"加载更多>>" forState:UIControlStateNormal];
     [loadMoreBtn setTitleColor:RGB(171, 171, 171) forState:UIControlStateNormal];
+    [loadMoreBtn addTarget:self action:@selector(reloadDataActionBtn) forControlEvents:UIControlEventTouchDown];
     [cell.contentView addSubview:loadMoreBtn];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -420,8 +439,11 @@
 //        SVC.hidesBottomBarWhenPushed = YES;
 //        [SVC setModel:model];
 //        [self.navigationController pushViewController:SVC animated:YES];
-        ShopInfoController *subVC = [[ShopInfoController alloc] init];
-        subVC.shopID = [NSString stringWithFormat:@"%ld",cell.tag];
+        HomeBaseController *subVC = [[HomeBaseController alloc] init];
+//        subVC.shopID = [NSString stringWithFormat:@"%ld",cell.tag];
+        subVC.imgs = homeBaseCellImgs;
+        subVC.nameImgstr = cell.nameLab.text;
+        subVC.conetLabstr = cell.contentLab.text;
         subVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:subVC animated:YES];
 

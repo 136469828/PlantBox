@@ -22,7 +22,10 @@
     // Do any additional setup after loading the view.
     [self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
     [self setTabBarController];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(NSIntegerMin, NSIntegerMin) forBarMetrics:UIBarMetricsDefault];
+
+
 }
 
 - (void)didReceiveMemoryWarning {

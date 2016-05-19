@@ -108,6 +108,14 @@
     nameLab.text = manger.userC_Name;
     [topView addSubview:nameLab];
     
+    UILabel *infoLab = [[UILabel alloc] initWithFrame:CGRectMake(0, _userImage.bounds.origin.y+(ScreenHeight-ScreenHeight*0.38-19-29)/3+40, ScreenWidth, 30)];
+    //    nameLab.backgroundColor = [UIColor redColor];
+    infoLab.textAlignment = NSTextAlignmentCenter;
+    infoLab.textColor = [UIColor whiteColor];
+    infoLab.font = [UIFont systemFontOfSize:13];
+    infoLab.text = @"关注: 79 | 粉丝: 50";
+    [topView addSubview:infoLab];
+    
     self.m_scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, screenWidth, screenHiegth)];
     //手动滑动的范围
     self.m_scrollView.contentSize = CGSizeMake(screenWidth*2, 0);
@@ -211,6 +219,7 @@
 }
 - (void)reloadDataAction
 {
+    [self.tableView reloadData];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -468,10 +477,10 @@
     isSelet = !isSelet;
     if (isSelet) {
         cellCount = 5;
-//        [self.tableView reloadData];
+        [self.tableView reloadData];
         //一个section刷新
-        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:0];
-        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+//        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:0];
+//        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
         NSLog(@"展开");
     }
     else
@@ -479,8 +488,8 @@
         cellCount = 2;
         [self.tableView reloadData];
         //一个section刷新
-        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:0];
-        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+//        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:0];
+//        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
         NSLog(@"收起");
     }
 

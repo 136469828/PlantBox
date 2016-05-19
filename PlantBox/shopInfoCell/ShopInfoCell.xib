@@ -38,13 +38,13 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="价格" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Vz-bH-0Oi">
-                        <rect key="frame" x="8" y="305" width="251" height="17"/>
+                        <rect key="frame" x="8" y="305" width="204" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="webtitle Specification adv" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1YJ-ag-xsJ">
-                        <rect key="frame" x="8" y="284" width="251" height="16"/>
+                        <rect key="frame" x="8" y="284" width="204" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -70,7 +70,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4bW-eE-23Z">
-                                <rect key="frame" x="8" y="33" width="304" height="16"/>
+                                <rect key="frame" x="8" y="41" width="304" height="16"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -84,21 +84,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="+"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5vS-gO-ILs">
-                                <rect key="frame" x="110" y="0.0" width="52" height="28"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="进入百科">
-                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstItem="4bW-eE-23Z" firstAttribute="leading" secondItem="KGQ-2K-kuU" secondAttribute="leading" constant="8" id="ACv-a5-STx"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="4bW-eE-23Z" secondAttribute="bottom" constant="8" id="L5f-2A-27l"/>
                             <constraint firstItem="hqX-FD-5tD" firstAttribute="leading" secondItem="tKB-yn-6Xw" secondAttribute="trailing" constant="8" id="Pja-Xs-wMF"/>
-                            <constraint firstItem="5vS-gO-ILs" firstAttribute="top" secondItem="V9A-he-2pM" secondAttribute="top" id="SHV-bn-igd"/>
-                            <constraint firstItem="4bW-eE-23Z" firstAttribute="top" secondItem="eZ9-N5-UDz" secondAttribute="bottom" constant="10" id="Syi-un-vJS"/>
+                            <constraint firstItem="4bW-eE-23Z" firstAttribute="top" secondItem="eZ9-N5-UDz" secondAttribute="bottom" constant="18" id="Syi-un-vJS"/>
                             <constraint firstItem="V9A-he-2pM" firstAttribute="width" secondItem="tKB-yn-6Xw" secondAttribute="width" id="ZLS-MD-fQT"/>
                             <constraint firstItem="tKB-yn-6Xw" firstAttribute="leading" secondItem="V9A-he-2pM" secondAttribute="trailing" constant="8" id="eV1-cf-jpj"/>
                             <constraint firstItem="V9A-he-2pM" firstAttribute="height" secondItem="tKB-yn-6Xw" secondAttribute="height" id="gbf-hc-Art"/>
@@ -109,31 +101,38 @@
                             <constraint firstItem="eZ9-N5-UDz" firstAttribute="top" secondItem="KGQ-2K-kuU" secondAttribute="top" constant="6" id="qrl-qY-lXL"/>
                             <constraint firstItem="V9A-he-2pM" firstAttribute="top" secondItem="tKB-yn-6Xw" secondAttribute="top" id="uEi-we-cVA"/>
                             <constraint firstItem="eZ9-N5-UDz" firstAttribute="leading" secondItem="KGQ-2K-kuU" secondAttribute="leading" constant="8" id="xKb-3z-AlI"/>
-                            <constraint firstItem="V9A-he-2pM" firstAttribute="leading" secondItem="5vS-gO-ILs" secondAttribute="trailing" constant="25" id="yua-0p-SUD"/>
                             <constraint firstAttribute="trailing" secondItem="4bW-eE-23Z" secondAttribute="trailing" constant="8" id="zWS-nP-7eC"/>
                         </constraints>
                     </view>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r9E-aP-9uv">
                         <rect key="frame" x="254" y="275" width="58" height="52"/>
-                        <color key="backgroundColor" red="0.96862751250000001" green="0.81960791349999995" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="58" id="U05-Q1-qX7"/>
                             <constraint firstAttribute="height" constant="52" id="Ucq-Wy-iJZ"/>
                         </constraints>
-                        <state key="normal" title="B" image="collect_03.png"/>
+                        <state key="normal" title="B"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5vS-gO-ILs">
+                        <rect key="frame" x="222" y="297" width="52" height="28"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <state key="normal" title="进入百科">
+                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
                     </button>
                 </subviews>
                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="deviceRGB"/>
                 <constraints>
                     <constraint firstItem="1YJ-ag-xsJ" firstAttribute="trailing" secondItem="9Vz-bH-0Oi" secondAttribute="trailing" id="1OD-Zv-t3A"/>
                     <constraint firstItem="sQY-QK-lJU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="1Xd-5o-rIg"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="9Vz-bH-0Oi" secondAttribute="trailing" constant="53" id="44v-e8-WK1"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="9Vz-bH-0Oi" secondAttribute="trailing" constant="100" id="44v-e8-WK1"/>
                     <constraint firstAttribute="bottom" secondItem="KGQ-2K-kuU" secondAttribute="bottom" id="89f-2N-V4W"/>
                     <constraint firstAttribute="leadingMargin" secondItem="1YJ-ag-xsJ" secondAttribute="leading" id="DM2-68-5rY"/>
                     <constraint firstItem="1YJ-ag-xsJ" firstAttribute="top" secondItem="sQY-QK-lJU" secondAttribute="bottom" constant="20" id="PaI-28-mFA"/>
                     <constraint firstAttribute="leadingMargin" secondItem="9Vz-bH-0Oi" secondAttribute="leading" id="RLe-Ny-e4u"/>
                     <constraint firstAttribute="trailing" secondItem="KGQ-2K-kuU" secondAttribute="trailing" id="Sck-b8-euJ"/>
                     <constraint firstItem="sQY-QK-lJU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Yd5-K3-MSg"/>
+                    <constraint firstItem="hqX-FD-5tD" firstAttribute="top" secondItem="5vS-gO-ILs" secondAttribute="bottom" constant="5" id="ZfW-1B-oW4"/>
+                    <constraint firstItem="5vS-gO-ILs" firstAttribute="leading" secondItem="9Vz-bH-0Oi" secondAttribute="trailing" constant="10" id="ZoF-rz-9tm"/>
                     <constraint firstItem="KGQ-2K-kuU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="dDH-Oi-TLM"/>
                     <constraint firstItem="KGQ-2K-kuU" firstAttribute="top" secondItem="9Vz-bH-0Oi" secondAttribute="bottom" constant="8" id="dZb-fj-kpq"/>
                     <constraint firstItem="9Vz-bH-0Oi" firstAttribute="top" secondItem="1YJ-ag-xsJ" secondAttribute="bottom" constant="5" id="eQ4-ml-SPi"/>
@@ -151,7 +150,6 @@
                 <outlet property="addBtn" destination="hqX-FD-5tD" id="Bx7-iB-ntY"/>
                 <outlet property="bayTotal" destination="eZ9-N5-UDz" id="5JF-L4-DRb"/>
                 <outlet property="cellImg" destination="Nii-le-IMf" id="ZGf-ua-NwZ"/>
-                <outlet property="collectionBtn" destination="r9E-aP-9uv" id="VEu-iS-DiJ"/>
                 <outlet property="countLab" destination="tKB-yn-6Xw" id="VCL-4Y-QbJ"/>
                 <outlet property="deleteBtn" destination="V9A-he-2pM" id="nLR-gB-cpO"/>
                 <outlet property="price" destination="9Vz-bH-0Oi" id="z9F-MT-Kgc"/>
@@ -163,7 +161,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="collect_03.png" width="180" height="180"/>
         <image name="zq1.jpg" width="660" height="440"/>
     </resources>
 </document>
