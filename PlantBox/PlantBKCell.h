@@ -10,6 +10,7 @@
 
 @interface PlantBKCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UIImageView *imgV;
 @property (weak, nonatomic) IBOutlet UILabel *titleLab;
 @property (weak, nonatomic) IBOutlet UILabel *contentLab;
 @end

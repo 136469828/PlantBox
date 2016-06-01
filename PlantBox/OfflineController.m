@@ -113,7 +113,7 @@
     NSArray *array=[dic objectForKey:DIC_ARARRY];
     
     //判断是收缩还是展开
-    if ([[dic objectForKey:DIC_EXPANDED]intValue]) {
+    if (![[dic objectForKey:DIC_EXPANDED]intValue]) {
         return array.count;
     }else
     {

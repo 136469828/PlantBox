@@ -8,8 +8,15 @@
 
 #import "PlantBKController.h"
 #import "PlantBKCell.h"
+#import "NextManger.h"
+#import "ProjectModel.h"
+#import "UIImageView+WebCache.h"
+#import "WebModel.h"
+#import "WebViewController.h"
 @interface PlantBKController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>
-
+{
+    NextManger *manger;
+}
 @property (nonatomic ,strong) UITableView *tableView;
 
 @end
@@ -19,12 +26,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+//    NSLog(@"%@ %@",_classID,_channelId);
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     self.view.backgroundColor = [UIColor whiteColor];
     [self setTableView];
+    manger = [NextManger shareInstance];
+    manger.channelID = self.channelId;
+    manger.keyword = self.classID;
+    [manger loadData:RequestOfGetarticlelist];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDatas) name:@"Getarticlelist" object:nil];
 }
-
+- (void)reloadDatas
+{
+    [self.tableView reloadData];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -37,7 +53,7 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
-    self.tableView.estimatedRowHeight = 75;
+//    self.tableView.estimatedRowHeight = 75;
     [self.view addSubview:_tableView];
     [self registerNib];
 }
@@ -49,16 +65,35 @@
     }
     
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100;
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return manger.m_listArr.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     PlantBKCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlantBKCell"];
-    cell.titleLab.text = @"多肉植物";
-    cell.contentLab.text = @"    多肉植物是指植物营养器官肥大的高等植物，通常具根、茎、叶三种营养器官和花、果实、种子三种繁殖器官。在园艺上，又称多浆植物或多肉花卉，但以多肉植物这个名称最为常用。全世界共有多肉植物一万余种，它们都属于高等植物(绝大多数是被子植物)。在植物分类上隶属几十个科，个别专家认为有67个科中含有多肉植物，但大多数专家认为只有50余科";
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+    ProjectModel *model = manger.m_listArr[indexPath.row];
+    cell.titleLab.text = model.title;
+    cell.contentLab.text = model.summary;
+    cell.tag = [model.projectIDofModel integerValue];
+    cell.imgV.layer.cornerRadius = 5;
+    cell.imgV.layer.masksToBounds = YES;
+    [cell.imgV sd_setImageWithURL:[NSURL URLWithString:model.author]];
     return cell;
 }
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PlantBKCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail/%ld",cell.tag]];
+    WebViewController *SVC = [[WebViewController alloc] init];
+    SVC.title = @"植物百科";
+    SVC.hidesBottomBarWhenPushed = YES;
+    [SVC setModel:model];
+    [self.navigationController pushViewController:SVC animated:YES];
+}
 @end

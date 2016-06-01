@@ -46,8 +46,8 @@
 {
     //创建一个数组
     _DataArray=[[NSMutableArray alloc] init];
-    NSArray *titles = @[@"我的好友",@"最近联系人"];
-    NSArray *subTitles = @[@[@"我的设备",@"马云",@"马化腾",@"乔布斯"],@[@"马云",@"李彦宏",@"乔布斯",@"库克",@"路飞",@"鸣人"]];
+    NSArray *titles = @[@"最近联系人",@"我的好友"];
+    NSArray *subTitles = @[@[@"我的设备",@"暂无更多好友"],@[@"无更多好友"]];
     for (int i=0;i<titles.count ; i++) {
         NSMutableArray *array=[[NSMutableArray alloc] init];
         for (int j=0; j< [[subTitles objectAtIndex:i] count];j++) {
@@ -122,6 +122,15 @@
     NSMutableDictionary *dic=[_DataArray objectAtIndex:section];
     NSArray *array=[dic objectForKey:DIC_ARARRY];
     
+    if (section == 0) {
+        //判断是收缩还是展开
+        if (![[dic objectForKey:DIC_EXPANDED]intValue]) {
+            return array.count;
+        }else
+        {
+            return 0;
+        }
+    }
     //判断是收缩还是展开
     if ([[dic objectForKey:DIC_EXPANDED]intValue]) {
         return array.count;

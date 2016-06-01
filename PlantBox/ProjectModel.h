@@ -24,7 +24,7 @@
 
 @property (nonatomic, copy) NSString *summary;          // 内容
 @property (nonatomic, copy) NSString *title;            // 标题
-@property (nonatomic, copy) NSString *author;           // 报告人
+@property (nonatomic, copy) NSString *author;           // 报告人 / 图片
 @property (nonatomic, copy) NSString *listCreateDate;   // 时间
 @property (nonatomic, copy) NSString *projectIDofModel; // 项目ID
 
@@ -52,12 +52,13 @@
 
 #pragma mark - 产品列表
 @property (nonatomic, strong) NSMutableArray *productListImgs;
-@property (nonatomic, copy) NSString *isDeleted;
-@property (nonatomic, copy) NSString *totalRead;
+@property (nonatomic, copy) NSString *totalComment;
+@property (nonatomic, copy) NSString *hits;
 @property (nonatomic, copy) NSString *totalCollect;
 @property (nonatomic, copy) NSString *productName;
-//@property (nonatomic, copy) NSString *teset;
+@property (nonatomic, copy) NSString *productImg;
 @property (nonatomic, copy) NSString *productListID;
+@property (nonatomic, copy) NSString *productUserID;
 @property (nonatomic, copy) NSString *prodeuctAddress;
 @property (nonatomic, copy) NSString *prodeuctNotice;
 #pragma mark - 商品列表
@@ -72,7 +73,10 @@
 @property (nonatomic, copy) NSString *shopInfoListName;
 @property (nonatomic, copy) NSString *shopInfoListTotalBuy;
 @property (nonatomic, copy) NSString *shopinfoListPrice;
+@property (nonatomic, copy) NSString *shopinfobuyID;
 @property (nonatomic, strong) NSArray *shopinfoListImgs;
+@property (nonatomic, copy) NSString *shopinfoListID;
+
 #pragma mark - 基地信息
 @property (nonatomic, copy) NSString *myBaseDistance;
 @property (nonatomic, copy) NSString *myBasePlantName;
@@ -82,8 +86,51 @@
 @property (nonatomic, copy) NSString *nearName;
 @property (nonatomic, copy) NSString *nearPraiseCount;
 @property (nonatomic, copy) NSString *nearImg;
+@property (nonatomic, copy) NSString *nearID;
+@property (nonatomic, copy) NSString *nearAddress;
 #pragma mark - 收藏列表
 @property (nonatomic, copy) NSString *colletName;
 @property (nonatomic, copy) NSString *collectTime;
 @property (nonatomic, copy) NSString *collectID;
+@property (nonatomic, copy) NSString *collcetImg;
+#pragma mark - 评论列表
+@property (nonatomic, copy) NSString *comName;
+@property (nonatomic, copy) NSString *comment;
+@property (nonatomic, copy) NSString *comTime;
+@property (nonatomic, copy) NSString *comImg;
+
+#pragma mark - 订单列表
+@property (nonatomic, copy) NSString *myOrderName;
+@property (nonatomic, copy) NSString *myOrderAddress;
+@property (nonatomic, copy) NSString *myOrderNo;
+@property (nonatomic, copy) NSString *myOrderTime;
+
+#pragma mark - 我的发布植物列表
+@property (nonatomic, copy) NSString *goodpageName;
+@property (nonatomic, copy) NSString *goodpagImg;
+@property (nonatomic, copy) NSString *goodpagID;
+
+#pragma mark - 教程
+@property (nonatomic, copy) NSString *headTitle;
+@property (nonatomic, strong) NSArray *goodComImgLists;
+@property (nonatomic, copy) NSString *goodsCom;
+@property (nonatomic, copy) NSString *goodsID;
+@property (nonatomic, copy) NSString *goodsTime;
+@property (nonatomic, copy) NSString *goodImg;
+
+#pragma mark - 教程详情
+@property (nonatomic, copy) NSString *rcourseTitle;
+@property (nonatomic, strong) NSArray *rcourseImgLists;
+@property (nonatomic, copy) NSString *rcourseCom;
+@property (nonatomic, copy) NSString *recourseTime;
+
+#pragma mark - 用户基地详情
+@property (nonatomic, copy) NSString *baseName;
+@property (nonatomic, copy) NSString *baseImg;
+@property (nonatomic, strong) NSArray *baseImgLists;
+@property (nonatomic, copy) NSString *baseCom;
+@property (nonatomic, copy) NSString *baseTime;
+@property (nonatomic, copy) NSString *baseID;
 @end
+
+

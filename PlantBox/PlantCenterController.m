@@ -12,14 +12,16 @@
 #import "HardwareController.h"
 #import "WebModel.h"
 #import "WebViewController.h"
-#import "TheOfficialTutorialController.h"
+#import "TheOfficialTutorialListController.h"
 #import "UserShareController.h"
-#import "PublishedController.h"
+#import "PublishedListController.h"
 #import "GrowingEnvironmentController.h"
 #import "ErweimaViewController.h"
 #import "OperationController.h"
 #import "WorkForDayController.h"
 #import "ConditionsController.h"
+#import "PlantBKController.h"
+
 @interface PlantCenterController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>
 {
     NSArray *imgs;
@@ -33,12 +35,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = @"种植中心";
+//    self.title = @"种植中心";
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     self.view.backgroundColor = [UIColor whiteColor];
-    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"zhuangtai_jk",@"huanjing_jk",@"yindao_jk",@"024"],@[@"saomiao_yj",@"caozuo_yj"]];
-//    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"huanjing_jk"],@[@"saomiao_yj",@"caozuo_yj"]];
+//    imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"zhuangtai_jk",@"huanjing_jk",@"yindao_jk",@"024"],@[@"saomiao_yj",@"caozuo_yj"]];
+       imgs = @[@[@"baike_bk",@"jiaogcheng_bk",@"023",@"fabu_bk"],@[@"saomiao_yj",@"caozuo_yj"]];
+
     [self setTableView];
 }
 
@@ -59,16 +62,16 @@
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView // 一个表视图里面有多少组
 {
-    return 3;
+    return 2;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 2) {
+//    if (section == 2) {
+//        return 2;
+//    }
+    if (section == 1) {
         return 2;
     }
-//    if (section == 1) {
-//        return 1;
-//    }
     return 4;
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section // 返回组的头宽
@@ -90,8 +93,8 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
     }
-    NSArray *titles = @[@[@"植物百科",@"官方教程",@"参考用户教程",@"我要发布教程"],@[@"生长状态",@"生长环境",@"生长条件",@"当日工作"],@[@"扫描设备",@"操作系统"]];
-    //    NSArray *subTitles = @[@[@"我的二维码"],@[@"输入口令"],@[@"查看分销网络",@"下线列表",@"收入统计"]];
+    NSArray *titles = @[@[@"植物百科",@"官方教程",@"参考用户教程",@"我要发布教程"],@[@"扫描设备",@"操作系统"]];
+//    NSArray *titles = @[@[@"植物百科",@"官方教程",@"参考用户教程",@"我要发布教程"],@[@"生长状态",@"生长环境",@"生长条件",@"当日工作"],@[@"扫描设备",@"操作系统"]];
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(40, 0,100, 44)];
     lab.text = [NSString stringWithFormat:@"%@",titles[indexPath.section][indexPath.row]];
     //        lab.backgroundColor = [UIColor redColor];
@@ -110,32 +113,39 @@
         switch (indexPath.row) {
             case 0:
             {
-                WebModel *model = [[WebModel alloc] initWithUrl:@"http://plantbox.meidp.com/Mobi/Home/NoticeList?ChannelId=1001"];
-                WebViewController *SVC = [[WebViewController alloc] init];
+//                WebModel *model = [[WebModel alloc] initWithUrl:@"http://plantbox.meidp.com/Mobi/Home/NoticeList?ChannelId=1001"];
+                PlantBKController *SVC = [[PlantBKController alloc] init];
                 SVC.title = @"植物百科";
+                SVC.channelId = @"1001";
                 SVC.hidesBottomBarWhenPushed = YES;
-                [SVC setModel:model];
+//                [SVC setModel:model];
                 [self.navigationController pushViewController:SVC animated:YES];
             }
                 break;
             case 1:
             {
-                TheOfficialTutorialController *subVC = [[TheOfficialTutorialController alloc] init];
-                subVC.title = @"官方教程";
-                [self.navigationController pushViewController:subVC animated:YES];
+//                TheOfficialTutorialListController *subVC = [[TheOfficialTutorialListController alloc] init];
+//                subVC.title = @"官方教程";
+//                [self.navigationController pushViewController:subVC animated:YES];
+                PlantBKController *SVC = [[PlantBKController alloc] init];
+                SVC.title = @"官方教程";
+                SVC.channelId = @"1002";
+                SVC.hidesBottomBarWhenPushed = YES;
+                //                [SVC setModel:model];
+                [self.navigationController pushViewController:SVC animated:YES];
             }
                 break;
             case 2:
             {
                 UserShareController *subVC = [[UserShareController alloc] init];
-                subVC.title = @"用户分享";
+                subVC.title = @"用户教程";
                 [self.navigationController pushViewController:subVC animated:YES];
 
             }
                 break;
             case 3:
             {
-                PublishedController *subVC = [[PublishedController alloc] init];
+                PublishedListController *subVC = [[PublishedListController alloc] init];
                 subVC.title = @"我要发布教程";
                 [self.navigationController pushViewController:subVC animated:YES];
 
@@ -146,43 +156,44 @@
                 break;
         }
     }
-    else if (indexPath.section == 1)
-    {
-        // @"生长状态",@"生长环境",@"生长条件",@"当日工作"
-        switch (indexPath.row) {
-            case 0:
-            {
-                
-            }
-                break;
-            case 1:
-            {
-                GrowingEnvironmentController *subVC = [[GrowingEnvironmentController alloc] init];
-                subVC.title = @"生长环境";
-                [self.navigationController pushViewController:subVC animated:YES];
-
-            }
-                break;
-            case 2:
-            {
-                ConditionsController  *subVC = [[ConditionsController alloc] init];
-                subVC.title = @"生长条件";
-                [self.navigationController pushViewController:subVC animated:YES];
-            }
-                break;
-            case 3:
-            {
-                WorkForDayController *subVC = [[WorkForDayController alloc] init];
-                subVC.title = @"当日工作";
-                [self.navigationController pushViewController:subVC animated:YES];
-
-            }
-                break;
-                
-            default:
-                break;
-        }
-    }
+//    else if (indexPath.section == 1)
+//    {
+//        // @"生长状态",@"生长环境",@"生长条件",@"当日工作"
+//        switch (indexPath.row) {
+//            case 0:
+//            {
+//                UIAlertView *al = [[UIAlertView alloc] initWithTitle:@"提示" message:@"此功能开发中" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+//                [al show];
+//            }
+//                break;
+//            case 1:
+//            {
+//                GrowingEnvironmentController *subVC = [[GrowingEnvironmentController alloc] init];
+//                subVC.title = @"生长环境";
+//                [self.navigationController pushViewController:subVC animated:YES];
+//
+//            }
+//                break;
+//            case 2:
+//            {
+//                ConditionsController  *subVC = [[ConditionsController alloc] init];
+//                subVC.title = @"生长条件";
+//                [self.navigationController pushViewController:subVC animated:YES];
+//            }
+//                break;
+//            case 3:
+//            {
+//                WorkForDayController *subVC = [[WorkForDayController alloc] init];
+//                subVC.title = @"当日工作";
+//                [self.navigationController pushViewController:subVC animated:YES];
+//
+//            }
+//                break;
+//                
+//            default:
+//                break;
+//        }
+//    }
     else
     {
         // @"扫描设备",@"操作系统"
@@ -208,23 +219,6 @@
                 break;
         }
     }
-//    if (indexPath.row == 0)
-//    {
-//        EncyclopediaViewController *subVC = [[EncyclopediaViewController alloc] init];
-//        subVC.title = @"种植百科";
-//        [self.navigationController pushViewController:subVC animated:YES];
-//    }
-//    else if (indexPath.row == 1)
-//    {
-//        MonitoringController *subVC = [[MonitoringController alloc] init];
-//        subVC.title = @"植物监控";
-//        [self.navigationController pushViewController:subVC animated:YES];
-//    }
-//    else if (indexPath.row == 2)
-//    {
-//        HardwareController *subVC = [[HardwareController alloc] init];
-//        subVC.title = @"硬件对接";
-//        [self.navigationController pushViewController:subVC animated:YES];
-//    }
+
 }
 @end

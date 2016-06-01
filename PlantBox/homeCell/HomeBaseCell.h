@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *img2;
 @property (weak, nonatomic) IBOutlet UIImageView *img3;
 @property (weak, nonatomic) IBOutlet UILabel *conetLab;
+@property (weak, nonatomic) IBOutlet UILabel *subConlab;
 
 @end

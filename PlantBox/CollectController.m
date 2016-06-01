@@ -10,6 +10,8 @@
 #import "NextManger.h"
 #import "ProjectModel.h"
 #import "ShopInfoController.h"
+#import "MyCollectCell.h"
+#import "UIImageView+WebCache.h"
 @interface CollectController ()<UITableViewDataSource,UITableViewDelegate>
 {
     NextManger *manger;
@@ -39,6 +41,16 @@
     self.tableView.dataSource = self;
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:self.tableView];
+    
+    [self registerNib];
+}
+#pragma mark - 注册Cell
+- (void)registerNib{
+    NSArray *registerNibs = @[@"MyCollectCell"];
+    for (int i = 0 ; i < registerNibs.count; i++) {
+        [_tableView registerNib:[UINib nibWithNibName:registerNibs[i] bundle:nil] forCellReuseIdentifier:registerNibs[i]];
+    }
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -54,18 +66,24 @@
       return manger.m_collectLists.count;
     }
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 65;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *infierCell = @"cell";
-    UITableViewCell *cell = nil;
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:infierCell];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
+//    static NSString *infierCell = @"cell";
+//    UITableViewCell *cell = nil;
+//    if (!cell) {
+//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:infierCell];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    }
+    MyCollectCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCollectCell"];
     ProjectModel *model = manger.m_collectLists[indexPath.row];
-    cell.textLabel.text = model.colletName;
-    cell.detailTextLabel.text = model.collectTime;
-    cell.imageView.image = [UIImage imageNamed:@"5.jpg"];
+    cell.titleLab.text = model.colletName;
+    cell.timeLab.text = model.collectTime;
+    [cell.img sd_setImageWithURL:[NSURL URLWithString:model.collcetImg]];
     cell.tag = [model.collectID integerValue];
     return cell;
 }

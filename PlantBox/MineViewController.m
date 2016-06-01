@@ -11,8 +11,22 @@
 #import "TheActivityViewController.h"
 #import "SettingViewController.h"
 #import "CollectController.h"
+#import "MyOrderController.h"
 #import "NextManger.h"
-@interface MineViewController ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate>
+#import "UIImageView+WebCache.h"
+#import "AQCollectionVC.h"
+#import "BasePlantViewController.h"
+//#import <ShareSDK/ShareSDK.h>
+//#import <ShareSDKExtension/SSEShareHelper.h>
+//#import <ShareSDKUI/ShareSDK+SSUI.h>
+//#import <ShareSDKUI/SSUIShareActionSheetStyle.h>
+//#import <ShareSDKUI/SSUIShareActionSheetCustomItem.h>
+//#import <ShareSDK/ShareSDK+Base.h>
+//
+//#import <ShareSDKExtension/ShareSDK+Extension.h>
+
+#import "UMSocial.h"
+@interface MineViewController ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UINavigationControllerDelegate,UMSocialUIDelegate>
 {
     UIButton *imgBtn;
     BOOL isImgOrPhone;
@@ -31,7 +45,7 @@
 //    self.view.backgroundColor = [UIColor lightGrayColor];
     [self drawTopview];
 //    NSArray *titles = @[@"我的基地", @"我的活动", @"我的收藏", @"我的订单", @"活动专区", @"我的分享", @"联系客服", @"我的钱包",@"设置"];
-    NSArray *titles = @[@"我的基地", @"我的收藏", @"我的订单", @"我的分享", @"联系客服", @"活动专区",@"设置"];
+    NSArray *titles = @[@"我的基地", @"我的收藏", @"我的订单", @"我的植物", @"联系客服", @"活动专区",@"设置"];
     NSArray *imageNames = @[@"mine01",@"mine03",@"mine04",@"mine06",@"mine07",@"mine08",@"mine09"];
     
     [self drawHoneViewWithAppviewW:ScreenWidth/3 AppviewH:(ScreenHeight-ScreenHeight*0.34-19-29)/3 Totalloc:3 Count:7 ImageArray:imageNames TitleArray:titles];
@@ -51,7 +65,8 @@
     [topView addSubview:titleLab];
     
     _userImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth/2-((ScreenHeight-ScreenHeight*0.38-19-29)/3)/2, titleLab.bounds.origin.y + 60, (ScreenHeight-ScreenHeight*0.38-19-29)/3, (ScreenHeight-ScreenHeight*0.38-19-29)/3)];
-    _userImage.image = [UIImage imageNamed:@"testUserImg"];
+    NextManger *manger = [NextManger shareInstance];
+    [_userImage sd_setImageWithURL:[NSURL URLWithString:manger.userPhoto]];
     _userImage.layer.masksToBounds = YES;
     _userImage.layer.cornerRadius = ((ScreenHeight-ScreenHeight*0.38-19-29)/3)/2;
     [topView addSubview:_userImage];
@@ -182,7 +197,17 @@
     }
     else if (!isImgOrPhone)
     {
-        NSLog(@"打电话");
+        switch (buttonIndex) {
+            case 0:
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://0769-82669988"]];
+            }
+                break;
+                
+            default:
+                break;
+        }
+
     }
     
 }
@@ -245,20 +270,48 @@
             [self.navigationController pushViewController:myBase animated:YES];
         }
             break;
-        case 1205:
+        case 1202:
         {
-            TheActivityViewController *myBase = [[TheActivityViewController alloc] init];
+            MyOrderController *myBase = [[MyOrderController alloc] init];
             myBase.hidesBottomBarWhenPushed = YES;
-            myBase.title = @"活动专区";
+            myBase.title = @"我的订单";
             [self.navigationController pushViewController:myBase animated:YES];
+        }
+            break;
+        case 1203:
+        {
+//            [self ShareApp:self.view];
+//            [UMSocialData defaultData].extConfig.title = @"植物君邀请您加入PlantBox的世界";
+//            [UMSocialData defaultData].extConfig.qqData.url = @"http://oa.meidp.com/";
+//            [UMSocialSnsService presentSnsIconSheetView:self
+//                                                 appKey:@"57429ef6e0f55a7716000931"
+//                                              shareText:@"加入植物盒子，享受绿色生活，http://oa.meidp.com/"
+//                                             shareImage:[UIImage imageNamed:@"plantBox"]
+//                                        shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline,UMShareToQQ,UMShareToQzone,UMShareToSina]
+//                                               delegate:self];
+            BasePlantViewController *subVC = [[BasePlantViewController alloc] init];
+            subVC.hidesBottomBarWhenPushed = YES;
+            subVC.title = @"基地植物";
+            [self.navigationController pushViewController:subVC animated:YES];
+
+            
         }
             break;
         case 1204:
         {
             isImgOrPhone = NO;
             [self showActionsheet];
+
         }
             break;
+        case 1205:
+        {
+            TheActivityViewController *myBase = [[TheActivityViewController alloc] init];                 myBase.hidesBottomBarWhenPushed = YES;
+            myBase.title = @"活动专区";
+            [self.navigationController pushViewController:myBase animated:YES];
+        }
+            break;
+
         case 1206:
         {
             SettingViewController *myBase = [[SettingViewController alloc] init];
@@ -280,9 +333,116 @@
                                   delegate:self
                                   cancelButtonTitle:@"取消"
                                   destructiveButtonTitle:nil
-                                  otherButtonTitles:@"4000-863-863",nil];
+                                  otherButtonTitles:@"0769-82669988",nil];
     actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
     [actionSheet showInView:self.view];
 }
 
+#if 0
+-(void)ShareApp:(MineViewController *)bar
+{
+    //    NSLog(@"url :%@",disCountDetailURL(_articleInfo.articleid)); http://viewer.maka.im/k/ORXCZ50R
+    
+    
+    //    NSArray* imageArray = @[_articleInfo.imageUrl];
+    //构造分享内容 _articleInfo.title
+    NSMutableDictionary *shareParams=[NSMutableDictionary dictionary];
+    [shareParams SSDKSetupShareParamsByText:@"植物盒子的分享"
+                                     images:nil
+                                        url:[NSURL URLWithString:@"http://www.baidu.com"]
+                                      title:@"欢迎使用植物盒子"
+                                       type:SSDKContentTypeAuto];
+    
+    
+    
+    //    NSLog(@"%@ %@",_articleInfo.title,[NSURL URLWithString:disCountDetailURL(_articleInfo.articleid)]);
+    __weak MineViewController *theController = self;
+    
+    
+    [ShareSDK showShareActionSheet:bar
+                             items:nil
+                       shareParams:shareParams
+               onShareStateChanged:^(SSDKResponseState state,
+                                     SSDKPlatformType platformType,
+                                     NSDictionary *userData,
+                                     SSDKContentEntity *contentEntity,
+                                     NSError *error, BOOL end) {
+                   
+                   switch (state) {
+                           
+                       case SSDKResponseStateBegin:
+                       {
+                           //                           [theController showLoadingView:YES];
+                           break;
+                       }
+                       case SSDKResponseStateSuccess:
+                       {
+                           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"分享成功"
+                                                                               message:nil
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:@"确定"
+                                                                     otherButtonTitles:nil];
+                           [alertView show];
+                           break;
+                       }
+                       case SSDKResponseStateFail:
+                       {
+                           if (platformType == SSDKPlatformTypeSMS && [error code] == 201)
+                           {
+                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+                                                                               message:@"失败原因可能是：1、短信应用没有设置帐号；2、设备不支持短信应用；3、短信应用在iOS 7以上才能发送带附件的短信。"
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:@"OK"
+                                                                     otherButtonTitles:nil, nil];
+                               [alert show];
+                               break;
+                           }
+                           else if(platformType == SSDKPlatformTypeMail && [error code] == 201)
+                           {
+                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+                                                                               message:@"失败原因可能是：1、邮件应用没有设置帐号；2、设备不支持邮件应用；"
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:@"OK"
+                                                                     otherButtonTitles:nil, nil];
+                               [alert show];
+                               break;
+                           }
+                           else
+                           {
+                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+                                                                               message:[NSString stringWithFormat:@"%@",error]
+                                                                              delegate:nil
+                                                                     cancelButtonTitle:@"OK"
+                                                                     otherButtonTitles:nil, nil];
+                               [alert show];
+                               break;
+                           }
+                           break;
+                       }
+                       case SSDKResponseStateCancel:
+                       {
+                           //                           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"分享已取消"
+                           //                                                                               message:nil
+                           //                                                                              delegate:nil
+                           //                                                                     cancelButtonTitle:@"确定"
+                           //                                                                     otherButtonTitles:nil];
+                           //                           [alertView show];
+                           break;
+                       }
+                       default:
+                           break;
+                   }
+                   
+                   if (state != SSDKResponseStateBegin)
+                   {
+                       //                       [theController showLoadingView:NO];
+                   }
+                   
+               }];
+    
+    
+    [self.view endEditing:YES];
+
+}
+#endif
 @end

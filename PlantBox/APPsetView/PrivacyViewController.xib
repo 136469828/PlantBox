@@ -46,12 +46,12 @@
                             <exclude reference="V6d-uy-khm"/>
                         </mask>
                         <mask key="constraints">
-                            <exclude reference="JRU-xn-1qL"/>
-                            <exclude reference="YJq-Sf-4N7"/>
-                            <exclude reference="h8o-yH-Fqa"/>
                             <exclude reference="2OE-Y0-pO6"/>
                             <exclude reference="XIZ-Mz-tcA"/>
                             <exclude reference="t3A-GC-FZq"/>
+                            <exclude reference="JRU-xn-1qL"/>
+                            <exclude reference="YJq-Sf-4N7"/>
+                            <exclude reference="h8o-yH-Fqa"/>
                         </mask>
                     </variation>
                     <variation key="widthClass=compact">
@@ -60,12 +60,12 @@
                             <include reference="V6d-uy-khm"/>
                         </mask>
                         <mask key="constraints">
-                            <include reference="JRU-xn-1qL"/>
-                            <include reference="YJq-Sf-4N7"/>
-                            <include reference="h8o-yH-Fqa"/>
                             <include reference="2OE-Y0-pO6"/>
                             <include reference="XIZ-Mz-tcA"/>
                             <include reference="t3A-GC-FZq"/>
+                            <include reference="JRU-xn-1qL"/>
+                            <include reference="YJq-Sf-4N7"/>
+                            <include reference="h8o-yH-Fqa"/>
                         </mask>
                     </variation>
                 </view>
@@ -104,12 +104,12 @@
                         <mask key="constraints">
                             <exclude reference="Z4E-LJ-vQP"/>
                             <exclude reference="i6G-UB-1y3"/>
-                            <exclude reference="5I7-J2-JJh"/>
-                            <exclude reference="Sb3-vz-wOP"/>
-                            <exclude reference="u0J-Wn-8zd"/>
                             <exclude reference="FkQ-26-raX"/>
                             <exclude reference="hmw-Xf-xol"/>
                             <exclude reference="oeS-wC-ZBJ"/>
+                            <exclude reference="5I7-J2-JJh"/>
+                            <exclude reference="Sb3-vz-wOP"/>
+                            <exclude reference="u0J-Wn-8zd"/>
                         </mask>
                     </variation>
                     <variation key="widthClass=compact">
@@ -120,12 +120,12 @@
                         <mask key="constraints">
                             <include reference="Z4E-LJ-vQP"/>
                             <include reference="i6G-UB-1y3"/>
-                            <include reference="5I7-J2-JJh"/>
-                            <include reference="Sb3-vz-wOP"/>
-                            <include reference="u0J-Wn-8zd"/>
                             <include reference="FkQ-26-raX"/>
                             <include reference="hmw-Xf-xol"/>
                             <include reference="oeS-wC-ZBJ"/>
+                            <include reference="5I7-J2-JJh"/>
+                            <include reference="Sb3-vz-wOP"/>
+                            <include reference="u0J-Wn-8zd"/>
                         </mask>
                     </variation>
                 </view>

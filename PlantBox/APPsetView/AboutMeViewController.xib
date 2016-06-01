@@ -22,22 +22,6 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon.png" translatesAutoresizingMaskIntoConstraints="NO" id="MmS-NL-5lA">
-                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="60" id="hJC-vC-iKo"/>
-                    </constraints>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="hJC-vC-iKo"/>
-                        </mask>
-                    </variation>
-                    <variation key="widthClass=compact">
-                        <mask key="constraints">
-                            <include reference="hJC-vC-iKo"/>
-                        </mask>
-                    </variation>
-                </imageView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vNx-jc-Brm">
                     <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -58,6 +42,22 @@
                         <action selector="introduceBtn:" destination="-1" eventType="touchUpInside" id="YZt-UA-Rbh"/>
                     </connections>
                 </button>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plantBox.png" translatesAutoresizingMaskIntoConstraints="NO" id="MmS-NL-5lA">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="hJC-vC-iKo"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="hJC-vC-iKo"/>
+                        </mask>
+                    </variation>
+                    <variation key="widthClass=compact">
+                        <mask key="constraints">
+                            <include reference="hJC-vC-iKo"/>
+                        </mask>
+                    </variation>
+                </imageView>
             </subviews>
             <color key="backgroundColor" white="0.93610356139999995" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
@@ -77,50 +77,50 @@
             <variation key="default">
                 <mask key="subviews">
                     <exclude reference="KaJ-zp-0s7"/>
-                    <exclude reference="MmS-NL-5lA"/>
                     <exclude reference="vNx-jc-Brm"/>
                     <exclude reference="bQB-k8-9Wa"/>
+                    <exclude reference="MmS-NL-5lA"/>
                 </mask>
                 <mask key="constraints">
+                    <exclude reference="bo7-Yg-agW"/>
+                    <exclude reference="f9e-hg-v8u"/>
+                    <exclude reference="ntS-WJ-3o4"/>
+                    <exclude reference="1iq-sA-wtU"/>
+                    <exclude reference="AFv-hN-cN2"/>
+                    <exclude reference="Jnc-G7-0xI"/>
                     <exclude reference="fHZ-Xm-kfC"/>
                     <exclude reference="gNm-Yt-lE1"/>
                     <exclude reference="jkg-44-uPU"/>
                     <exclude reference="ko8-mR-mHP"/>
-                    <exclude reference="1iq-sA-wtU"/>
-                    <exclude reference="AFv-hN-cN2"/>
-                    <exclude reference="Jnc-G7-0xI"/>
                     <exclude reference="EIl-h4-qfm"/>
                     <exclude reference="SYi-3i-I54"/>
-                    <exclude reference="bo7-Yg-agW"/>
-                    <exclude reference="f9e-hg-v8u"/>
-                    <exclude reference="ntS-WJ-3o4"/>
                 </mask>
             </variation>
             <variation key="widthClass=compact">
                 <mask key="subviews">
                     <include reference="KaJ-zp-0s7"/>
-                    <include reference="MmS-NL-5lA"/>
                     <include reference="vNx-jc-Brm"/>
                     <include reference="bQB-k8-9Wa"/>
+                    <include reference="MmS-NL-5lA"/>
                 </mask>
                 <mask key="constraints">
+                    <include reference="bo7-Yg-agW"/>
+                    <include reference="f9e-hg-v8u"/>
+                    <include reference="ntS-WJ-3o4"/>
+                    <include reference="1iq-sA-wtU"/>
+                    <include reference="AFv-hN-cN2"/>
+                    <include reference="Jnc-G7-0xI"/>
                     <include reference="fHZ-Xm-kfC"/>
                     <include reference="gNm-Yt-lE1"/>
                     <include reference="jkg-44-uPU"/>
                     <include reference="ko8-mR-mHP"/>
-                    <include reference="1iq-sA-wtU"/>
-                    <include reference="AFv-hN-cN2"/>
-                    <include reference="Jnc-G7-0xI"/>
                     <include reference="EIl-h4-qfm"/>
                     <include reference="SYi-3i-I54"/>
-                    <include reference="bo7-Yg-agW"/>
-                    <include reference="f9e-hg-v8u"/>
-                    <include reference="ntS-WJ-3o4"/>
                 </mask>
             </variation>
         </view>
     </objects>
     <resources>
-        <image name="icon.png" width="512" height="512"/>
+        <image name="plantBox.png" width="108" height="108"/>
     </resources>
 </document>

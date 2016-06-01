@@ -16,10 +16,20 @@
 #import "webView/WebModel.h"
 #import "WebViewController.h"
 #import "UIImageView+WebCache.h"
+#import "PlantBKController.h"
+//#import <ShareSDK/ShareSDK.h>
+//#import <ShareSDKExtension/SSEShareHelper.h>
+//#import <ShareSDKUI/ShareSDK+SSUI.h>
+//#import <ShareSDKUI/SSUIShareActionSheetStyle.h>
+//#import <ShareSDKUI/SSUIShareActionSheetCustomItem.h>
+//#import <ShareSDK/ShareSDK+Base.h>
+//
+//#import <ShareSDKExtension/ShareSDK+Extension.h>
+
+#import "UMSocial.h"
 //#import "ShopCarAdvModel.h"
 
-//#define URL_AFWorking(shopID) [NSString stringWithFormat:@"http://app.360kad.com/Product/GetProductDetailById?kclientid=62a806ad296a30b6845b193486ab3aad&kuserid=1254695200&kzone=homeview&productId=%@&utm_idfa=3D682E5B-5293-553B-ABA1-2D154135AGC8&utm_medium=iOS&utm_ot=10&utm_source=AppStore&utm_ver=3.4.1",shopID]
-@interface ShopInfoController ()<UITableViewDataSource,UITableViewDelegate>
+@interface ShopInfoController ()<UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>
 {
     NextManger *manger;
     int count;
@@ -28,7 +38,7 @@
     NSString *shopName;
     NSString *shopImg;
     NSString *shopPrice;
-    
+//    NSString *classID;
 }
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -76,7 +86,7 @@
     [_tableView registerNib:[UINib nibWithNibName:@"ShopInfoCell" bundle:nil]  forCellReuseIdentifier:@"ShopInfoCell"];
     [_tableView registerNib:[UINib nibWithNibName:@"ShopImgCell" bundle:nil]  forCellReuseIdentifier:@"ShopImgCell"];
     
-//    self.tableView.estimatedRowHeight = 400;
+//    self.tableView.estimatedRowHeight = 200;
     
     UIView *shopV = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight - 115, ScreenWidth, 60)];
     shopV.backgroundColor = [UIColor whiteColor];
@@ -95,13 +105,13 @@
     UIButton *kefuBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     kefuBtn.frame = CGRectMake(10, 0, 50, 50);
     [kefuBtn setImage:[UIImage imageNamed:@"客服"] forState:UIControlStateNormal];
-    //    [shoucangBtn addTarget:self action:@selector(alerCtl) forControlEvents:UIControlEventTouchDown];
+    [kefuBtn addTarget:self action:@selector(kefuAction) forControlEvents:UIControlEventTouchDown];
     [shopV addSubview:kefuBtn];
     
     UIButton *fenxiangBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     fenxiangBtn.frame = CGRectMake(70,0, 50, 50);
     [fenxiangBtn setImage:[UIImage imageNamed:@"分享"] forState:UIControlStateNormal];
-    //    [shoucangBtn addTarget:self action:@selector(alerCtl) forControlEvents:UIControlEventTouchDown];
+    [fenxiangBtn addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchDown];
     [shopV addSubview:fenxiangBtn];
     
     UIButton *shoucangBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -113,7 +123,7 @@
     
     
     UIButton *buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    buyBtn.frame = CGRectMake(ScreenWidth - 180,0, 170, 40);
+    buyBtn.frame = CGRectMake(ScreenWidth - (ScreenWidth/2-60)-10,0, ScreenWidth/2-60, 40);
     buyBtn.layer.cornerRadius = 2;
     buyBtn.backgroundColor = [UIColor orangeColor];
     [buyBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -124,6 +134,44 @@
     [self.view addSubview:shopV];
     
 }
+- (void)kefuAction
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc]
+                                  initWithTitle:@"拨打电话"
+                                  delegate:self
+                                  cancelButtonTitle:@"取消"
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:@"0769-82669988",nil];
+    actionSheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
+    [actionSheet showInView:self.view];
+}
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://0769-82669988"]];
+        }
+            break;
+            
+        default:
+            break;
+    }
+
+}
+
+- (void)shareAction
+{
+    //            [self ShareApp:self.view];
+    [UMSocialData defaultData].extConfig.title = @"植物君邀请您加入PlantBox的世界";
+    [UMSocialData defaultData].extConfig.qqData.url = @"http://oa.meidp.com/";
+    [UMSocialSnsService presentSnsIconSheetView:self
+                                         appKey:@"57429ef6e0f55a7716000931"
+                                      shareText:@"加入植物盒子，享受绿色生活，http://oa.meidp.com/"
+                                     shareImage:[UIImage imageNamed:@"plantBox"]
+                                shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline,UMShareToQQ,UMShareToQzone,UMShareToSina]
+                                       delegate:self];
+}
 - (void)alerCtl{
 //    UIAlertController *errorAlertV = [UIAlertController alertControllerWithTitle:@"抱歉" message:@"当前版本暂不支持该操作" preferredStyle:UIAlertControllerStyleAlert];
 //    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -131,6 +179,11 @@
 //    }];
 //    [errorAlertV addAction:cancel];
 //    [self presentViewController:errorAlertV animated:YES completion:nil];
+    if (count == 0) {
+        UIAlertView *al = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您购买的商品数目为0" delegate:self cancelButtonTitle:@"确认" otherButtonTitles:nil, nil];
+        [al show];
+        return;
+    }
     OrderController *subVC = [[OrderController alloc] init];
     subVC.orderCount = count;
     subVC.orderImg = shopImg;
@@ -163,7 +216,7 @@
     }
     else
     {
-        return ScreenWidth;
+        return ScreenWidth*0.8;
 
     }
 }
@@ -180,32 +233,44 @@
         cell.price.text = [NSString stringWithFormat:@"价格:%@",model.shopinfoListPrice];
         shopPrice = model.shopinfoListPrice;
         cell.countLab.text = [NSString stringWithFormat:@"%d",count];
+//        manger.keyword = model.shopinfoListID;
         shopImg = imgs[0];
-        
+//        cell.cellImg.contentMode = UIViewContentModeScaleAspectFit;
         [cell.cellImg sd_setImageWithURL:[NSURL URLWithString:imgs[0]]];
         cell.selectionStyle = UITableViewCellStyleDefault;
+        
         [cell.deleteBtn addTarget:self action:@selector(deleteBtnAction) forControlEvents:UIControlEventTouchDown];
+        
         [cell.addBtn addTarget:self action:@selector(addBtnAction) forControlEvents:UIControlEventTouchDown];
 //        [cell.collectionBtn addTarget:self action:@selector(collectionAction:) forControlEvents:UIControlEventTouchDown];
-        [cell.pushBK addTarget:self action:@selector(pushAction) forControlEvents:UIControlEventTouchDown];
+        cell.pushBK.tag = [model.shopinfoListID integerValue];
+        [cell.pushBK addTarget:self action:@selector(pushAction:) forControlEvents:UIControlEventTouchDown];
         
         return cell;
     }
     ShopImgCell*cell = [tableView dequeueReusableCellWithIdentifier:@"ShopImgCell"];
+//    cell.cellImg.contentMode = UIViewContentModeScaleAspectFit;
     [cell.cellImg sd_setImageWithURL:[NSURL URLWithString:imgs[indexPath.row]]];
     cell.selectionStyle = UITableViewCellStyleDefault;
     return cell; 
     
 }
 
-- (void)pushAction
+- (void)pushAction:(UIButton *)btn
 {
-            WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail?UserId=%@&id=%@",manger.userId,self.shopID]];
-            WebViewController *SVC = [[WebViewController alloc] init];
-            SVC.title = @"植物百科";
-            SVC.hidesBottomBarWhenPushed = YES;
-            [SVC setModel:model];
-            [self.navigationController pushViewController:SVC animated:YES];
+//    
+//    WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Home/NoticeDetail/%@",self.shopID]];
+//    WebViewController *SVC = [[WebViewController alloc] init];
+//    SVC.title = @"植物百科";
+//    SVC.hidesBottomBarWhenPushed = YES;
+//    [SVC setModel:model];
+//    [self.navigationController pushViewController:SVC animated:YES];
+    PlantBKController *sub = [[PlantBKController alloc] init];
+    sub.title = @"植物百科";
+    sub.classID = [NSString stringWithFormat:@"%ld",btn.tag];
+    sub.channelId = @"1001";
+    [self.navigationController pushViewController:sub animated:YES];
+
 }
 - (void)collectionAction:(UIButton *)btn
 {
@@ -248,4 +313,132 @@
     UIGraphicsEndImageContext();
     return newImage;
 }
+
+-(void)ShareApp:(ShopInfoController *)bar
+{
+    //    NSLog(@"url :%@",disCountDetailURL(_articleInfo.articleid)); http://viewer.maka.im/k/ORXCZ50R
+    
+//    
+//    //    NSArray* imageArray = @[_articleInfo.imageUrl];
+//    //构造分享内容 _articleInfo.title
+//    NSMutableDictionary *shareParams=[NSMutableDictionary dictionary];
+//    [shareParams SSDKSetupShareParamsByText:@"植物盒子的分享"
+//                                     images:nil
+//                                        url:[NSURL URLWithString:@"http://www.baidu.com"]
+//                                      title:@"欢迎使用植物盒子"
+//                                       type:SSDKContentTypeAuto];
+//    
+//    
+//    
+//    //    NSLog(@"%@ %@",_articleInfo.title,[NSURL URLWithString:disCountDetailURL(_articleInfo.articleid)]);
+//    __weak ShopInfoController *theController = self;
+//    
+//    
+//    [ShareSDK showShareActionSheet:bar
+//                             items:nil
+//                       shareParams:shareParams
+//               onShareStateChanged:^(SSDKResponseState state,
+//                                     SSDKPlatformType platformType,
+//                                     NSDictionary *userData,
+//                                     SSDKContentEntity *contentEntity,
+//                                     NSError *error, BOOL end) {
+//                   
+//                   switch (state) {
+//                           
+//                       case SSDKResponseStateBegin:
+//                       {
+//                           //                           [theController showLoadingView:YES];
+//                           break;
+//                       }
+//                       case SSDKResponseStateSuccess:
+//                       {
+//                           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"分享成功"
+//                                                                               message:nil
+//                                                                              delegate:nil
+//                                                                     cancelButtonTitle:@"确定"
+//                                                                     otherButtonTitles:nil];
+//                           [alertView show];
+//                           break;
+//                       }
+//                       case SSDKResponseStateFail:
+//                       {
+//                           if (platformType == SSDKPlatformTypeSMS && [error code] == 201)
+//                           {
+//                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+//                                                                               message:@"失败原因可能是：1、短信应用没有设置帐号；2、设备不支持短信应用；3、短信应用在iOS 7以上才能发送带附件的短信。"
+//                                                                              delegate:nil
+//                                                                     cancelButtonTitle:@"OK"
+//                                                                     otherButtonTitles:nil, nil];
+//                               [alert show];
+//                               break;
+//                           }
+//                           else if(platformType == SSDKPlatformTypeMail && [error code] == 201)
+//                           {
+//                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+//                                                                               message:@"失败原因可能是：1、邮件应用没有设置帐号；2、设备不支持邮件应用；"
+//                                                                              delegate:nil
+//                                                                     cancelButtonTitle:@"OK"
+//                                                                     otherButtonTitles:nil, nil];
+//                               [alert show];
+//                               break;
+//                           }
+//                           else
+//                           {
+//                               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"分享失败"
+//                                                                               message:[NSString stringWithFormat:@"%@",error]
+//                                                                              delegate:nil
+//                                                                     cancelButtonTitle:@"OK"
+//                                                                     otherButtonTitles:nil, nil];
+//                               [alert show];
+//                               break;
+//                           }
+//                           break;
+//                       }
+//                       case SSDKResponseStateCancel:
+//                       {
+//                           //                           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"分享已取消"
+//                           //                                                                               message:nil
+//                           //                                                                              delegate:nil
+//                           //                                                                     cancelButtonTitle:@"确定"
+//                           //                                                                     otherButtonTitles:nil];
+//                           //                           [alertView show];
+//                           break;
+//                       }
+//                       default:
+//                           break;
+//                   }
+//                   
+//                   if (state != SSDKResponseStateBegin)
+//                   {
+//                       //                       [theController showLoadingView:NO];
+//                   }
+//                   
+//               }];
+//    
+//    
+//    [self.view endEditing:YES];
+    
+    /*
+     //1、创建分享参数（必要）
+     NSMutableDictionary *shareParams = [NSMutableDictionary dictionary];
+     [shareParams SSDKSetupShareParamsByText:@"分享内容"
+     images:[UIImage imageNamed:@"传入的图片名"]
+     url:[NSURL URLWithString:@"http://mob.com"]
+     title:@"分享标题"
+     type:SSDKContentTypeAuto];
+     
+     // 定制新浪微博的分享内容
+     [shareParams SSDKSetupSinaWeiboShareParamsByText:@"定制新浪微博的分享内容" title:nil image:[UIImage imageNamed:@"传入的图片名"] url:nil latitude:0 longitude:0 objectID:nil type:SSDKContentTypeAuto];
+     // 定制微信好友的分享内容
+     [shareParams SSDKSetupWeChatParamsByText:@"定制微信的分享内容" title:@"title" url:[NSURL URLWithString:@"http://mob.com"] thumbImage:nil image:[UIImage imageNamed:@"传入的图片名"] musicFileURL:nil extInfo:nil fileData:nil emoticonData:nil type:SSDKContentTypeAuto forPlatformSubType:SSDKPlatformSubTypeWechatSession];// 微信好友子平台
+     
+     //2、分享
+     [ShareSDK showShareActionSheet:view
+     items:nil
+     shareParams:shareParams
+     onShareStateChanged:^(SSDKResponseState state, SSDKPlatformType platformType, NSDictionary *userData, SSDKContentEntity *contentEntity, NSError *error, BOOL end) { ...... }
+     */
+}
+
+
 @end

@@ -29,35 +29,35 @@
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lba-MG-d36">
                         <rect key="frame" x="57" y="8" width="43" height="43"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="43" id="YuX-X3-6j7"/>
+                        </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="售出 200" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wAu-Ng-wel">
-                        <rect key="frame" x="108" y="35" width="184" height="16"/>
+                        <rect key="frame" x="108" y="35" width="54" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收入 50" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="707-i4-SeH">
-                        <rect key="frame" x="108" y="8" width="184" height="18"/>
+                        <rect key="frame" x="108" y="8" width="52.5" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="FS9-Jy-xWU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="18" id="04c-dM-1Rd"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="707-i4-SeH" secondAttribute="trailing" constant="20" id="F1k-iS-zoo"/>
-                    <constraint firstItem="lba-MG-d36" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="FZR-aN-aO8"/>
-                    <constraint firstItem="WWw-rD-yfC" firstAttribute="leading" secondItem="FS9-Jy-xWU" secondAttribute="leading" id="Ioe-An-f6M"/>
-                    <constraint firstItem="wAu-Ng-wel" firstAttribute="leading" secondItem="707-i4-SeH" secondAttribute="leading" id="PKO-O3-d8f"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="wAu-Ng-wel" secondAttribute="bottom" constant="0.5" id="VQO-nF-fwp"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="wAu-Ng-wel" secondAttribute="trailing" constant="20" id="Wdg-99-nRO"/>
-                    <constraint firstItem="707-i4-SeH" firstAttribute="leading" secondItem="lba-MG-d36" secondAttribute="trailing" constant="8" id="aTP-S5-FYS"/>
-                    <constraint firstAttribute="bottom" secondItem="lba-MG-d36" secondAttribute="bottom" constant="8" id="eUe-O5-RPh"/>
-                    <constraint firstItem="707-i4-SeH" firstAttribute="top" secondItem="lba-MG-d36" secondAttribute="top" id="eqn-fp-FNA"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="WWw-rD-yfC" secondAttribute="bottom" constant="8" id="jcv-5X-7IQ"/>
-                    <constraint firstItem="lba-MG-d36" firstAttribute="leading" secondItem="WWw-rD-yfC" secondAttribute="trailing" constant="7.5" id="q9b-WF-ZmI"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="lba-MG-d36" secondAttribute="trailing" constant="212" id="x04-5O-GKk"/>
-                    <constraint firstItem="FS9-Jy-xWU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="xed-Dg-vOz"/>
+                    <constraint firstItem="lba-MG-d36" firstAttribute="leading" secondItem="FS9-Jy-xWU" secondAttribute="trailing" constant="13" id="1bW-lb-AE1"/>
+                    <constraint firstItem="707-i4-SeH" firstAttribute="leading" secondItem="lba-MG-d36" secondAttribute="trailing" constant="8" id="6I7-Gy-UV8"/>
+                    <constraint firstItem="707-i4-SeH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="7e8-tx-FDQ"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="WWw-rD-yfC" secondAttribute="bottom" constant="8" id="D1F-ch-blM"/>
+                    <constraint firstItem="wAu-Ng-wel" firstAttribute="leading" secondItem="lba-MG-d36" secondAttribute="trailing" constant="8" id="JxX-qi-3LP"/>
+                    <constraint firstItem="WWw-rD-yfC" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="LoR-Od-2zk"/>
+                    <constraint firstItem="FS9-Jy-xWU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="10" id="h7m-cX-TJY"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="wAu-Ng-wel" secondAttribute="bottom" constant="0.5" id="kB7-Vj-XmH"/>
+                    <constraint firstItem="lba-MG-d36" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="mro-Ks-XkG"/>
+                    <constraint firstItem="FS9-Jy-xWU" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="4" id="pGx-XM-GRI"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="lba-MG-d36" secondAttribute="bottom" constant="0.5" id="twC-zb-x16"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

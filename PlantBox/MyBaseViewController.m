@@ -9,11 +9,15 @@
 #import "MyBaseViewController.h"
 #import "BasePlantViewController.h"
 #import "BaseStarManViewController.h"
+#import "MyComListController.h"
 #import "ShopController.h"
 #import "MineCell.h"
-#import "HomeCell.h"
+#import "HomeBaseCell.h"
 #import "ProjectModel.h"
 #import "NextManger.h"
+#import "UIImageView+WebCache.h"
+#import "MyBaseOrPlantListController.h"
+#import "KeyboardToolBar/KeyboardToolBar.h"
 #import "UIImageView+WebCache.h"
 #define screenWidth [[UIScreen mainScreen]bounds].size.width  //屏幕的长
 #define screenHiegth [[UIScreen mainScreen]bounds].size.height //屏幕的高
@@ -25,6 +29,7 @@
     NSInteger cellCount;
     BOOL isSelet;
     NSArray *datas;
+    NSArray *homeBaseCellImgs;
 }
 @property (nonatomic,strong) UIImageView *userImage;
 @property (nonatomic, strong) UITableView *tableView;
@@ -40,6 +45,11 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // 添加导航右按钮
+    UIBarButtonItem *rightBtuForBar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addMyBase)];
+    self.navigationItem.rightBarButtonItem = rightBtuForBar;
+
+    
     cellCount = 2;
     isSelet = NO;
     /*
@@ -50,7 +60,7 @@
      mineCell.sexLab.text = @"男";
      mineCell.retimeLab.text = manger.createTime;
      */
-    titles = @[@"我的点赞",@"我的评论",@"我的转发",@"立即种植"];
+    titles = @[@"我的评论",@"立即种植"];
     self.tableViewTag = 0;
     if (self.tableViewTag == 0)
     {
@@ -82,7 +92,7 @@
 }
 #pragma mark - 注册Cell
 - (void)registerNib{
-    NSArray *registerNibs = @[@"MineCell",@"HomeCell"];
+    NSArray *registerNibs = @[@"MineCell",@"HomeBaseCell"];
     for (int i = 0 ; i < registerNibs.count; i++) {
         [_tableView registerNib:[UINib nibWithNibName:registerNibs[i] bundle:nil] forCellReuseIdentifier:registerNibs[i]];
     }
@@ -90,31 +100,23 @@
 }
 - (UIView *)drawTopview
 {
-    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight*0.37-19)];
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight*0.40-19)];
     topView.backgroundColor = RGB(7, 115, 226);
     
-    _userImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth/2-((ScreenHeight-ScreenHeight*0.38-19-29)/3)/2, topView.bounds.origin.y, (ScreenHeight-ScreenHeight*0.38-19-29)/3, (ScreenHeight-ScreenHeight*0.38-19-29)/3)];
-    _userImage.image = [UIImage imageNamed:@"testUserImg"];
+    _userImage = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth/2-((ScreenHeight-ScreenHeight*0.38-19-29)/3)/2, topView.bounds.origin.y+10, (ScreenHeight-ScreenHeight*0.38-19-29)/3, (ScreenHeight-ScreenHeight*0.38-19-29)/3)];
+    [_userImage sd_setImageWithURL:[NSURL URLWithString:manger.userPhoto]];
     _userImage.layer.masksToBounds = YES;
     _userImage.layer.cornerRadius = ((ScreenHeight-ScreenHeight*0.38-19-29)/3)/2;
     [topView addSubview:_userImage];
 
     
-    UILabel *nameLab = [[UILabel alloc] initWithFrame:CGRectMake(0, _userImage.bounds.origin.y+(ScreenHeight-ScreenHeight*0.38-19-29)/3+10, ScreenWidth, 30)];
+    UILabel *nameLab = [[UILabel alloc] initWithFrame:CGRectMake(0, topView.bounds.size.height - 100, ScreenWidth, 30)];
     //    nameLab.backgroundColor = [UIColor redColor];
     nameLab.textAlignment = NSTextAlignmentCenter;
     nameLab.textColor = [UIColor whiteColor];
     nameLab.font = [UIFont systemFontOfSize:15];
     nameLab.text = manger.userC_Name;
     [topView addSubview:nameLab];
-    
-    UILabel *infoLab = [[UILabel alloc] initWithFrame:CGRectMake(0, _userImage.bounds.origin.y+(ScreenHeight-ScreenHeight*0.38-19-29)/3+40, ScreenWidth, 30)];
-    //    nameLab.backgroundColor = [UIColor redColor];
-    infoLab.textAlignment = NSTextAlignmentCenter;
-    infoLab.textColor = [UIColor whiteColor];
-    infoLab.font = [UIFont systemFontOfSize:13];
-    infoLab.text = @"关注: 79 | 粉丝: 50";
-    [topView addSubview:infoLab];
     
     self.m_scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, screenWidth, screenHiegth)];
     //手动滑动的范围
@@ -157,7 +159,7 @@
     
     //滑动条
     self.m_slideView = [[UIView alloc] init];
-    self.m_slideView.frame = CGRectMake(0, 35-2, labelW, 2);
+    self.m_slideView.frame = CGRectMake(20, 35-2, labelW-40, 2);
     self.m_slideView.backgroundColor = [UIColor blueColor];
     [backgroundView addSubview:self.m_slideView];
     
@@ -173,7 +175,7 @@
     //view(表示当前对应的label)  获取视图对应的Tag值
     NSInteger i = tap.view.tag;
     
-    [self.m_scrollView setContentOffset:CGPointMake(i * screenWidth, 0) animated:YES];
+    [self.m_scrollView setContentOffset:CGPointMake(i * screenWidth+20, 0) animated:YES];
     NSLog(@"单击label的时候scrollView滑动范围 %ld",i);
     
 }
@@ -188,7 +190,7 @@
         
         NSInteger i = self.m_scrollView.contentOffset.x / screenWidth;
         
-        self.m_slideView.frame = CGRectMake((screenWidth/3)*i, 35-2,screenWidth/3,2);
+        self.m_slideView.frame = CGRectMake((screenWidth/3)*i+20, 35-2,screenWidth/3-40,2);
         NSLog(@"手势滑动视图减速完成后调用方法");
     }];
 }
@@ -200,7 +202,7 @@
     [UIView animateWithDuration:0.3 animations:^{
         
         NSInteger i = self.m_scrollView.contentOffset.x / screenWidth;
-        self.m_slideView.frame = CGRectMake((screenWidth/3)*i, 35-2,screenWidth/3,2);
+        self.m_slideView.frame = CGRectMake((screenWidth/3)*i+20, 35-2,screenWidth/3-40,2);
             NSLog(@"点击手势视图完成后调用方法 %ld",i);
         _tableViewTag = i;
         if (self.tableViewTag == 0)
@@ -212,10 +214,10 @@
 }
 - (void)loadData
 {
-    manger= [NextManger shareInstance];
-    manger.isKeyword = NO;
-    [manger loadData:RequestOfGetprojectlist];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"GetprojectlistWithKeyword" object:nil];
+    manger = [NextManger shareInstance];
+    manger.keyword = manger.userId;
+    [manger loadData:RequestOfgetusergoodsrecordpagelistUserID];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"getusergoodsrecordpagelist" object:nil];
 }
 - (void)reloadDataAction
 {
@@ -236,7 +238,7 @@
             }
             else
             {
-                return manger.m_ProductLists.count;
+                return manger.m_baseLists.count;
             }
         }
             break;
@@ -290,7 +292,7 @@
             }
             else
             {
-                return 240;
+                return 200;
             }
         }
             break;
@@ -310,82 +312,140 @@
     }
     return 0;
 }
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section // 返回组名
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section // 返回组名
+//{
+//    if (self.tableViewTag == 0) {
+//        if (section == 1) {
+//            return @"我的成果";
+//        }
+//    }
+//    return nil;
+//}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (self.tableViewTag == 0)
+    {
+        if (section == 1) {
+            return 30;
+        }
+    }
+    return 2;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (self.tableViewTag == 0) {
         if (section == 1) {
-            return @"我的成果";
+            UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 30)];
+            v.backgroundColor = [UIColor whiteColor];
+            UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(18, 0, ScreenWidth, 30)];
+            l.text = @"我的成果";
+            l.font = [UIFont systemFontOfSize:17];
+//            l.textAlignment = kCTTextAlignmentCenter;
+            l.textColor = [UIColor blackColor];
+            [v addSubview:l];
+            return v;
         }
+        return nil;
     }
+
     return nil;
+
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    static NSString *infierCell = @"cell";
+    UITableViewCell *cell = nil;
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
+        cell.selectionStyle = UITableViewCellAccessoryNone;
+        cell.textLabel.font = [UIFont systemFontOfSize:13];
+    }
     switch (self.tableViewTag) {
         case 0:
         {
             if (indexPath.section == 0)
             {
-                static NSString *infierCell = @"cell";
-                UITableViewCell *cell = nil;
-                if (!cell) {
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
-                    cell.selectionStyle = UITableViewCellAccessoryNone;
-                }
+
                 if (indexPath.row == cellCount-1) {
                     UIButton *addBtn = [UIButton buttonWithType:UIButtonTypeCustom];
                     addBtn.frame = CGRectMake(10, 5, ScreenWidth-20, 30);
                     addBtn.backgroundColor = [UIColor whiteColor];
                     addBtn.selected = isSelet;
-                    [addBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                    addBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+                    [addBtn setTitleColor:RGB(179, 179, 179) forState:UIControlStateNormal];
                     [addBtn setTitle:@"展开" forState:UIControlStateNormal];
                     [addBtn setTitle:@"收起" forState:UIControlStateSelected];
                     [addBtn addTarget:self action:@selector(addInfoAction:) forControlEvents:UIControlEventTouchDown];
                     [cell.contentView addSubview:addBtn];
 
                 }
-                if (cellCount == 5) {
-                    datas = @[manger.userAddress,manger.userC_Name,@"男",manger.createTime,@" "];
-                     cell.textLabel.text = datas[indexPath.row];
+                NSArray *cellTitles = @[@"地    址",@"姓    名",@"性    别",@"注册日期",@" "];
+                UITextField *textfield = [[UITextField alloc] initWithFrame:CGRectMake(ScreenWidth*0.28, 2, 150, 40)];
+                textfield.font = [UIFont systemFontOfSize:13];
+                [KeyboardToolBar registerKeyboardToolBar:textfield];
+                if (cellCount == 5)
+                {
+                    if (indexPath.row != 4)
+                    {
+                        datas = @[manger.userAddress,manger.userC_Name,@"男",manger.createTime];
+                        textfield.text = datas[indexPath.row];
+                        [textfield setEnabled:YES];
+                        [cell.contentView addSubview:textfield];
+                        cell.textLabel.text = cellTitles[indexPath.row];
+                    }
+                    else
+                    {
+                        cell.textLabel.text = cellTitles[indexPath.row];
+                    }
+                    
                 }
                 else
                 {
                     NSArray *datas2 = @[manger.userAddress,@" "];
-                    cell.textLabel.text = datas2[indexPath.row];
+                    textfield.text = datas2[indexPath.row];
+                    [textfield setEnabled:NO];
+                    [cell.contentView addSubview:textfield];
+                    cell.textLabel.text = cellTitles[indexPath.row];
                 }
                 return cell;
             }
             else
             {
-                HomeCell *homeCell = [tableView dequeueReusableCellWithIdentifier:@"HomeCell"];
-                ProjectModel *model = manger.m_ProductLists[indexPath.row];
-                //        NSLog(@"%ld",model.productListImgs.count);
-                homeCell.nameLab.text = model.productName;
-                homeCell.contentLab.text = @"CocoaPods是iOS项目的依赖管理工具，该项目源码在Github上管理。开发iOS项目不可避免地要使用第三方开源库，CocoaPods的出现使得我们可以节省设置和第三方开源库的时间。";
-                //        [homeCell configCellWithButtonModels:manger.m_ProductLists];
-                //        [homeCell.downBtn addTarget:self action:@selector(downMune:) forControlEvents:UIControlEventTouchDown];
-                for (int i = 0; i < model.productListImgs.count; i++)
+                HomeBaseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"HomeBaseCell"];
+                ProjectModel *model = manger.m_baseLists[indexPath.row];
+                cell.nameLab.text = model.baseName;
+                cell.conetLab.text = model.baseCom;
+                cell.subConlab.text = model.baseTime;
+                [cell.nameImg sd_setImageWithURL:[NSURL URLWithString:manger.userPhoto]];
+                ////        if (model.baseImg.length == 0)
+                ////        {
+                ////            cell.nameImg.image = [UIImage imageNamed:@"testUserImg"];
+                ////        }
+                ////        else
+                ////        {
+                //            [cell.nameImg sd_setImageWithURL:[NSURL URLWithString:model.baseImg]];
+                ////        }
+                for (int i = 0; i < model.baseImgLists.count; i++)
                 {
-//                    NSLog(@"%d",i);
-                    UIImageView *image = (UIImageView *)[homeCell viewWithTag:500 + i];
-                    image.tag = 500 + i;
-                    [image sd_setImageWithURL:[NSURL URLWithString:model.productListImgs[i]]];
-                    //        titleLabel.text = model.title;
+                    UIImageView *image = (UIImageView *)[cell viewWithTag:505 + i];
+                    image.tag = 505 + i;
+                    [image sd_setImageWithURL:[NSURL URLWithString:model.baseImgLists[i]]];
                 }
-                homeCell.selectionStyle = UITableViewCellSelectionStyleNone;
-                return homeCell;
+                cell.selectionStyle = UITableViewCellAccessoryNone;
+                return cell;
             }
 
         }
             break;
         case 1:
         {
-            static NSString *infierCell = @"cell";
-            UITableViewCell *cell = nil;
-            if (!cell)
-            {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
-            }
+//            static NSString *infierCell = @"cell";
+//            UITableViewCell *cell = nil;
+//            if (!cell)
+//            {
+//                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
+//                
+//            }
             NSArray *titles = @[@"基地植物",@"基地人物星人图"];
             cell.textLabel.text = [NSString stringWithFormat:@"%@",titles[indexPath.row ]];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -394,12 +454,12 @@
             break;
         case 2:
         {
-            static NSString *infierCell = @"cell";
-            UITableViewCell *cell = nil;
-            if (!cell)
-            {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
-            }
+//            static NSString *infierCell = @"cell";
+//            UITableViewCell *cell = nil;
+//            if (!cell)
+//            {
+//                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
+//            }
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.textLabel.text = [NSString stringWithFormat:@"%@",titles[indexPath.row ]];
             return cell;
@@ -443,12 +503,12 @@
         {
             NSLog(@"成果");
             if (indexPath.row == 0) {
-//                BasePlantViewController *subVC = [[BasePlantViewController alloc] init];
-//                subVC.hidesBottomBarWhenPushed = YES;
-//                subVC.title = @"基地植物";
-//                [self.navigationController pushViewController:subVC animated:YES];
+                MyComListController *subVC = [[MyComListController alloc] init];
+                subVC.hidesBottomBarWhenPushed = YES;
+                subVC.title = @"我的评论";
+                [self.navigationController pushViewController:subVC animated:YES];
             }
-            else if (indexPath.row == 3)
+            else if (indexPath.row == 1)
             {
                 ShopController *subVC = [[ShopController alloc] init];
                 subVC.hidesBottomBarWhenPushed = YES;
@@ -492,6 +552,13 @@
 //        [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
         NSLog(@"收起");
     }
+
+}
+- (void)addMyBase
+{
+    NSLog(@"添加我的基地");
+    MyBaseOrPlantListController *sub = [[MyBaseOrPlantListController alloc] init];
+    [self.navigationController pushViewController:sub animated:YES];
 
 }
 @end

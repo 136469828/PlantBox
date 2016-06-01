@@ -20,7 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"种植中心";
+//    self.title = @"种植中心";
     // 设置导航默认标题的颜色及字体大小
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     self.leftController = [[HJLeftViewController alloc] init];

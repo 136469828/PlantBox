@@ -9,6 +9,7 @@
 #import "AboutMeViewController.h"
 #import "JieshaoController.h"
 #import "NextManger.h"
+#import "FunctionViewController.h"
 @interface AboutMeViewController ()
 
 @end
@@ -40,6 +41,9 @@
 }
 */
 - (IBAction)introduceBtn:(id)sender {
+    FunctionViewController *sub = [[FunctionViewController alloc] init];
+    sub.title = @"功能介绍";
+    [self.navigationController pushViewController:sub animated:YES];
 
 }
 - (IBAction)wellcomeBtn:(id)sender {

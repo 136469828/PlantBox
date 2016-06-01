@@ -9,6 +9,7 @@
 #import "ErweimaViewController.h"
 #import "WebModel.h"
 #import "WebViewController.h"
+#import "NextManger.h"
 @interface ErweimaViewController ()<AVCaptureMetadataOutputObjectsDelegate>
 
 @end
@@ -127,6 +128,44 @@
 #pragma mark AVCaptureMetadataOutputObjectsDelegate
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection
 {
+//    
+//    NSString *stringValue;
+//    
+//    if ([metadataObjects count] >0)
+//    {
+//        AVMetadataMachineReadableCodeObject * metadataObject = [metadataObjects objectAtIndex:0];
+//        stringValue = metadataObject.stringValue;
+//        
+//        NSLog(@"扫描结果 %@", stringValue);
+////        NextManger *manger = [NextManger shareInstance];
+////        manger.keyword = stringValue;
+////        [manger loadData:RequestOfgetqrcode];
+//        //        UILabel *lab = [[UILabel alloc]initWithFrame:cgrect];
+//        if([stringValue rangeOfString:@"http://"].location !=NSNotFound)//_roaldSearchText
+//        {
+//            NSLog(@"yes");
+//            NSURL *url = [NSURL URLWithString:stringValue];
+//            [[UIApplication sharedApplication] openURL:url];
+//        }
+//        else
+//        {
+//            NSLog(@"no");
+//            stringValue = [NSString stringWithFormat:@"http://%@",stringValue];
+//            NSURL *url = [NSURL URLWithString:stringValue];
+//            [[UIApplication sharedApplication] openURL:url];
+//        }
+//        NSURL *url = [NSURL URLWithString:stringValue];
+//        [[UIApplication sharedApplication] openURL:url];
+////        [self pushWebVcWithURL:stringValue];
+//        [self.navigationController popViewControllerAnimated:YES];
+//        
+//    }
+//    [_session stopRunning];
+////    
+//    [self dismissViewControllerAnimated:YES completion:^
+//     {
+//         [timer invalidate];
+//     }];
     
     NSString *stringValue;
     
@@ -137,7 +176,7 @@
         
         NSLog(@"%@", stringValue);
         //        UILabel *lab = [[UILabel alloc]initWithFrame:cgrect];
-        if([stringValue rangeOfString:@"http://"].location !=NSNotFound)//_roaldSearchText
+        if([stringValue rangeOfString:@"https://"].location !=NSNotFound)//_roaldSearchText
         {
             NSLog(@"yes");
             NSURL *url = [NSURL URLWithString:stringValue];
@@ -146,22 +185,22 @@
         else
         {
             NSLog(@"no");
-            stringValue = [NSString stringWithFormat:@"http://%@",stringValue];
-            NSURL *url = [NSURL URLWithString:stringValue];
-            [[UIApplication sharedApplication] openURL:url];
+            NextManger *manger = [NextManger shareInstance];
+            manger.keyword = stringValue;
+            [manger loadData:RequestOfgetqrcode];
+            [self.navigationController popViewControllerAnimated:YES];
         }
         NSURL *url = [NSURL URLWithString:stringValue];
         [[UIApplication sharedApplication] openURL:url];
-//        [self pushWebVcWithURL:stringValue];
-        [self.navigationController popViewControllerAnimated:YES];
+        //        [self pushWebVcWithURL:stringValue];
         
     }
     [_session stopRunning];
-//    
-//    [self dismissViewControllerAnimated:YES completion:^
-//     {
-//         [timer invalidate];
-//     }];
+    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:^
+     {
+         [timer invalidate];
+     }];
 }
 
 

@@ -17,41 +17,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="Va9-XZ-NZI">
-                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="启动页6p.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="8rY-4f-vZ5">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Va9-XZ-NZI" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="3LW-gx-tfY"/>
-                            <constraint firstAttribute="trailing" secondItem="Va9-XZ-NZI" secondAttribute="trailing" id="6aA-On-7ca"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Va9-XZ-NZI" secondAttribute="bottom" id="Ouf-L8-bur"/>
-                            <constraint firstItem="Va9-XZ-NZI" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="-20" id="kaW-5D-HEw"/>
-                            <constraint firstItem="Va9-XZ-NZI" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="ltr-Ag-woO"/>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="Va9-XZ-NZI" secondAttribute="bottom" id="opW-aJ-PL6"/>
-                            <constraint firstItem="Va9-XZ-NZI" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="sRh-jd-iRH"/>
-                            <constraint firstAttribute="trailing" secondItem="Va9-XZ-NZI" secondAttribute="trailing" id="y1s-yc-9He"/>
+                            <constraint firstItem="8rY-4f-vZ5" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="-20" id="RqQ-r4-knO"/>
+                            <constraint firstAttribute="trailing" secondItem="8rY-4f-vZ5" secondAttribute="trailing" id="XJr-zQ-v4D"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="8rY-4f-vZ5" secondAttribute="bottom" id="fuw-7K-zAI"/>
+                            <constraint firstItem="8rY-4f-vZ5" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="ttr-uy-5Wb"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="kaW-5D-HEw"/>
-                                <exclude reference="ltr-Ag-woO"/>
-                                <exclude reference="y1s-yc-9He"/>
-                                <exclude reference="Ouf-L8-bur"/>
-                            </mask>
-                        </variation>
-                        <variation key="widthClass=compact">
-                            <mask key="constraints">
-                                <exclude reference="3LW-gx-tfY"/>
-                                <exclude reference="6aA-On-7ca"/>
-                                <include reference="kaW-5D-HEw"/>
-                                <include reference="ltr-Ag-woO"/>
-                                <exclude reference="sRh-jd-iRH"/>
-                                <include reference="y1s-yc-9He"/>
-                                <include reference="Ouf-L8-bur"/>
-                                <exclude reference="opW-aJ-PL6"/>
-                            </mask>
-                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -60,6 +36,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="launch.jpg" width="640" height="960"/>
+        <image name="启动页6p.jpg" width="1080" height="1920"/>
     </resources>
 </document>

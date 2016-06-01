@@ -109,7 +109,33 @@ typedef enum
     
     RequestOfuserCollect,         // 收藏
     
-    RequestOfuserCollectList         // 收藏列表
+    RequestOfuserCollectList,         // 收藏列表
+    
+    RequestOfuserSubscribe,         // 点赞
+    
+    RequestOfusercomment,        // 评论
+    
+    RequestOfuserGetcommentlist,        // 评论列表
+    
+    RequestOfregister,       // 评论列表
+    
+    RequestOfgetorderlist,        // 我的订单
+    
+    RequestOfloginbythird,        // 第三方登录
+    
+    RequestOfgetusergoodpagelistmine ,       // 获取某用户自己的基地或植物列表
+    
+    RequestOfsendgoodrecord,        // 发表个人教程
+    
+    RequestOfgetusercoursepagelistmine,        // 获取我的用户教程
+    
+    RequestOfgetusercoursepagelist,        // 获取用户教程
+    
+    RequestOfgetusercourse ,       // 获取教程详情
+    
+    RequestOfgetusergoodsrecordpagelistUserID  ,      // 获取基地详情
+    
+    RequestOfgetqrcode        // 扫码返回
     
 }RequestState;
 @interface NextManger : NSObject
@@ -117,9 +143,15 @@ typedef enum
 @property (nonatomic, copy) NSString *code;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *password;
+#pragma mark - 注册
+@property (nonatomic, copy) NSString *registerName;
+@property (nonatomic, copy) NSString *registerPwd;
 #pragma mark - 登录用户信息
-@property (nonatomic, copy) NSString *userID_Code; // 用户ID
+@property (nonatomic, copy) NSString *userLat;
+@property (nonatomic, copy) NSString *userLon;
+@property (nonatomic, copy) NSString *userID_Code; // ID
 @property (nonatomic, copy) NSString *userC_Name; //用户名字
+@property (nonatomic, copy) NSString *userLoginName; //用户账号
 @property (nonatomic, copy) NSString *versionName;
 @property (nonatomic, copy) NSString *oldPword; // 旧密码
 @property (nonatomic, copy) NSString *passwordOfnew; // 新密码
@@ -131,10 +163,15 @@ typedef enum
 @property (nonatomic, copy) NSString *keyword; // 搜索关键字
 @property (nonatomic, copy) NSString *cheakComment;
 @property (nonatomic, copy) NSString *userMobile; // 用户手机
+@property (nonatomic, copy) NSString *userEWM; // 用户二维码
 @property (nonatomic, copy) NSString *checkStatus;
 @property (nonatomic, copy) NSString *currNumber;
 @property (nonatomic, copy) NSString *structureId;
-@property (nonatomic, copy) NSString *userId;
+@property (nonatomic, copy) NSString *userId;// 用户ID
+@property (nonatomic, copy) NSArray *userThirdInfos;
+@property (nonatomic, copy) NSString *userPhoto; // 头像
+@property (nonatomic, copy) NSString *homekeyWork;
+@property (nonatomic, copy) NSString *orderID;
 @property (nonatomic, strong) NSMutableArray *totalCollects; // 收藏数;
 @property (nonatomic, strong) NSMutableArray *m_details;
 @property (nonatomic, strong) NSMutableArray *m_projectInfoArr;
@@ -152,7 +189,10 @@ typedef enum
 @property (nonatomic, copy) NSString *orderQty;
 @property (nonatomic, copy) NSString *orderPrice;
 @property (nonatomic, copy) NSString *orderName;
-
+#pragma mark - 订单数组
+@property (nonatomic, strong) NSMutableArray *m_MyorderLists;
+#pragma mark - 基地数组
+@property (nonatomic, strong) NSMutableArray *m_baseLists;
 #pragma mark - 产品数组
 @property (nonatomic, strong) NSMutableArray *m_ProductLists;
 
@@ -178,6 +218,25 @@ typedef enum
 @property (nonatomic, strong) NSArray *nams;
 @property (nonatomic, copy) NSString *messageContent;
 @property (nonatomic, assign) BOOL isKeyword;
+#pragma mark - 评论
+@property (nonatomic, copy) NSString *content;
+@property (nonatomic, strong) NSMutableArray *m_comLists;
+
+#pragma mark - 发布植物列表
+@property (nonatomic, strong) NSMutableArray *m_goodPageLists;
+@property (nonatomic, strong) NSArray *goodComImgLists;
+@property (nonatomic, copy) NSString *goodsCom;
+@property (nonatomic, copy) NSString *goodsID;
+@property (nonatomic, copy) NSString *newgoodsID;
+@property (nonatomic, copy) NSString *goodsHeadTitle;
+
+#pragma mark - 教程列表
+@property (nonatomic, strong) NSMutableArray *m_jcLists;
+#pragma mark - 我的教程列表
+@property (nonatomic, strong) NSMutableArray *m_jcListsmine;
+
+@property (nonatomic, strong) NSMutableArray *m_rcourses;
+
 + (instancetype)shareInstance;
 - (void)loadData:(RequestState)requet;
 @end

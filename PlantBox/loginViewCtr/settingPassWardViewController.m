@@ -8,12 +8,14 @@
 
 #import "settingPassWardViewController.h"
 #import "settinhHeaderViewController.h"
-
-
+#import "LCProgressHUD.h"
+#import "NextManger.h"
+#import "MMZCViewController.h"
 @interface settingPassWardViewController ()
 {
     UIView *bgView;
     UITextField *passward;
+    UITextField *againPassward;
 }
 
 @end
@@ -45,7 +47,7 @@
     [self.view addSubview:label];
     
     CGRect frame=[UIScreen mainScreen].bounds;
-    bgView=[[UIView alloc]initWithFrame:CGRectMake(10, 110, frame.size.width-20, 50)];
+    bgView=[[UIView alloc]initWithFrame:CGRectMake(10, 110, frame.size.width-20, 100)];
     bgView.layer.cornerRadius=3.0;
     bgView.backgroundColor=[UIColor whiteColor];
     [self.view addSubview:bgView];
@@ -53,12 +55,22 @@
     passward=[self createTextFielfFrame:CGRectMake(100, 10, 200, 30) font:[UIFont systemFontOfSize:14] placeholder:@"6-20位字母或数字"];
     passward.clearButtonMode = UITextFieldViewModeWhileEditing;
     passward.secureTextEntry=YES;
+    
+    againPassward=[self createTextFielfFrame:CGRectMake(100, 50, 200, 30) font:[UIFont systemFontOfSize:14] placeholder:@"请重复密码"];
+    againPassward.clearButtonMode = UITextFieldViewModeWhileEditing;
+    againPassward.secureTextEntry=YES;
    
-    UILabel *phonelabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 12, 50, 25)];
-    phonelabel.text=@"密码";
+    UILabel *phonelabel=[[UILabel alloc]initWithFrame:CGRectMake(20, 12, 70, 25)];
+    phonelabel.text=@"密       码";
     phonelabel.textColor=[UIColor blackColor];
     phonelabel.textAlignment=UITextAlignmentLeft;
-    phonelabel.font=[UIFont systemFontOfSize:14];
+    phonelabel.font=[UIFont systemFontOfSize:13];
+    
+    UILabel *phonelabel2=[[UILabel alloc]initWithFrame:CGRectMake(20, 50, 70, 25)];
+    phonelabel2.text=@"重复密码";
+    phonelabel2.textColor=[UIColor blackColor];
+    phonelabel2.textAlignment=UITextAlignmentLeft;
+    phonelabel2.font=[UIFont systemFontOfSize:13];
     
     
     UIButton *landBtn=[self createButtonFrame:CGRectMake(10, bgView.frame.size.height+bgView.frame.origin.y+30,self.view.frame.size.width-20, 37) backImageName:nil title:@"下一步" titleColor:[UIColor whiteColor]  font:[UIFont systemFontOfSize:17] target:self action:@selector(landClick)];
@@ -66,24 +78,40 @@
     landBtn.layer.cornerRadius=5.0f;
     
     [bgView addSubview:passward];
+    [bgView addSubview:againPassward];
     
     [bgView addSubview:phonelabel];
+    [bgView addSubview:phonelabel2];
     [self.view addSubview:landBtn];
 }
 
 -(void)landClick
 {
-//    if([passward.text isEqualToString:@""])
-//    {
-//        //[SVProgressHUD showInfoWithStatus:@"您还未设置密码"];
-//        return;
-//    }
-//    else if (passward.text.length <6)
-//    {
-//        //[SVProgressHUD showInfoWithStatus:@"亲,密码长度至少六位"];
-//        return;
-//    }
-    [self.navigationController pushViewController:[[settinhHeaderViewController alloc]init] animated:YES];
+    if([passward.text isEqualToString:@""])
+    {
+        //[SVProgressHUD showInfoWithStatus:@"您还未设置密码"];
+        [LCProgressHUD showFailure:@"您还未设置密码"];
+        return;
+    }
+    else if (passward.text.length <6)
+    {
+        //[SVProgressHUD showInfoWithStatus:@"亲,密码长度至少六位"];
+        [LCProgressHUD showFailure:@"亲,密码长度至少六位"];
+        return;
+    }
+    else if (![passward.text isEqualToString:againPassward.text])
+    {
+        //[SVProgressHUD showInfoWithStatus:@"亲,密码长度至少六位"];
+        [LCProgressHUD showFailure:@"两次密码输入不一致"];
+        return;
+    }
+    NextManger *manger = [NextManger shareInstance];
+    manger.registerName = self.userName;
+    manger.registerPwd = passward.text;
+    NSLog(@"%@ %@",manger.registerName,manger.registerPwd);
+    [manger loadData:RequestOfregister];
+//    [self.navigationController pushViewController:[[settinhHeaderViewController alloc]init] animated:YES];
+    [self.navigationController pushViewController:[[MMZCViewController alloc]init] animated:YES];
     //[CheckTools savePassword:passward.text];
 }
 

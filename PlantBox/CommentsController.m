@@ -12,6 +12,8 @@
 #import "ImageTextAttachment.h"
 #import "NSAttributedString+RichText.h"
 #import "UIView+TYAlertView.h"
+#import "NextManger.h"
+
 #define ImageTag (@"[UIImageView]")
 #define MaxLength (2000)
 #define BARandomData arc4random_uniform(100)
@@ -401,13 +403,18 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
     if (arr.count>0) {
         
         for (NSDictionary * dict in arr) {
-            NSString *str = [NSString stringWithFormat:@"connent%@:",[dict objectForKey:@"title"]];
+            NSString *str = [NSString stringWithFormat:@"%@:",[dict objectForKey:@"title"]];
             //            NSLog(@"title---%@",[dict objectForKey:@"title"]);
             
             url = [url stringByAppendingString:str];
         }
         NSString *temp2 = [url substringToIndex:[url length]-1];
-        NSLog(@"文章内容:%@",temp2);
+        NSLog(@"文章内容:-%@-",temp2);
+//
+        NextManger *manger = [NextManger shareInstance];
+        manger.keyword = self.shopID; manger.content = temp2;
+        [manger loadData:RequestOfusercomment];
+        
     }
     
     

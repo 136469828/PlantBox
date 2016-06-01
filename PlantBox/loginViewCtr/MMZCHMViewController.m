@@ -9,7 +9,7 @@
 #import "MMZCHMViewController.h"
 #import "settingPassWardViewController.h"
 #import "MMZCViewController.h"
-
+#import "LCProgressHUD.h"
 
 
 @interface MMZCHMViewController ()
@@ -36,7 +36,8 @@
     // Do any additional setup after loading the view.
     
 //    self.view.backgroundColor=[UIColor colorWithRed:240/255.0f green:240/255.0f blue:240/255.0f alpha:1];
-//    
+//
+    self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
    self.title=@"注册1/3";
     self.navigationController.navigationBarHidden = NO;
     [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
@@ -230,17 +231,18 @@
 //验证码
 -(void)next
 {
-    
-//    if ([phone.text isEqualToString:@""])
-//    {
-//        //[SVProgressHUD showInfoWithStatus:@"亲,请输入注册手机号码"];
-//        return;
-//    }
-//    else if (phone.text.length <11)
-//    {
-//        ///[SVProgressHUD showInfoWithStatus:@"您输入的手机号码格式不正确"];
-//        return;
-//    }
+    NSLog(@"%@",phone.text);
+    if ([phone.text isEqualToString:@""])
+    {
+        [LCProgressHUD showFailure:@"亲,请输入注册手机号码"];
+//        [lc showInfoWithStatus:@"亲,请输入注册手机号码"];
+        return;
+    }
+    else if (phone.text.length <11)
+    {
+        [LCProgressHUD showFailure:@"您输入的手机号码格式不正确"];
+        return;
+    }
 //    else if ([code.text isEqualToString:@""])
 //    {
 //        //[SVProgressHUD showInfoWithStatus:@"亲,请输入验证码"];
@@ -251,13 +253,10 @@
 //        //[SVProgressHUD showInfoWithStatus:@"验证码错误"];
 //        return;
 //   }
-   
-    [self.navigationController pushViewController:[[settingPassWardViewController alloc]init] animated:YES];
-        
-    
-    
-   
-    
+    settingPassWardViewController *sub = [[settingPassWardViewController alloc] init];
+    sub.userName = phone.text;
+    [self.navigationController pushViewController:sub animated:YES];
+  
 }
 
 

@@ -24,7 +24,7 @@
     [self setTableView];
     
     manger = [NextManger shareInstance];
-    manger.keyword = @"1";
+    manger.keyword = @"2";
     [manger loadData:RequestOfGetusergoodpagelist];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDataAction) name:@"getusergoodpagelist" object:nil];
 //    UIButton *meassageBut = ({
@@ -63,6 +63,11 @@
     //    self.tableView.estimatedRowHeight = 100;
 //    [self registerNib];
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+
+    return 8;
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return manger.m_myBases.count;
@@ -77,7 +82,7 @@
     ProjectModel *model = manger.m_myBases[indexPath.row];
     cell.textLabel.text = model.myBasePlantName;
     UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth/2, 2, ScreenWidth/2-16, 44)];
-    lab.text = @"30株";
+    lab.text = @"1株";
 //    lab.backgroundColor = [UIColor redColor];
     lab.font = [UIFont systemFontOfSize:15];
     lab.textAlignment = NSTextAlignmentRight;

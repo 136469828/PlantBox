@@ -8,6 +8,8 @@
 
 #import "NearViewController.h"
 #import "NearMapController.h"
+#import "UserBaseController.h"
+#import "KeyboardToolBar/KeyboardToolBar.h"
 #import <BaiduMapAPI_Base/BMKBaseComponent.h>//引入base相关所有的头文件
 
 #import <BaiduMapAPI_Map/BMKMapComponent.h>//引入地图功能所有的头文件
@@ -27,13 +29,15 @@
 #import "ProjectModel.h"
 //#import "HomeCollectionViewCell.h"
 #import "NearCell.h"
-@interface NearViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate>
+#import "UIImageView+WebCache.h"
+@interface NearViewController ()<BMKMapViewDelegate,BMKLocationServiceDelegate,UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UITextFieldDelegate>
 {
     BMKMapView* _mapView;
     BMKLocationService *_locService;
     NextManger *manger;
     CLLocationCoordinate2D _touchMapCoordinate;  //  点击后那一点的经纬度
     NSArray *datas;
+    UITextField *seachTextField;
 }
 @property (nonatomic, strong) NSMutableArray *m_titleDatas;
 @property (nonatomic, strong) UITableView *tableView;
@@ -53,7 +57,7 @@
     
     UIView *mapBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 200)];
     [self.view addSubview:mapBgView];
-    _mapView = [[BMKMapView alloc]initWithFrame:mapBgView.bounds];
+    _mapView = [[BMKMapView alloc]initWithFrame:CGRectMake(0,0, ScreenWidth, 200)];
 //    self.view = _mapView;
     [mapBgView addSubview:_mapView];
     //初始化BMKLocationService
@@ -122,8 +126,8 @@
     theRegin.center=theCenter;
     
     BMKCoordinateSpan theSpan;
-    theSpan.latitudeDelta = 0.01;
-    theSpan.longitudeDelta = 0.01;
+    theSpan.latitudeDelta = 0.1;
+    theSpan.longitudeDelta = 0.1;
     theRegin.span = theSpan;
     
     // 添加一个PointAnnotation
@@ -197,7 +201,7 @@
 }
 #pragma mark - 创建 UICollectionView
 - (void)setTableView{
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 208, ScreenWidth, ScreenHeight -287) style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 208, ScreenWidth, ScreenHeight -208-118) style:UITableViewStylePlain];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
@@ -209,6 +213,15 @@
 //    //
 //    //    self.tableView.estimatedRowHeight = 100;
     [self registerNib];
+}
+
+#pragma mark - 搜索
+- (void)seachAction
+{
+//    manger = [NextManger shareInstance];
+//    manger.keyword = seachTextField.text;
+//    [manger loadData:RequestOfGetproductlist];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDatas) name:@"getproductlist" object:nil];
 }
 #pragma mark - 注册Cell
 - (void)registerNib{
@@ -237,18 +250,34 @@
 //    if (!cell) {
 //        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
 //    }
-//    NSArray *nanes = @[@"梁健聪",@"汪工",@"王显宁",@"熊总"];
-//    NSArray *imgs = @[@"5.jpg",@"6.jpg",@"7.jpg",@"06"];
-//    NSArray *dis = @[@"17km",@"19km",@"16km",@"17km"];
-//    NSArray *friends = @[@"100",@"65",@"34",@"300"];
     ProjectModel *model = manger.m_nears[indexPath.row];
     NearCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NearCell"];
-    cell.img.image = [UIImage imageNamed:@"5.jpg"];
+    if ([model.nearImg isEqualToString:@"kong"])
+    {
+        cell.img.image = [UIImage imageNamed:@"1138bb6d96b8709ba6028a89c95006bc.jpg"];
+    }
+    else
+    {
+        [cell.img sd_setImageWithURL:[NSURL URLWithString:model.nearImg]];
+    }
     cell.nameLab.text = model.nearName;
     cell.disLab.text = model.nearDistance;
-    cell.friendLab.text = [NSString stringWithFormat:@"粉丝数: %@",model.nearPraiseCount];
+    cell.friendLab.text = [NSString stringWithFormat:@"位置: %@",model.nearAddress];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.tag = [model.nearID integerValue];
     return cell;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NearCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UserBaseController *subV = [[UserBaseController alloc] init];
+    subV.userID = [NSString stringWithFormat:@"%ld",cell.tag];
+    subV.userName = cell.nameLab.text;
+    subV.userTime = cell.disLab.text;
+    subV.userAddress = cell.friendLab.text;
+    subV.userImg = cell.img.image;
+    subV.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:subV animated:YES];
 }
 #pragma mark-
 - (void)showActionsheet

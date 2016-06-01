@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface PlantBKController : UIViewController
-
+@property (nonatomic, copy) NSString *channelId;
+@property (nonatomic, copy) NSString *classID;
 @end

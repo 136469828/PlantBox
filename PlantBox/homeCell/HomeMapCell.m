@@ -8,6 +8,8 @@
 
 #import "HomeMapCell.h"
 
+#import "NextManger.h"
+
 #import <BaiduMapAPI_Base/BMKBaseComponent.h>//引入base相关所有的头文件
 
 #import <BaiduMapAPI_Map/BMKMapComponent.h>//引入地图功能所有的头文件
@@ -34,6 +36,7 @@
     BMKMapView * _mapview;
     BMKLocationService *_locService;
     CLLocationCoordinate2D _touchMapCoordinate;  //  点击后那一点的经纬度
+    
 }
 - (void)awakeFromNib {
     // Initialization code
@@ -117,6 +120,11 @@
     
     coor.latitude = userLocation.location.coordinate.latitude;
     coor.longitude = userLocation.location.coordinate.longitude;
+    
+    NextManger *manger = [NextManger shareInstance];
+    manger.userLat = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.latitude];
+    manger.userLon = [NSString stringWithFormat:@"%f",userLocation.location.coordinate.longitude];
+    
     annotation.coordinate = coor;
     annotation.title = @"我在这里";
     [_mapview addAnnotation:annotation];

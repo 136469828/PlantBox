@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface HomeBaseController : UIViewController
-@property (copy, nonatomic)  NSString *nameImgstr;
+@property (copy, nonatomic)  NSString *nameImg;
 @property (copy, nonatomic)  NSString *nameLabstr;
 @property (strong, nonatomic)  NSArray *imgs;
 @property (strong, nonatomic)  NSString *conetLabstr;
+@property (nonatomic, copy) NSString *userID;
+@property (nonatomic, strong) UIImage *heardimg;
 @end

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface CommentsController : UIViewController
-
+@property (nonatomic, copy) NSString *shopID;
 @end

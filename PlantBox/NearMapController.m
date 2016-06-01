@@ -91,8 +91,8 @@
     theRegin.center=theCenter;
     
     BMKCoordinateSpan theSpan;
-    theSpan.latitudeDelta = 0.01;
-    theSpan.longitudeDelta = 0.01;
+    theSpan.latitudeDelta = 0.1;
+    theSpan.longitudeDelta = 0.1;
     theRegin.span = theSpan;
     
     // 添加一个PointAnnotation

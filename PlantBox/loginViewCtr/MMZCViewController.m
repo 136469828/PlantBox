@@ -13,6 +13,11 @@
 #import "RootTabbarController.h"
 #import "LCProgressHUD.h"
 #import "NextManger.h"
+
+#import "UMSocial.h"
+#import "UMSocialWechatHandler.h"
+#import "UMSocialQQHandler.h"
+#import "UMSocialSinaSSOHandler.h"
 @interface MMZCViewController ()
 {
     UIImageView *View;
@@ -22,6 +27,7 @@
     UIButton *QQBtn;
     UIButton *weixinBtn;
     UIButton *xinlangBtn;
+    BOOL isRemenber;
 }
 @property(copy,nonatomic) NSString * accountNumber;
 @property(copy,nonatomic) NSString * mmmm;
@@ -36,6 +42,7 @@
 {
    [[UINavigationBar appearance] setBarTintColor:RGB(7, 115, 226)];
     self.navigationController.navigationBarHidden = YES;
+    isRemenber = YES;
 }
 
 - (void)viewDidLoad
@@ -79,7 +86,7 @@
 //    lanel.textColor=[UIColor colorWithRed:248/255.0f green:144/255.0f blue:34/255.0f alpha:1];
 //    [self.view addSubview:lanel];
     UIButton *userImgBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    userImgBtn.frame = CGRectMake((self.view.frame.size.width-200)/2, 0, 200, 285);
+    userImgBtn.frame = CGRectMake(ScreenWidth/2 - (ScreenWidth/3)/2, 30, ScreenWidth/3, ScreenWidth/3);
 //    userImgBtn.backgroundColor = [UIColor whiteColor];
 //    userImgBtn.layer.cornerRadius=100.0;
     [userImgBtn setImage:[UIImage imageNamed:@"touxiang_login"] forState:UIControlStateNormal];
@@ -111,7 +118,7 @@
 
 -(void)createLabel
 {
-    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width-140)/2, 430, 140, 21)];
+    UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width-140)/2, ScreenHeight*0.75, 140, 21)];
     label.text=@"第三方账号快速登录";
     label.textColor=[UIColor whiteColor];
     label.textAlignment=UITextAlignmentCenter;
@@ -122,25 +129,31 @@
 -(void)createTextFields
 {
     CGRect frame=[UIScreen mainScreen].bounds;
-    bgView=[[UIView alloc]initWithFrame:CGRectMake(10, 205, frame.size.width-20, 100)];
+    bgView=[[UIView alloc]initWithFrame:CGRectMake(10, 40+ScreenWidth/3, frame.size.width-20, 100)];
     bgView.layer.cornerRadius=3.0;
     bgView.alpha=0.7;
     bgView.backgroundColor=[UIColor whiteColor];
     [self.view addSubview:bgView];
     
     user=[self createTextFielfFrame:CGRectMake(60, 10, 271, 30) font:[UIFont systemFontOfSize:14] placeholder:@"手机/邮箱"];
-    user.text=@"ljc";
+
     user.keyboardType=UIKeyboardTypeDefault;
     user.clearButtonMode = UITextFieldViewModeWhileEditing;
    
     pwd=[self createTextFielfFrame:CGRectMake(60, 60, 271, 30) font:[UIFont systemFontOfSize:14]  placeholder:@"密码" ];
     pwd.clearButtonMode = UITextFieldViewModeWhileEditing;
-    pwd.text=@"123456";
     //密文样式
     pwd.secureTextEntry=YES;
     //pwd.keyboardType=UIKeyboardTypeNumberPad;
 
-    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *str = [userDefaults objectForKey:@"passWord"];
+    if (str.length != 0)
+    {
+        NSLog(@"%@ %@",[userDefaults objectForKey:@"userName"],[userDefaults objectForKey:@"passWord"]);
+        user.text = [userDefaults objectForKey:@"userName"];
+        pwd.text = [userDefaults objectForKey:@"passWord"];
+    }
     UIImageView *userImageView=[self createImageViewFrame:CGRectMake(20, 10, 25, 25) imageName:@"ic_landing_nickname" color:nil];
     UIImageView *pwdImageView=[self createImageViewFrame:CGRectMake(20, 60, 25, 25) imageName:@"mm_normal" color:nil];
     UIImageView *line1=[self createImageViewFrame:CGRectMake(20, 50, bgView.frame.size.width-40, 1) imageName:nil color:[UIColor lightGrayColor]];
@@ -175,9 +188,9 @@
     //
     //    //UIImageView *line2=[self createImageViewFrame:CGRectMake(88, 210, 280, 1) imageName:nil color:[UIColor grayColor]];
     
-    UIImageView *line3=[self createImageViewFrame:CGRectMake(2, 440, 100, 1) imageName:nil color:[UIColor lightGrayColor]];
-    UIImageView *line4=[self createImageViewFrame:CGRectMake(self.view.frame.size.width-100-4, 440, 100, 1) imageName:nil color:[UIColor lightGrayColor]];
-    UIImageView *line5=[self createImageViewFrame:CGRectMake(self.view.frame.size.width/2, 395, 1,20) imageName:nil color:[UIColor whiteColor]];
+    UIImageView *line3=[self createImageViewFrame:CGRectMake(2,ScreenHeight*0.75+10, 70, 1) imageName:nil color:[UIColor lightGrayColor]];
+    UIImageView *line4=[self createImageViewFrame:CGRectMake(self.view.frame.size.width-70-4, ScreenHeight*0.75+10, 70, 1) imageName:nil color:[UIColor lightGrayColor]];
+    UIImageView *line5=[self createImageViewFrame:CGRectMake(self.view.frame.size.width/2,40+ScreenWidth/3+195, 1,20) imageName:nil color:[UIColor whiteColor]];
     
     //    [bgView addSubview:userImageView];
     //    [bgView addSubview:pwdImageView];
@@ -192,24 +205,27 @@
 
 -(void)createButtons
 {
-    UIButton *landBtn=[self createButtonFrame:CGRectMake(60, 345, self.view.frame.size.width-120, 36) backImageName:nil title:@"登录" titleColor:[UIColor whiteColor]  font:[UIFont systemFontOfSize:19] target:self action:@selector(landClick)];
+    UIButton *landBtn=[self createButtonFrame:CGRectMake(60,40+ScreenWidth/3+100+50, self.view.frame.size.width-120, 36) backImageName:nil title:@"登录" titleColor:[UIColor whiteColor]  font:[UIFont systemFontOfSize:19] target:self action:@selector(landClick)];
     landBtn.backgroundColor= RGB(0, 143, 207);
     landBtn.layer.cornerRadius=12.0f;
     
-    UIButton *newUserBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-85, 390, 80, 30) backImageName:nil title:@"我要注册" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(registration:)];
+    UIButton *newUserBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-85, 40+ScreenWidth/3+190, 80, 30) backImageName:nil title:@"我要注册" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(registration:)];
     //newUserBtn.backgroundColor=[UIColor lightGrayColor];
     
-    UIButton *forgotPwdBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5+10, 390, 80, 30) backImageName:nil title:@"找回密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(fogetPwd:)];
+    UIButton *forgotPwdBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5+5, 40+ScreenWidth/3+190, 80, 30) backImageName:nil title:@"找回密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:17] target:self action:@selector(fogetPwd:)];
     //fogotPwdBtn.backgroundColor=[UIColor lightGrayColor];
     
 //    UIButton *remberBtn=[self createButtonFrame:CGRectMake(self.view.frame.size.width*0.5-70, 305, 140, 30) backImageName:nil title:@"记住登录密码" titleColor:[UIColor whiteColor] font:[UIFont systemFontOfSize:15] target:self action:@selector(rebberBtn:)];
     UIButton *remberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 //    remberBtn.backgroundColor=[UIColor lightGrayColor];
-    remberBtn.frame = CGRectMake(self.view.frame.size.width*0.5-100, 300, 170, 50);
+    remberBtn.frame = CGRectMake(self.view.frame.size.width*0.5-100, 40+ScreenWidth/3+100, 170, 50);
     [remberBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     [remberBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
     remberBtn.titleLabel.font = [UIFont systemFontOfSize:13];
-    [remberBtn setImage:[UIImage imageNamed:@"remember_login"] forState:UIControlStateNormal];
+    remberBtn.selected = YES;
+    [remberBtn setImage:[UIImage imageNamed:@"unRemember_login"] forState:UIControlStateNormal];
+        [remberBtn setImage:[UIImage imageNamed:@"remember_login"] forState:UIControlStateSelected];
+    [remberBtn addTarget:self action:@selector(remberAction:) forControlEvents:UIControlEventTouchDown];
     [remberBtn setTitle:@"记住登录密码" forState:UIControlStateNormal];
   
     
@@ -223,18 +239,18 @@
 
     
     //微信
-    weixinBtn=[[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-50)/2, 460, 50, 50)];
+    weixinBtn=[[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-50)/2, ScreenHeight-70, 50, 50)];
     //weixinBtn.tag = UMSocialSnsTypeWechatSession;
     weixinBtn.layer.cornerRadius=25;
     weixinBtn=[self createButtonFrame:weixinBtn.frame backImageName:@"weixin" title:nil titleColor:nil font:nil target:self action:@selector(onClickWX:)];
     //qq
-    QQBtn=[[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-50)/2-100, 460, 50, 50)];
+    QQBtn=[[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-50)/2-100, ScreenHeight-70, 50, 50)];
     //QQBtn.tag = UMSocialSnsTypeMobileQQ;
     QQBtn.layer.cornerRadius=25;
     QQBtn=[self createButtonFrame:QQBtn.frame backImageName:@"QQ" title:nil titleColor:nil font:nil target:self action:@selector(onClickQQ:)];
     
     //新浪微博
-    xinlangBtn=[[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-50)/2+100, 460, 50, 50)];
+    xinlangBtn=[[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width-50)/2+100, ScreenHeight-70, 50, 50)];
     //xinlangBtn.tag = UMSocialSnsTypeSina;
     xinlangBtn.layer.cornerRadius=25;
     xinlangBtn=[self createButtonFrame:xinlangBtn.frame backImageName:@"weibo" title:nil titleColor:nil font:nil target:self action:@selector(onClickSina:)];
@@ -253,16 +269,79 @@
 
 - (void)onClickQQ:(UIButton *)button
 {
+    
+    UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToQQ];
+    
+    snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
+        if (response.responseCode == UMSResponseCodeSuccess) {
+            UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:@"qq"];
+
+            NSLog(@"userNane: %@  usid: %@  icon: %@",snsAccount.userName,snsAccount.usid,snsAccount.iconURL);
+            NextManger *manger = [NextManger shareInstance];
+            manger.userThirdInfos = @[snsAccount.usid,@"1",snsAccount.userName,snsAccount.iconURL];
+            [manger loadData:RequestOfloginbythird];
+        }});
 }
 
 - (void)onClickWX:(UIButton *)button
 {
+    UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToWechatSession];
+    
+    snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
+//        NSDictionary *dic = response.data;
+////        NSLog(@"%@",dic);
+        if (response.responseCode == UMSResponseCodeSuccess) {
+//            
+//            NSDictionary *dict = [UMSocialAccountManager socialAccountDictionary];
+//            UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:@"platformName"];
+            NSLog(@"thirdPlatformUserProfile = %@  %@ %@",response.thirdPlatformUserProfile[@"headimgurl"],response.thirdPlatformUserProfile[@"nickname"],response.thirdPlatformUserProfile[@"unionid"]);
+            NextManger *manger = [NextManger shareInstance];
+            manger.userThirdInfos = @[
+                                      [NSString stringWithFormat:@"%@",response.thirdPlatformUserProfile[@"unionid"]],
+                                      
+                                      @"2",
+                                      
+                                      [NSString stringWithFormat:@"%@",
+                                       response.thirdPlatformUserProfile[@"nickname"]],
+                                      
+                                      [NSString stringWithFormat:@"%@",response.thirdPlatformUserProfile[@"headimgurl"]]];
+            
+            [manger loadData:RequestOfloginbythird];
+        }
+        
+    });
 }
 
 
 - (void)onClickSina:(UIButton *)button
 {
+    UMSocialSnsPlatform *snsPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
     
+    snsPlatform.loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
+        
+        //          获取微博用户名、uid、token等
+//        NSLog(@"新浪微博登录 %@",response);
+        if (response.responseCode == UMSResponseCodeSuccess) {
+            NSDictionary *dict = [UMSocialAccountManager socialAccountDictionary];
+//            NSLog(@"dic %@",dict);
+            UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:@"sina"];
+            NSLog(@"\nusername = %@,\n usid = %@,\n token = %@ iconUrl = %@,\n",snsAccount.userName,snsAccount.usid,snsAccount.accessToken,snsAccount.iconURL);
+            
+            NextManger *manger = [NextManger shareInstance];
+            manger.userThirdInfos = @[
+                                      [NSString stringWithFormat:@"%@",snsAccount.accessToken],
+                                      
+                                      @"4",
+                                      
+                                      [NSString stringWithFormat:@"%@",
+                                       snsAccount.userName],
+                                      
+                                      [NSString stringWithFormat:@"%@",snsAccount.iconURL]];
+            
+            [manger loadData:RequestOfloginbythird];
+            
+        }});
+
 }
 
                      
@@ -354,6 +433,19 @@
     {
         //
         NSLog(@"user:%@ pwd:%@ ",user.text,pwd.text);
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        if (isRemenber == YES)
+        {
+            
+            [userDefaults setObject:user.text forKey:@"userName"];
+            [userDefaults setObject:pwd.text forKey:@"passWord"];
+
+        }
+        else
+        {
+            [userDefaults removeObjectForKey:@"userName"];
+            [userDefaults removeObjectForKey:@"passWord"];
+        }
         NextManger *manger = [NextManger shareInstance];
         manger.name = user.text; manger.password = pwd.text;
         [manger loadData:RequestOfLogin];
@@ -404,16 +496,18 @@
 -(void)registration:(UIButton *)button
 {
    [self.navigationController pushViewController:[[MMZCHMViewController alloc]init] animated:YES];
+//    MMZCHMViewController *sub = [[TheOfficialTutorialController alloc] init];
+//    sub.title = @"官方教程";
+//    [self.navigationController pushViewController:sub animated:YES];
+//    [self presentViewController:<#(nonnull UIViewController *)#> animated:<#(BOOL)#> completion:<#^(void)completion#>]
+
 }
 
 -(void)fogetPwd:(UIButton *)button
 {
    [self.navigationController pushViewController:[[forgetPassWardViewController alloc]init] animated:YES];
 }
--(void)rebberBtn:(UIButton *)button
-{
-    NSLog(@"记住密码");
-}
+
 
 
 #pragma mark - 工具
@@ -453,7 +547,21 @@
     
     return chuLi;
 }
-
+// 记住密码
+- (void)remberAction:(UIButton *)btn
+{
+    if (btn.selected) {
+        NSLog(@"不记住密码");
+        isRemenber = NO;
+        btn.selected = !btn.selected;
+    }
+    else
+    {
+        NSLog(@"记住密码");
+        isRemenber = YES;
+        btn.selected = !btn.selected;
+    }
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

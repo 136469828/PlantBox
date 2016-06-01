@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -16,14 +15,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HNh-S7-Sn4">
-                        <rect key="frame" x="8" y="8" width="304" height="133.5"/>
+                        <rect key="frame" x="8" y="2" width="304" height="145.5"/>
                     </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailingMargin" secondItem="HNh-S7-Sn4" secondAttribute="trailing" id="2aQ-se-Mso"/>
-                    <constraint firstItem="HNh-S7-Sn4" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="R7V-gq-uJe"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="HNh-S7-Sn4" secondAttribute="bottom" id="Skd-yr-6Kd"/>
-                    <constraint firstItem="HNh-S7-Sn4" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="UyK-At-oXj"/>
+                    <constraint firstItem="HNh-S7-Sn4" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2" id="C22-Lo-tus"/>
+                    <constraint firstItem="HNh-S7-Sn4" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="XCT-ZJ-rZz"/>
+                    <constraint firstAttribute="bottom" secondItem="HNh-S7-Sn4" secondAttribute="bottom" constant="2" id="iZq-YN-USt"/>
+                    <constraint firstAttribute="trailing" secondItem="HNh-S7-Sn4" secondAttribute="trailing" constant="8" id="we4-W4-UX7"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

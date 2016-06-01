@@ -12,6 +12,8 @@
 #import "UIImageView+WebCache.h"
 #import "KeyboardToolBar/KeyboardToolBar.h"
 #import "NextManger.h"
+#import "WebModel.h"
+#import "WebViewController.h"
 @interface OrderController ()<UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,UITextFieldDelegate>
 {
     NextManger *manger;
@@ -21,7 +23,9 @@
 @end
 
 @implementation OrderController
-
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
@@ -32,22 +36,51 @@
     
     UIView *shopV = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight - 115, ScreenWidth, 60)];
     shopV.backgroundColor = [UIColor whiteColor];
-    UILabel *countLab = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, 80, 50)];
-    countLab.text = [NSString stringWithFormat:@"合计 :￥%d",[self.orderPrice intValue]*self.orderCount];
+    UILabel *countLab = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 40)];
+    countLab.text = [NSString stringWithFormat:@"合计 :￥%.2f",[self.orderPrice doubleValue]*self.orderCount];
+    NSLog(@"%@",countLab.text);
     countLab.font = [UIFont systemFontOfSize:15];
     [shopV addSubview:countLab];
-
+    
     UIButton *buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    buyBtn.frame = CGRectMake(ScreenWidth - 150,15, 140, 30);
+    buyBtn.frame = CGRectMake(ScreenWidth - (ScreenWidth/2-60)-10,0, ScreenWidth/2-60, 40);
     buyBtn.layer.cornerRadius = 2;
     buyBtn.backgroundColor = [UIColor orangeColor];
     [buyBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [buyBtn setTitle:@"立即购买" forState:UIControlStateNormal];
+    [buyBtn setTitle:@"提交订单" forState:UIControlStateNormal];
     [buyBtn addTarget:self action:@selector(buybuybuy) forControlEvents:UIControlEventTouchDown];
     [shopV addSubview:buyBtn];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushPay:) name:@"orderSaveorder" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboaedDidShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboaedDidappear:) name:UIKeyboardWillHideNotification object:nil];
     [self.view addSubview:shopV];
     
+}
+- (void)pushPay:(NSNotification *)obj
+{
+    WebModel *model = [[WebModel alloc] initWithUrl:[NSString stringWithFormat:@"http://plantbox.meidp.com/Mobi/Pay/PayChoose/%@",manger.orderID]];
+    WebViewController *SVC = [[WebViewController alloc] init];
+    SVC.title = @"支付";
+    SVC.hidesBottomBarWhenPushed = YES;
+    [SVC setModel:model];
+    [self.navigationController pushViewController:SVC animated:YES];
+    
+}
+- (void)keyboaedDidShow:(NSNotification *)notif{
+    //        NSLog(@"键盘出现 %@",notif);
+    //获取键盘的高度
+    NSDictionary *userInfo = [notif userInfo];
+    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardRect = [aValue CGRectValue];
+    int height = keyboardRect.size.height;
+    NSLog(@"%d",height);
+    
+}
+- (void)keyboaedDidappear:(NSNotification *)notif{
+    NSLog(@"键盘消失");
+    [_closeV removeFromSuperview];
+    _tableView.frame = CGRectMake(0,0, SCREEN_WIDTH, ScreenHeight - 69);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,15 +93,29 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight-69) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-//    self.tableView.estimatedRowHeight = 180;
+    //    self.tableView.estimatedRowHeight = 180;
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:self.tableView];
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
+    gestureRecognizer.cancelsTouchesInView = NO;
+    
+    [_tableView addGestureRecognizer:gestureRecognizer];
     
     NSArray *registerNibs = @[@"OrderCell"];
     for (int i = 0 ; i < registerNibs.count; i++) {
         [_tableView registerNib:[UINib nibWithNibName:registerNibs[i] bundle:nil] forCellReuseIdentifier:registerNibs[i]];
     }
-
+    
+}
+-(void)hideKeyboard
+{
+    [[[UIApplication sharedApplication] keyWindow] endEditing:YES];//关闭键盘
+    
+}
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [[[UIApplication sharedApplication] keyWindow] endEditing:YES];//关闭键盘
 }
 #pragma  mark - tabledelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -106,10 +153,26 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:infierCell];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-//    cell.imageView.image = [UIImage imageNamed:self.orderImg];
-    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:self.orderImg]];
-    cell.textLabel.text = self.orderName;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"数量:%d",self.orderCount];
+    //    cell.imageView.image = [UIImage imageNamed:self.orderImg];
+    UIImageView *imgv = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 80-16, 80-16)];
+    [imgv sd_setImageWithURL:[NSURL URLWithString:self.orderImg]];
+    [cell.contentView addSubview:imgv];
+    
+    UILabel *l = [[UILabel alloc] initWithFrame:CGRectMake(85, 8, ScreenWidth-90, 40)];
+    l.numberOfLines = 0;
+    l.text = self.orderName;
+    l.font = [UIFont systemFontOfSize:15];
+    [cell.contentView addSubview:l];
+    
+    UILabel *sl = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, ScreenWidth-90, 40)];
+    sl.numberOfLines = 1;
+    sl.font = [UIFont systemFontOfSize:13];
+    sl.text = [NSString stringWithFormat:@"数量:%d",self.orderCount];
+    [cell.contentView addSubview:sl];
+    
+//    [cell.imageView sd_setImageWithURL:[NSURL URLWithString:self.orderImg]];
+//    cell.textLabel.text = self.orderName;
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"数量:%d",self.orderCount];
     
     return cell;
 }
@@ -131,7 +194,7 @@
 {
     //  667 - 313
     UITextView *txv = (UITextView *)[self.view viewWithTag:666];
-    _closeV = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-50-49-258, ScreenWidth, 40)];
+    _closeV = [[UIView alloc] initWithFrame:CGRectMake(0, ScreenHeight-50-69-258, ScreenWidth, 40)];
     _closeV.backgroundColor = [UIColor lightGrayColor];
     
     UIButton *colseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -141,10 +204,10 @@
     [_closeV addSubview:colseBtn];
     [self.view addSubview:_closeV];
     
-//    [UITableView animateWithDuration:0.25 animations:^{
-//        _tableView.frame = CGRectMake(0, -238+30+59, ScreenWidth, ScreenHeight);
-//    }];
-//    txv.text=@"";
+    //    [UITableView animateWithDuration:0.25 animations:^{
+    //        _tableView.frame = CGRectMake(0, -238+30+59, ScreenWidth, ScreenHeight);
+    //    }];
+    //    txv.text=@"";
     txv.textColor = [UIColor blackColor];
     return YES;
     
@@ -164,12 +227,15 @@
     manger.orderName = nameTF.text;
     manger.orderMobile = phone.text;
     manger.orderAddress = txv.text;
-    manger.orderPEId = @"1";
+//    manger.orderPEId = @"1"; // 产品型号ID
+    NSLog(@"%@",self.shopID);
     manger.orderProID = self.shopID;
     manger.orderQty = [NSString stringWithFormat:@"%d",self.orderCount];
     manger.orderPrice = self.orderPrice;
-//    NSLog(@"%@%@%@%@",manger.orderName,manger.orderMobile,manger.orderAddress,manger.orderQty);
+    //    NSLog(@"%@%@%@%@",manger.orderName,manger.orderMobile,manger.orderAddress,manger.orderQty);
     [manger loadData:RequestOforderSaveorder];
+    
+    
 }
 
 @end

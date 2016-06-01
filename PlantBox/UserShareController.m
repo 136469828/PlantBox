@@ -7,9 +7,15 @@
 //
 
 #import "UserShareController.h"
-
+#import "PlantBKCell.h"
+#import "NextManger.h"
+#import "ProjectModel.h"
+#import "UIImageView+WebCache.h"
+#import "UserShareInfoController.h"
 @interface UserShareController ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate>
-
+{
+    NextManger *manger;
+}
 @property (nonatomic ,strong) UITableView *tableView;
 
 @end
@@ -23,8 +29,24 @@
     self.navigationController.navigationBar.titleTextAttributes = @{UITextAttributeTextColor: [UIColor whiteColor],UITextAttributeFont : [UIFont boldSystemFontOfSize:18]};
     self.view.backgroundColor = [UIColor whiteColor];
     [self setTableView];
+//    [self registerNib];
+    manger = [NextManger shareInstance];
+    [manger loadData:RequestOfgetusercoursepagelist];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadDatas) name:@"getusercoursepagelist" object:nil];
+    
 }
-
+- (void)reloadDatas
+{
+    [self.tableView reloadData];
+}
+//#pragma mark - 注册Cell
+//- (void)registerNib{
+//    NSArray *registerNibs = @[@"PlantBKCell"];
+//    for (int i = 0 ; i < registerNibs.count; i++) {
+//        [_tableView registerNib:[UINib nibWithNibName:registerNibs[i] bundle:nil] forCellReuseIdentifier:registerNibs[i]];
+//    }
+//    
+//}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -39,41 +61,61 @@
     [_tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.view addSubview:_tableView];
 }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 60;
+}
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return manger.m_jcLists.count;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *infierCell = @"cell";
+    static NSString *allCell = @"cell";
     UITableViewCell *cell = nil;
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:infierCell];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:allCell];
+        cell.selectionStyle = UITableViewCellAccessoryNone;
     }
-    cell.textLabel.text = @"马云的分享";
     
-    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth-80, 0,45, 44)];
-    lab.text = @"10:02";
-    lab.textAlignment = NSTextAlignmentRight;
-    lab.font = [UIFont systemFontOfSize:15];
-    [cell.contentView addSubview: lab];
+    //    PlantBKCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PlantBKCell"];
+    ProjectModel *model = manger.m_jcLists[indexPath.row];
+    //    cell.selectionStyle = UITableViewCellAccessoryNone;
+    //    cell.titleLab.text = model.headTitle;
+    //    cell.contentLab.text = model.goodsCom;
+    UIImageView *imgv = [[UIImageView alloc] initWithFrame:CGRectMake(18, 5, 60-16, 60-16)];
+    imgv.layer.cornerRadius = 5;
+    [cell.contentView addSubview:imgv];
     
-    UILabel *contentLab = [[UILabel alloc] initWithFrame:CGRectMake(ScreenWidth*0.35, 0,ScreenWidth-ScreenWidth*0.35-80, 44)];
-    contentLab.text = @"多肉植物养成日记";
-    contentLab.font = [UIFont systemFontOfSize:15];
-    [cell.contentView addSubview: contentLab];
+    UILabel *titleLab = [[UILabel alloc] initWithFrame:CGRectMake(18+60-16+16, 5, ScreenWidth-18+60-16+5, 25)];
+    titleLab.font = [UIFont systemFontOfSize:15];
+    titleLab.text = model.headTitle;
+    [cell.contentView addSubview:titleLab];
     
+    UILabel *subtitleLab = [[UILabel alloc] initWithFrame:CGRectMake(18+60-16+16, 30, ScreenWidth-18+60-16+5, 25)];
+    subtitleLab.font = [UIFont systemFontOfSize:13];
+    subtitleLab.text = model.goodsCom;
+    [cell.contentView addSubview:subtitleLab];
+    
+    if ([model.goodImg isEqualToString:@"1"])
+    {
+        imgv.image = [UIImage imageNamed:@"1138bb6d96b8709ba6028a89c95006bc.jpg"];
+    }
+    else
+    {
+        [imgv sd_setImageWithURL:[NSURL URLWithString:model.goodImg]];
+    }
+    
+    cell.tag = [model.goodsID integerValue];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0)
-    {
-//        ErweimaViewController *eVC = [[ErweimaViewController alloc] init];
-//        eVC.hidesBottomBarWhenPushed = YES;
-//        [self.navigationController pushViewController:eVC animated:eVC];
-    }
+    PlantBKCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    UserShareInfoController *subVC = [[UserShareInfoController alloc] init];
+    subVC.goodsID = [NSString stringWithFormat:@"%ld",cell.tag];
+    subVC.sType = @"2";
+    subVC.title = @"详情";
+    [self.navigationController pushViewController:subVC animated:YES];
 }
 @end

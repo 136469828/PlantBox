@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface PublishedCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UITextField *titleTextFild;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+
 @property (weak, nonatomic) IBOutlet UILabel *dayLab;
+@property (weak, nonatomic) IBOutlet UILabel *context;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *hightLine;
 
 @end

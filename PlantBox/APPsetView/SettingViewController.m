@@ -11,6 +11,7 @@
 #import "AboutMeViewController.h"
 #import "PasswordViewController.h"
 #import "PrivacyViewController.h"
+#import "NoticeController.h"
 @interface SettingViewController ()<UITableViewDataSource,UITableViewDelegate>
 {
     NSArray *titles;
@@ -24,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    titles = @[@"修改密码",@"通知",@"关于我们",@"隐私",@"升级为最高版本"];
+    titles = @[@"修改密码",@"关于我们",@"隐私",@"消息"];
     self.view.backgroundColor = RGB(239, 239, 244);
     [self setTableView];
 }
@@ -92,22 +93,29 @@
                 [self.navigationController pushViewController:pwVC animated:YES];
             }
                 break;
+//            case 1:
+//            {
+//                
+//            }
+//                break;
             case 1:
-            {
-                
-            }
-                break;
-            case 2:
             {
                 AboutMeViewController *abVC = [[AboutMeViewController alloc] init];
                 abVC.title = @"关于我们";
                 [self.navigationController pushViewController:abVC animated:YES];
             }
                 break;
-            case 3:
+            case 2:
             {
                 PrivacyViewController *abVC = [[PrivacyViewController alloc] init];
                 abVC.title = @"隐私";
+                [self.navigationController pushViewController:abVC animated:YES];
+            }
+                break;
+            case 3:
+            {
+                NoticeController *abVC = [[NoticeController alloc] init];
+                abVC.title = @"消息";
                 [self.navigationController pushViewController:abVC animated:YES];
             }
                 break;
@@ -119,8 +127,12 @@
     }
     else
     {
-        MMZCViewController *loginVC = [[MMZCViewController alloc] init];
-        [self presentViewController:loginVC animated:YES completion:nil];
+//        MMZCViewController *loginVC = [[MMZCViewController alloc] init];
+//        [self presentViewController:loginVC animated:YES completion:nil];
+        
+        MMZCViewController *login = [[MMZCViewController alloc]init];
+        UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:login];
+        [self.navigationController presentModalViewController:nav animated:YES];
     }
    }
 /*

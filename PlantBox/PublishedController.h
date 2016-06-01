@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PublishedController : UIViewController
-
+@property (nonatomic, copy) NSString *goodsID;
+@property (nonatomic, copy) NSString *newgoodsID;
+@property (nonatomic, copy) NSString *sType;
 @end
